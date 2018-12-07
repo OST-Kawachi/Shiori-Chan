@@ -13,13 +13,15 @@ namespace ShioriChan {
 		public Startup( IConfiguration configuration ) => this.Configuration = configuration;
 		
 		/// <summary>
-		/// This method gets called by the runtime. Use this method to add services to the container.
+		/// コンテナにサービスを追加する
 		/// </summary>
+		/// <remarks>Runtimeによって呼び出される</remarks>
 		public void ConfigureServices( IServiceCollection services ) => services.AddMvc().SetCompatibilityVersion( CompatibilityVersion.Version_2_1 );
 		
 		/// <summary>
-		/// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		/// HTTPリクエストのパイプラインを構成する
 		/// </summary>
+		/// <remarks>Runtimeによって呼び出される</remarks>
 		public void Configure( IApplicationBuilder app , IHostingEnvironment env ) {
 			if( env.IsDevelopment() ) {
 				app.UseDeveloperExceptionPage();
