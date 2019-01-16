@@ -10,6 +10,7 @@ namespace ShioriChan.Services.MessagingApis.Messages {
 		/// <summary>
 		/// 送信
 		/// </summary>
+		[Obsolete( "未完成です" , true )]
 		public void Send() => throw new NotImplementedException();
 
 	}

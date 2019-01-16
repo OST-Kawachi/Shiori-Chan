@@ -1,11 +1,12 @@
 ﻿using ShioriChan.Services.MessagingApis.Messages.Builder;
+using System;
 
 namespace ShioriChan.Services.MessagingApis.Messages {
 
 	/// <summary>
 	/// メッセージ作成クラス
 	/// </summary>
-	public class MessageService {
+	public class MessageService : IMessageService {
 
 		/// <summary>
 		/// メッセージBuilder作成

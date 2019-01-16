@@ -31,7 +31,7 @@ namespace ShioriChan.Controllers.MessagingApis {
 		/// <returns>必ずステータス200を返す</returns>
 		[HttpGet]
 		public StatusCodeResult Get() {
-			this.featureFacade.Execute( JToken.Parse( "{ \"temp\t : \"temp\" }" ) );
+			this.featureFacade.Execute( JToken.Parse( "{ \"temp\" : \"temp\" }" ) );
 			return this.Ok();
 		}
 
