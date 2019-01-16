@@ -10,7 +10,10 @@ namespace ShioriChan.Services.MessagingApis.OAuth.LinkToken {
 		/// <summary>
 		/// 発行
 		/// </summary>
-		public void Issue() => throw new NotImplementedException();
+		/// <param name="channelAccessToken">チャンネルアクセストークン</param>
+		/// <param name="userId">ユーザID</param>
+		[Obsolete( "未完成です" , true )]
+		public void Issue( string channelAccessToken , string userId ) { }
 
 	}
 

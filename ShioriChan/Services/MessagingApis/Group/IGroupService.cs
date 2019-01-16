@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ShioriChan.Services.MessagingApis.Group {
 
@@ -8,20 +9,30 @@ namespace ShioriChan.Services.MessagingApis.Group {
 	public interface IGroupService {
 
 		/// <summary>
-		/// グループメンバーのユーザIDを取得する
+		/// グループメンバーのユーザID一覧を取得する
 		/// </summary>
-		/// <returns></returns>
-		IEnumerable<string> GetMemberIds();
+		/// <param name="channelAccessToken">チャンネルアクセストークン</param>
+		/// <param name="groupId">グループID</param>
+		/// <returns>メンバーID一覧</returns>
+		[Obsolete( "未完成です" , true )]
+		IEnumerable<string> GetMemberIds( string channelAccessToken , string groupId );
 
 		/// <summary>
 		/// グループメンバーのプロフィールを取得する
 		/// </summary>
-		void GetProfile();
+		/// <param name="channelAccessToken">チャンネルアクセストークン</param>
+		/// <param name="groupId">グループID</param>
+		/// <param name="userId">ユーザID</param>
+		[Obsolete( "未完成です" , true )]
+		GroupMemberProfile GetProfile( string channelAccessToken , string groupId , string userId );
 
 		/// <summary>
 		/// グループから退出する
 		/// </summary>
-		void Leave();
+		/// <param name="channelAccessToken">チャンネルアクセストークン</param>
+		/// <param name="groupId">グループID</param>
+		[Obsolete( "未完成です" , true )]
+		void Leave( string channelAccessToken , string groupId );
 
 	}
 

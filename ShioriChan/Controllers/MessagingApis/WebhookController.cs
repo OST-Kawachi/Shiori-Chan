@@ -12,9 +12,18 @@ namespace ShioriChan.Controllers.MessagingApis {
 	public class WebhookController : ControllerBase {
 
 		/// <summary>
-		/// 各機能の窓口
+		/// Webhookで送られてくるMessagingApiのパラメータから判断して
+		/// 何のイベントを実行するかを決める窓口
 		/// </summary>
-		private IFeatureFacade featureFacade = new FeatureFacade();
+		private readonly IFeatureFacade featureFacade;
+
+		/// <summary>
+		/// コンストラクタ
+		/// 依存性が挿入されたServiceクラスを取得する
+		/// </summary>
+		/// <param name="featureFacade">何のイベントを実行するかを決める窓口</param>
+		public WebhookController( IFeatureFacade featureFacade )
+			=> this.featureFacade = featureFacade;
 
 		/// <summary>
 		/// テスト用Get

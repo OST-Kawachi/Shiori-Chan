@@ -11,7 +11,14 @@ namespace ShioriChan.Services.Features {
 		/// <summary>
 		/// サンプル用Service
 		/// </summary>
-		private readonly ISampleService sampleService = new SampleService();
+		private readonly ISampleService sampleService;
+
+		/// <summary>
+		/// コンストラクタ
+		/// </summary>
+		/// <param name="service">サンプル用Service</param>
+		public FeatureFacade( ISampleService service )
+			=> this.sampleService = service;
 
 		/// <summary>
 		/// 実行

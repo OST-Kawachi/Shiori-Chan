@@ -10,13 +10,17 @@ namespace ShioriChan.Services.MessagingApis.OAuth {
 		/// <summary>
 		/// 発行
 		/// </summary>
-		public void Issue() => throw new NotImplementedException();
-
+		/// <param name="clientId">チャネルID</param>
+		/// <param name="clientSecret">チャネルシークレット</param>
+		[Obsolete( "未完成です" , true )]
+		public void Issue( string clientId , string clientSecret ) { }
 
 		/// <summary>
 		/// 取りけし
 		/// </summary>
-		public void Revoke() => throw new NotImplementedException();
+		/// <param name="accessToken">チャンネルアクセストークン</param>
+		[Obsolete( "未完成です" , true )]
+		public void Revoke( string accessToken ) { }
 
 	}
 

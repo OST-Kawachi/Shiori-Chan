@@ -3,6 +3,16 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ShioriChan.Services.Features;
+using ShioriChan.Services.Features.Sample;
+using ShioriChan.Services.MessagingApis.Group;
+using ShioriChan.Services.MessagingApis.Messages;
+using ShioriChan.Services.MessagingApis.Messages.Content;
+using ShioriChan.Services.MessagingApis.OAuth;
+using ShioriChan.Services.MessagingApis.OAuth.LinkToken;
+using ShioriChan.Services.MessagingApis.Profile;
+using ShioriChan.Services.MessagingApis.RichMenu;
+using ShioriChan.Services.MessagingApis.TalkRoom;
 
 namespace ShioriChan {
 
@@ -21,15 +31,43 @@ namespace ShioriChan {
 		/// </summary>
 		/// <param name="configuration"></param>
 		public Startup( IConfiguration configuration ) => this.Configuration = configuration;
-		
+
 		/// <summary>
 		/// コンテナにサービスを追加する
 		/// </summary>
-		/// <param name="services"></param>
 		/// <remarks>Runtimeによって呼び出される</remarks>
-		public void ConfigureServices( IServiceCollection services )
-			=> services.AddMvc().SetCompatibilityVersion( CompatibilityVersion.Version_2_1 );
-		
+		/// <param name="services"></param>
+		public void ConfigureServices( IServiceCollection services ) {
+
+			services.AddMvc().SetCompatibilityVersion( CompatibilityVersion.Version_2_1 );
+
+			// Serviceクラスに関して依存関係を挿入
+			// Service自体はシングルトンとして追加
+			{
+
+				// 共通部
+				services.AddSingleton<IFeatureFacade , FeatureFacade>();
+
+				// Features
+				services.AddSingleton<ISampleService , SampleService>();
+
+				// MessagingApis
+				services.AddSingleton<IGroupService , GroupService>();
+				services.AddSingleton<IMessageService , MessageService>();
+				services.AddSingleton<IContentService , ContentService>();
+				services.AddSingleton<IMulticastSender , MulticastSender>();
+				services.AddSingleton<IPushSender , PushSender>();
+				services.AddSingleton<IReplySender , ReplySender>();
+				services.AddSingleton<IChannelAccessTokenService , ChannelAccessTokenService>();
+				services.AddSingleton<ILinkTokenService , LinkTokenService>();
+				services.AddSingleton<IProfileService , ProfileService>();
+				services.AddSingleton<IRichMenuService , RichMenuService>();
+				services.AddSingleton<ITalkRoomService , TalkRoomService>();
+
+			}
+
+		}
+
 		/// <summary>
 		/// HTTPリクエストのパイプラインを構成する
 		/// </summary>

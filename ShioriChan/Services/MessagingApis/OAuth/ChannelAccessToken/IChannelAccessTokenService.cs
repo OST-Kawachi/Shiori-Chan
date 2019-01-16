@@ -1,4 +1,6 @@
-﻿namespace ShioriChan.Services.MessagingApis.OAuth {
+﻿using System;
+
+namespace ShioriChan.Services.MessagingApis.OAuth {
 
 	/// <summary>
 	/// チャンネルアクセストークン発行インタフェース
@@ -8,12 +10,17 @@
 		/// <summary>
 		/// 発行
 		/// </summary>
-		void Issue();
+		/// <param name="clientId">チャネルID</param>
+		/// <param name="clientSecret">チャネルシークレット</param>
+		[Obsolete( "未完成です" , true )]
+		void Issue( string clientId , string clientSecret );
 
 		/// <summary>
 		/// 取り消し
 		/// </summary>
-		void Revoke();
+		/// <param name="accessToken">チャンネルアクセストークン</param>
+		[Obsolete( "未完成です" , true )]
+		void Revoke( string accessToken );
 
 	}
 
