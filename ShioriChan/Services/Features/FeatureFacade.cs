@@ -290,38 +290,204 @@ namespace ShioriChan.Services.Features {
 					string postbackData = firstEvent[ "postback" ][ "data" ].ToString();
 					this.logger.LogInformation( "Postback Data is {postbackData}." , postbackData );
 					switch( postbackData ) {
+
 						case PostbackMainContent:
+							this.logger.LogInformation( "Start Main Content" );
+
+							if( this.IsUnknownUser( userId ) ) {
+								this.logger.LogWarning( "User is Unknown." );
+								return;
+							}
+
+							await this.ReplyContent( parameter );
+
 							break;
+
 						case PostbackMainMap:
+							this.logger.LogInformation( "Start Main Map" );
+
+							if( this.IsUnknownUser( userId ) ) {
+								this.logger.LogWarning( "User is Unknown." );
+								return;
+							}
+
+							await this.ChangeMenuMap( parameter );
+
 							break;
+
 						case PostbackMainRoom:
+							this.logger.LogInformation( "Start Main Room" );
+
+							if( this.IsUnknownUser( userId ) ) {
+								this.logger.LogWarning( "User is Unknown." );
+								return;
+							}
+
+							await this.ChangeMenuRoom( parameter );
+
 							break;
+
 						case PostbackMainAdmin:
+							this.logger.LogInformation( "Start Main Admin" );
+
+							if( this.IsUnknownUser( userId ) ) {
+								this.logger.LogWarning( "User is Unknown." );
+								return;
+							}
+
+							await this.ChangeMenuAdmin( parameter );
+
 							break;
+
 						case PostbackMainSchedule:
+							this.logger.LogInformation( "Start Main Schedule" );
+
+							if( this.IsUnknownUser( userId ) ) {
+								this.logger.LogWarning( "User is Unknown." );
+								return;
+							}
+
+							await this.ChangeMenuSchedule( parameter );
+
 							break;
+
 						case PostbackMapTouristSpot:
+							this.logger.LogInformation( "Start Map Tourist Spot" );
+							await this.ShowTouristShop( parameter );
 							break;
+
 						case PostbackMapHotel:
+							this.logger.LogInformation( "Start Map Hotel" );
+
+							if( this.IsUnknownUser( userId ) ) {
+								this.logger.LogWarning( "User is Unknown." );
+								return;
+							}
+
+							await this.ShowHotel( parameter );
+
 							break;
+
 						case PostbackMapBack:
+							this.logger.LogInformation( "Start Map Back" );
+
+							if( this.IsUnknownUser( userId ) ) {
+								this.logger.LogWarning( "User is Unknown." );
+								return;
+							}
+
+							await this.BackFromMap( parameter );
+
 							break;
+
 						case PostbackScheduleOverall:
+							this.logger.LogInformation( "Start Schedule Overall" );
+
+							if( this.IsUnknownUser( userId ) ) {
+								this.logger.LogWarning( "User is Unknown." );
+								return;
+							}
+
+							await this.WichSchedule( parameter );
+
 							break;
+
 						case PostbackScheduleFirstSchedule:
+							this.logger.LogInformation( "Start Schedule First Schedule" );
+
+							if( this.IsUnknownUser( userId ) ) {
+								this.logger.LogWarning( "User is Unknown." );
+								return;
+							}
+
+							await this.ShowFirstSchedule( parameter );
+
 							break;
+
 						case PostbackScheduleSecondSchedule:
+							this.logger.LogInformation( "Start Schedule Second Schedule" );
+
+							if( this.IsUnknownUser( userId ) ) {
+								this.logger.LogWarning( "User is Unknown." );
+								return;
+							}
+
+							await this.ShowSecondSchedule( parameter );
+
 							break;
+
 						case PostbackScheduleGather:
+							this.logger.LogInformation( "Start Schedule Gather" );
+
+							if( this.IsUnknownUser( userId ) ) {
+								this.logger.LogWarning( "User is Unknown." );
+								return;
+							}
+
+							await this.ShowGather( parameter );
+
 							break;
+
 						case PostbackScheduleParticipant:
+							this.logger.LogInformation( "Start Schedule Participant" );
+
+							if( this.IsUnknownUser( userId ) ) {
+								this.logger.LogWarning( "User is Unknown." );
+								return;
+							}
+
+							await this.ShowParticipant( parameter );
+
 							break;
+
 						case PostbackAdminPush:
+							this.logger.LogInformation( "Start Admin Push" );
+
+							if( this.IsUnknownUser( userId ) ) {
+								this.logger.LogWarning( "User is Unknown." );
+								return;
+							}
+
+							await this.PushLatestMessage( parameter );
+
 							break;
+
 						case PostbackAdminReSchedule:
+							this.logger.LogInformation( "Start Admin Re Schedule" );
+
+							if( this.IsUnknownUser( userId ) ) {
+								this.logger.LogWarning( "User is Unknown." );
+								return;
+							}
+
+							await this.ReSchedule( parameter );
+
 							break;
+
 						case PostbackAdminBack:
+							this.logger.LogInformation( "Start Admin Back" );
+
+							if( this.IsUnknownUser( userId ) ) {
+								this.logger.LogWarning( "User is Unknown." );
+								return;
+							}
+
+							await this.BackFromAdmin( parameter );
+
 							break;
+
+						case PostbackAdminChangePosition:
+							this.logger.LogInformation( "Start Change Position" );
+
+							if( this.IsUnknownUser( userId ) ) {
+								this.logger.LogWarning( "User is Unknown." );
+								return;
+							}
+
+							await this.ShowRandomName( parameter );
+
+							break;
+
 						default:
 							if( postbackData.StartsWith( PostbackSelectedHeadConditions ) ) {
 
@@ -393,7 +559,151 @@ namespace ShioriChan.Services.Features {
 		private async Task RecodeLocation( JToken parameter )
 			// TODO 位置情報の登録
 			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// 連絡先の表示
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task ReplyContent( JToken parameter )
+			// TODO 連絡先の表示
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// 地図メニュー表示
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task ChangeMenuMap( JToken parameter )
+			// TODO 地図メニュー表示
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// 部屋メニュー表示
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task ChangeMenuRoom( JToken parameter )
+			// TODO 部屋メニュー表示
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// 管理メニュー表示
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task ChangeMenuAdmin( JToken parameter )
+			// TODO 管理メニュー表示
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// スケジュールメニュー表示
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task ChangeMenuSchedule( JToken parameter )
+			// TODO スケジュールメニュー表示
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// 観光地情報の表示
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task ShowTouristShop( JToken parameter )
+			// TODO 観光地情報表示
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// ホテル情報の表示
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task ShowHotel( JToken parameter )
+			// TODO ホテル情報の表示
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// マップから戻る
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task BackFromMap( JToken parameter )
+			// TODO マップから戻る
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// 全体スケジュールの表示
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task WichSchedule( JToken parameter )
+			// TODO 全体スケジュールの表示
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// 1日目の全体スケジュール表示
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task ShowFirstSchedule( JToken parameter )
+			// TODO 1日目の全体スケジュール表示
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// 2日目の全体スケジュール表示
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task ShowSecondSchedule( JToken parameter )
+			// TODO 2日目の全体スケジュール表示
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// 集合場所の表示
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task ShowGather( JToken parameter )
+			// TODO 集合場所の表示
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// 参加者の表示
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task ShowParticipant( JToken parameter )
+			// TODO 参加者の表示
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		///スケジュールから戻る
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task BackFromSchedule( JToken parameter )
+			// TODO スケジュールから戻る
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// プッシュ通知
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task PushLatestMessage( JToken parameter )
+			// TODO プッシュ通知
+			=> await this.sampleService.Execute( parameter );
 		
+		/// <summary>
+		/// リスケ
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task ReSchedule( JToken parameter )
+			// TODO リスケ
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// 管理メニューから戻る
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task BackFromAdmin( JToken parameter )
+			// TODO 管理メニューから戻る
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// ランダムに名前を表示
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task ShowRandomName( JToken parameter )
+			// TODO ランダムに名前を表示
+			=> await this.sampleService.Execute( parameter );
+
 	}
 
 }
