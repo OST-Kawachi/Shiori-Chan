@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
-using ShioriChan.Services.Features.Sample;
+using ShioriChan.Services.Features.Samples;
 using System.Threading.Tasks;
 
 namespace ShioriChan.Services.Features {
