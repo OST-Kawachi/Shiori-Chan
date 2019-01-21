@@ -35,19 +35,7 @@ namespace ShioriChan.Controllers.MessagingApis {
 			this.logger = logger;
 			this.featureFacade = featureFacade;
 		}
-
-		/// <summary>
-		/// テスト用Get
-		/// </summary>
-		/// <returns>必ずステータス200を返す</returns>
-		[HttpGet]
-		public async Task<StatusCodeResult> Get() {
-			this.logger.LogTrace( "Start" );
-			await this.featureFacade.Execute( JToken.Parse( "{ \"temp\" : \"temp\" }" ) );
-			this.logger.LogTrace( "End" );
-			return this.Ok();
-		}
-
+		
 		/// <summary>
 		/// Webhookの受け口
 		/// </summary>
