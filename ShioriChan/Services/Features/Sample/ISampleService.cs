@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 namespace ShioriChan.Services.Features.Sample {
 
@@ -12,7 +13,7 @@ namespace ShioriChan.Services.Features.Sample {
 		/// 実行
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		void Execute( JToken parameter );
+		Task Execute( JToken parameter );
 
 	}
 

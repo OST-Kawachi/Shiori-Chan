@@ -7,7 +7,6 @@ using ShioriChan.Services.Features;
 using ShioriChan.Services.Features.Sample;
 using ShioriChan.Services.MessagingApis.Group;
 using ShioriChan.Services.MessagingApis.Messages;
-using ShioriChan.Services.MessagingApis.Messages.Content;
 using ShioriChan.Services.MessagingApis.OAuth;
 using ShioriChan.Services.MessagingApis.OAuth.LinkToken;
 using ShioriChan.Services.MessagingApis.Profile;
@@ -29,14 +28,14 @@ namespace ShioriChan {
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
-		/// <param name="configuration"></param>
+		/// <param name="configuration">Configuration</param>
 		public Startup( IConfiguration configuration ) => this.Configuration = configuration;
 
 		/// <summary>
 		/// コンテナにサービスを追加する
 		/// </summary>
 		/// <remarks>Runtimeによって呼び出される</remarks>
-		/// <param name="services"></param>
+		/// <param name="services">Service</param>
 		public void ConfigureServices( IServiceCollection services ) {
 
 			services.AddMvc().SetCompatibilityVersion( CompatibilityVersion.Version_2_1 );
@@ -54,10 +53,6 @@ namespace ShioriChan {
 				// MessagingApis
 				services.AddSingleton<IGroupService , GroupService>();
 				services.AddSingleton<IMessageService , MessageService>();
-				services.AddSingleton<IContentService , ContentService>();
-				services.AddSingleton<IMulticastSender , MulticastSender>();
-				services.AddSingleton<IPushSender , PushSender>();
-				services.AddSingleton<IReplySender , ReplySender>();
 				services.AddSingleton<IChannelAccessTokenService , ChannelAccessTokenService>();
 				services.AddSingleton<ILinkTokenService , LinkTokenService>();
 				services.AddSingleton<IProfileService , ProfileService>();
