@@ -8,6 +8,7 @@ namespace ShioriChan.Services.Features {
 	/// <summary>
 	/// しおりちゃん固有機能の窓口Interface
 	/// </summary>
+	/// TODO 定数群を別クラスに置きたい
 	public class FeatureFacade : IFeatureFacade {
 		
 		#region イベント種別
@@ -219,6 +220,7 @@ namespace ShioriChan.Services.Features {
 		/// 実行
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
+		/// TODO かなり1メソッドの役割が大きいので細分化したい
 		public async Task Execute( JToken parameter ) {
 			this.logger.LogTrace( "Start" );
 

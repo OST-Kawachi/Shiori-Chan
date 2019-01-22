@@ -44,9 +44,14 @@ namespace ShioriChan.Controllers.MessagingApis {
 		public async Task<StatusCodeResult> Post() {
 			this.logger.LogTrace( "Start" );
 
-			StreamReader streamReader = new StreamReader( this.Request.Body );
-			string request = streamReader.ReadToEnd();
-			this.logger.LogInformation( "Request is {request}." , request );
+			// TODO リクエストボディをJTokenの形で受け取れれば必要ない変換処理
+			string request = null;
+			{
+				using( StreamReader streamReader = new StreamReader( this.Request.Body ) ) {
+					request = streamReader.ReadToEnd();
+				}
+				this.logger.LogInformation( "Request is {request}." , request );
+			}
 
 			await this.featureFacade.Execute( JToken.Parse( request ) );
 
