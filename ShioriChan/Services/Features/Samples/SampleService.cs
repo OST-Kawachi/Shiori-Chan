@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using ShioriChan.Services.MessagingApis.Messages;
-using ShioriChan.Services.MessagingApis.Profile;
-using ShioriChan.Services.MessagingApis.TalkRoom;
+using ShioriChan.Services.MessagingApis.Profiles;
+using ShioriChan.Services.MessagingApis.TalkRooms;
 using System.Threading.Tasks;
 
 namespace ShioriChan.Services.Features.Samples {

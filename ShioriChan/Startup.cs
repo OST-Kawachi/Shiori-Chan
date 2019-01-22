@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShioriChan.Services.Features;
-using ShioriChan.Services.Features.Sample;
-using ShioriChan.Services.MessagingApis.Group;
+using ShioriChan.Services.Features.Samples;
+using ShioriChan.Services.MessagingApis.Groups;
 using ShioriChan.Services.MessagingApis.Messages;
-using ShioriChan.Services.MessagingApis.OAuth;
-using ShioriChan.Services.MessagingApis.OAuth.LinkToken;
-using ShioriChan.Services.MessagingApis.Profile;
-using ShioriChan.Services.MessagingApis.RichMenu;
-using ShioriChan.Services.MessagingApis.TalkRoom;
+using ShioriChan.Services.MessagingApis.OAuthes.ChannelAccessTokens;
+using ShioriChan.Services.MessagingApis.OAuthes.LinkTokens;
+using ShioriChan.Services.MessagingApis.Profiles;
+using ShioriChan.Services.MessagingApis.RichMenus;
+using ShioriChan.Services.MessagingApis.TalkRooms;
 
 namespace ShioriChan {
 

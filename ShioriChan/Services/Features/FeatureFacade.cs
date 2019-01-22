@@ -140,6 +140,11 @@ namespace ShioriChan.Services.Features {
 		private const string PostbackScheduleParticipant = "schedule-participant";
 
 		/// <summary>
+		/// ポストバックデータ - スケジュール - 戻る
+		/// </summary>
+		private const string PostbackScheduleBack = "schedule-back";
+
+		/// <summary>
 		/// ポストバックデータ - 管理 - 通知
 		/// </summary>
 		private const string PostbackAdminPush = "push";
@@ -257,6 +262,9 @@ namespace ShioriChan.Services.Features {
 							string message = firstEvent[ "message" ][ "text" ].ToString();
 							this.logger.LogInformation( "Message is {message}." , message );
 							if( message.Contains( ResetMessage ) ) {
+								this.logger.LogInformation( "Start Reset Exist Users" );
+
+								await this.ResetExistUser( parameter );
 
 							}
 							else if(
@@ -264,13 +272,18 @@ namespace ShioriChan.Services.Features {
 								message.Contains( ExistMessage2 ) ||
 								message.Contains( ExistMessage3 )
 							) {
+								this.logger.LogInformation( "Start Exist User" );
+
+								await this.ExistUser( parameter );
 
 							}
 							else if( message.Contains( ExistList ) ) {
+								this.logger.LogInformation( "Start Show Exist Users" );
+
+								await this.ShowExistUsers( parameter );
 
 							}
-
-
+							
 							break;
 
 						case MessageTypeLocation:
@@ -296,7 +309,7 @@ namespace ShioriChan.Services.Features {
 
 							if( this.IsUnknownUser( userId ) ) {
 								this.logger.LogWarning( "User is Unknown." );
-								return;
+								break;
 							}
 
 							await this.ReplyContent( parameter );
@@ -308,7 +321,7 @@ namespace ShioriChan.Services.Features {
 
 							if( this.IsUnknownUser( userId ) ) {
 								this.logger.LogWarning( "User is Unknown." );
-								return;
+								break;
 							}
 
 							await this.ChangeMenuMap( parameter );
@@ -320,10 +333,10 @@ namespace ShioriChan.Services.Features {
 
 							if( this.IsUnknownUser( userId ) ) {
 								this.logger.LogWarning( "User is Unknown." );
-								return;
+								break;
 							}
 
-							await this.ChangeMenuRoom( parameter );
+							await this.ShowRoomMember( parameter );
 
 							break;
 
@@ -332,7 +345,7 @@ namespace ShioriChan.Services.Features {
 
 							if( this.IsUnknownUser( userId ) ) {
 								this.logger.LogWarning( "User is Unknown." );
-								return;
+								break;
 							}
 
 							await this.ChangeMenuAdmin( parameter );
@@ -344,7 +357,7 @@ namespace ShioriChan.Services.Features {
 
 							if( this.IsUnknownUser( userId ) ) {
 								this.logger.LogWarning( "User is Unknown." );
-								return;
+								break;
 							}
 
 							await this.ChangeMenuSchedule( parameter );
@@ -361,7 +374,7 @@ namespace ShioriChan.Services.Features {
 
 							if( this.IsUnknownUser( userId ) ) {
 								this.logger.LogWarning( "User is Unknown." );
-								return;
+								break;
 							}
 
 							await this.ShowHotel( parameter );
@@ -373,7 +386,7 @@ namespace ShioriChan.Services.Features {
 
 							if( this.IsUnknownUser( userId ) ) {
 								this.logger.LogWarning( "User is Unknown." );
-								return;
+								break;
 							}
 
 							await this.BackFromMap( parameter );
@@ -385,7 +398,7 @@ namespace ShioriChan.Services.Features {
 
 							if( this.IsUnknownUser( userId ) ) {
 								this.logger.LogWarning( "User is Unknown." );
-								return;
+								break;
 							}
 
 							await this.WichSchedule( parameter );
@@ -397,7 +410,7 @@ namespace ShioriChan.Services.Features {
 
 							if( this.IsUnknownUser( userId ) ) {
 								this.logger.LogWarning( "User is Unknown." );
-								return;
+								break;
 							}
 
 							await this.ShowFirstSchedule( parameter );
@@ -409,7 +422,7 @@ namespace ShioriChan.Services.Features {
 
 							if( this.IsUnknownUser( userId ) ) {
 								this.logger.LogWarning( "User is Unknown." );
-								return;
+								break;
 							}
 
 							await this.ShowSecondSchedule( parameter );
@@ -421,7 +434,7 @@ namespace ShioriChan.Services.Features {
 
 							if( this.IsUnknownUser( userId ) ) {
 								this.logger.LogWarning( "User is Unknown." );
-								return;
+								break;
 							}
 
 							await this.ShowGather( parameter );
@@ -433,10 +446,22 @@ namespace ShioriChan.Services.Features {
 
 							if( this.IsUnknownUser( userId ) ) {
 								this.logger.LogWarning( "User is Unknown." );
-								return;
+								break;
 							}
 
 							await this.ShowParticipant( parameter );
+
+							break;
+
+						case PostbackScheduleBack:
+							this.logger.LogInformation( "Start Schedule Back" );
+
+							if( this.IsUnknownUser( userId ) ) {
+								this.logger.LogWarning( "User is Unknown." );
+								break;
+							}
+
+							await this.BackFromSchedule( parameter );
 
 							break;
 
@@ -445,7 +470,7 @@ namespace ShioriChan.Services.Features {
 
 							if( this.IsUnknownUser( userId ) ) {
 								this.logger.LogWarning( "User is Unknown." );
-								return;
+								break;
 							}
 
 							await this.PushLatestMessage( parameter );
@@ -457,7 +482,7 @@ namespace ShioriChan.Services.Features {
 
 							if( this.IsUnknownUser( userId ) ) {
 								this.logger.LogWarning( "User is Unknown." );
-								return;
+								break;
 							}
 
 							await this.ReSchedule( parameter );
@@ -469,7 +494,7 @@ namespace ShioriChan.Services.Features {
 
 							if( this.IsUnknownUser( userId ) ) {
 								this.logger.LogWarning( "User is Unknown." );
-								return;
+								break;
 							}
 
 							await this.BackFromAdmin( parameter );
@@ -481,7 +506,7 @@ namespace ShioriChan.Services.Features {
 
 							if( this.IsUnknownUser( userId ) ) {
 								this.logger.LogWarning( "User is Unknown." );
-								return;
+								break;
 							}
 
 							await this.ShowRandomName( parameter );
@@ -490,18 +515,48 @@ namespace ShioriChan.Services.Features {
 
 						default:
 							if( postbackData.StartsWith( PostbackSelectedHeadConditions ) ) {
+								this.logger.LogInformation( "Start Select Name" );
 
+								await this.SelectName( parameter );
+								
 							}
 							else if( postbackData.StartsWith( PostbackDecideUserConditions ) ) {
+								this.logger.LogInformation( "Start Decide User" );
+								
+								await this.DecideUser( parameter );
 
 							}
 							else if( postbackData.StartsWith( PostbackChangeHasKeyConditions ) ) {
+								this.logger.LogInformation( "Start Change Has Key User" );
+
+								if( this.IsUnknownUser( userId ) ) {
+									this.logger.LogWarning( "User is Unknown." );
+									break;
+								}
+								
+								await this.ChangeHavingKeyUser( parameter );
 
 							}
 							else if( postbackData.StartsWith( PostbackDecisionPushConditions ) ) {
+								this.logger.LogInformation( "Start Decision Push" );
+
+								if( this.IsUnknownUser( userId ) ) {
+									this.logger.LogWarning( "User is Unknown." );
+									break;
+								}
+
+								await this.DecidePush( parameter );
 
 							}
 							else if( postbackData.StartsWith( PostbackUpdateScheduleConditions ) ) {
+								this.logger.LogInformation( "Start Update Schedule" );
+
+								if( this.IsUnknownUser( userId ) ) {
+									this.logger.LogWarning( "User is Unknown." );
+									break;
+								}
+
+								await this.UpdateSchedule( parameter );
 
 							}
 							else {
@@ -577,11 +632,11 @@ namespace ShioriChan.Services.Features {
 			=> await this.sampleService.Execute( parameter );
 
 		/// <summary>
-		/// 部屋メニュー表示
+		/// 同じ部屋のメンバー表示
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		private async Task ChangeMenuRoom( JToken parameter )
-			// TODO 部屋メニュー表示
+		private async Task ShowRoomMember( JToken parameter )
+			// TODO 同じ部屋のメンバー表示
 			=> await this.sampleService.Execute( parameter );
 
 		/// <summary>
@@ -702,6 +757,71 @@ namespace ShioriChan.Services.Features {
 		/// <param name="parameter">パラメータ</param>
 		private async Task ShowRandomName( JToken parameter )
 			// TODO ランダムに名前を表示
+			=> await this.sampleService.Execute( parameter );
+
+
+		/// <summary>
+		/// 名前を選択する
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task SelectName( JToken parameter )
+			// TODO 名前を選択する
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// 名前を決定する
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task DecideUser( JToken parameter )
+			// TODO 名前を決定する
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// 鍵を持っている人を変更する
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task ChangeHavingKeyUser( JToken parameter )
+			// TODO 鍵を持っている人を変更する
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// プッシュ通知を送信する
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task DecidePush( JToken parameter )
+			// TODO プッシュ通知を送信する
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// スケジュールを変更
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task UpdateSchedule( JToken parameter )
+			// TODO スケジュールを変更
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// 点呼リセット
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task ResetExistUser( JToken parameter )
+			// TODO 点呼リセット
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// 点呼
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task ExistUser( JToken parameter )
+			// TODO 点呼
+			=> await this.sampleService.Execute( parameter );
+
+		/// <summary>
+		/// 点呼一覧表示
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		private async Task ShowExistUsers( JToken parameter )
+			// TODO 点呼一覧表示
 			=> await this.sampleService.Execute( parameter );
 
 	}
