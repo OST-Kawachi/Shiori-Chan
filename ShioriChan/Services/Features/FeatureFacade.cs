@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using ShioriChan.Services.Features.Rooms;
 using ShioriChan.Services.Features.Samples;
 using System.Threading.Tasks;
 
@@ -204,6 +205,11 @@ namespace ShioriChan.Services.Features {
 		/// </summary>
 		private readonly ISampleService sampleService;
 
+		/// <summary>
+		/// 部屋情報Service
+		/// </summary>
+		private readonly IRoomService roomService;
+
 		#endregion
 
 		/// <summary>
@@ -211,9 +217,14 @@ namespace ShioriChan.Services.Features {
 		/// </summary>
 		/// <param name="logger">ログ</param>
 		/// <param name="service">サンプル用Service</param>
-		public FeatureFacade( ILogger<FeatureFacade> logger , ISampleService service ) {
+		public FeatureFacade(
+			ILogger<FeatureFacade> logger , 
+			ISampleService sampleService ,
+			IRoomService roomService 
+		) {
 			this.logger = logger;
-			this.sampleService = service;
+			this.sampleService = sampleService;
+			this.roomService = roomService;
 		}
 		
 		/// <summary>
@@ -284,6 +295,11 @@ namespace ShioriChan.Services.Features {
 
 								await this.ShowExistUsers( parameter );
 
+							}
+							// TODO 仮
+							else if( message.Contains( "メンバー" ) ) {
+								this.logger.LogInformation( "Temp" );
+								await this.ShowRoomMember( parameter );
 							}
 							
 							break;
@@ -638,8 +654,7 @@ namespace ShioriChan.Services.Features {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		private async Task ShowRoomMember( JToken parameter )
-			// TODO 同じ部屋のメンバー表示
-			=> await this.sampleService.Execute( parameter );
+			=> await this.roomService.ShowRoomMember( parameter );
 
 		/// <summary>
 		/// 管理メニュー表示
@@ -783,8 +798,7 @@ namespace ShioriChan.Services.Features {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		private async Task ChangeHavingKeyUser( JToken parameter )
-			// TODO 鍵を持っている人を変更する
-			=> await this.sampleService.Execute( parameter );
+			=> await this.roomService.ChangeHavingKeyUser( parameter );
 
 		/// <summary>
 		/// プッシュ通知を送信する
