@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using ShioriChan.Services.MessagingApis.Messages;
+using ShioriChan.Services.MessagingApis.Messages.Builders;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -119,7 +120,7 @@ namespace ShioriChan.Services.Features.Rooms {
 			string havingKeyUserName = "";
 
 			// リプライ送信
-			this.messageService.CreateMessageBuilder()
+			await this.messageService.CreateMessageBuilder()
 				// 1通目
 				.AddMessage(
 					$"{myRoomNumber}号室の情報です。\n" +
@@ -129,7 +130,7 @@ namespace ShioriChan.Services.Features.Rooms {
 				// 2通目
 				.AddTemplate( $"{myRoomNumber}号室について" )
 				.UseCarouselTemplateMessageBuilder()
-				.AddColumn("aaa")
+				.AddColumn("")
 				.AddColumn("aaa")
 				.BuildTemplate()
 				.BuildMessage()
@@ -143,7 +144,8 @@ namespace ShioriChan.Services.Features.Rooms {
 		/// 鍵を持っているメンバーを変更する
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public async Task ShowRoomMember( JToken parameter ) { }
+		public async Task ShowRoomMember( JToken parameter ) {
+		}
 		
 	}
 

@@ -32,7 +32,7 @@ namespace ShioriChan.Services.MessagingApis.Messages {
 		/// メッセージBuilder作成
 		/// </summary>
 		/// <returns>メッセージBuilder</returns>
-		public MessageBuilder CreateMessageBuilder() {
+		public IAddOnlyMessageBuilder CreateMessageBuilder() {
 			string channelAccessToken = "";
 			return MessageBuilder.CreateMessageBuilder( channelAccessToken );
 		}

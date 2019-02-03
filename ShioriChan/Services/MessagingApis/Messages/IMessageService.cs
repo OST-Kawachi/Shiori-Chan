@@ -12,7 +12,7 @@ namespace ShioriChan.Services.MessagingApis.Messages {
 		/// メッセージBuilder作成
 		/// </summary>
 		/// <returns>メッセージBuilder</returns>
-		MessageBuilder CreateMessageBuilder();
+		IAddOnlyMessageBuilder CreateMessageBuilder();
 		
 		/// <summary>
 		/// コンテンツの取得

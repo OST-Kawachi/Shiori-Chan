@@ -1,38 +1,54 @@
-﻿namespace ShioriChan.Services.MessagingApis.Messages.Builders.Templates {
-	/// <summary>
-	/// テンプレート用Builder 
-	/// </summary>
-	public class TemplateMessageBuilder {
+﻿namespace ShioriChan.Services.MessagingApis.Messages.Builders {
+
+	public partial class MessageBuilder {
 
 		/// <summary>
-		/// ボタンテンプレートを使用する
+		/// テンプレートMessageBuilder
+		/// 直接インスタンス生成してほしくないのでprivateとする
 		/// </summary>
-		/// <param name="text">テキスト</param>
-		/// <returns>ボタンテンプレートBuilder</returns>
-		public ButtonTemplateMessageBuilder UseButtonTemplate( string text )
-			=> new ButtonTemplateMessageBuilder();
+		private class TemplateMessageBuilder : ISelectOnlyTemplateMessageBuilder {
 
-		/// <summary>
-		/// 確認テンプレートを使用する
-		/// </summary>
-		/// <param name="text">テキスト</param>
-		/// <returns>確認テンプレートBuilder</returns>
-		public ConfirmTemplateMessageBuilder UseConfirmTemplate( string text )
-			=> new ConfirmTemplateMessageBuilder();
+			/// <summary>
+			/// 送信用パラメータ
+			/// </summary>
+			private readonly MessageParameter parameter;
 
-		/// <summary>
-		/// カルーセルテンプレートを使用する
-		/// </summary>
-		/// <returns>カルーセルテンプレートBuilder </returns>
-		public CarouselTemplateMessageBuilder UseCarouselTemplateMessageBuilder()
-			=> new CarouselTemplateMessageBuilder();
+			/// <summary>
+			/// コンストラクタ
+			/// </summary>
+			/// <param name="parameter">送信用パラメータ</param>
+			public TemplateMessageBuilder( MessageParameter parameter ) => this.parameter = parameter;
 
-		/// <summary>
-		/// 画像カルーセルテンプレートを使用する
-		/// </summary>
-		/// <returns>画像カルーセルテンプレートBuilder</returns>
-		public ImageCarouselTemplateMessageBuilder UseImageCarouselTemplateMessageBuilder()
-			=> new ImageCarouselTemplateMessageBuilder();
+			/// <summary>
+			/// ボタンテンプレートを使用する
+			/// </summary>
+			/// <param name="text">テキスト</param>
+			/// <returns>ボタンテンプレートBuilder</returns>
+			public IButtonTemplateMessageBuilder UseButtonTemplate( string text )
+				=> new ButtonTemplateMessageBuilder( this.parameter );
+
+			/// <summary>
+			/// 確認テンプレートを使用する
+			/// </summary>
+			/// <param name="text">テキスト</param>
+			/// <returns>確認テンプレートBuilder</returns>
+			public IConfirmTemplateMessageBuilder UseConfirmTemplate( string text )
+				=> new ConfirmTemplateMessageBuilder( this.parameter );
+
+			/// <summary>
+			/// カルーセルテンプレートを使用する
+			/// </summary>
+			/// <returns>カルーセルテンプレートBuilder </returns>
+			public IAddAndSetOnlyCarouselTemplateMessageBuilder UseCarouselTemplateMessageBuilder()
+				=> new CarouselTemplateMessageBuilder( this.parameter );
+
+			/// <summary>
+			/// 画像カルーセルテンプレートを使用する
+			/// </summary>
+			/// <returns>画像カルーセルテンプレートBuilder</returns>
+			public IAddColumnOnlyImageCarouselTemplateMessageBuilder UseImageCarouselTemplateMessageBuilder()
+				=> new ImageCarouselTemplateMessageBuilder( this.parameter );
+		}
 
 	}
 
