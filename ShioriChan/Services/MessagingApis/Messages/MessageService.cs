@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using ShioriChan.Services.MessagingApis.Messages.Builders;
+using ShioriChan.Services.MessagingApis.Messages.BuilderFactories;
 
 namespace ShioriChan.Services.MessagingApis.Messages {
 
@@ -34,7 +34,7 @@ namespace ShioriChan.Services.MessagingApis.Messages {
 		/// <returns>メッセージBuilder</returns>
 		public IAddOnlyMessageBuilder CreateMessageBuilder() {
 			string channelAccessToken = "";
-			return MessageBuilder.CreateMessageBuilder( channelAccessToken );
+			return MessageBuilderFactory.CreateMessageBuilder( channelAccessToken );
 		}
 		
 		/// <summary>

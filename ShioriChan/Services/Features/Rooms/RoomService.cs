@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using ShioriChan.Services.MessagingApis.Messages;
-using ShioriChan.Services.MessagingApis.Messages.Builders;
-using ShioriChan.Services.MessagingApis.Messages.Builders.Templates.Carousels;
+using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.QuickReplies;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

@@ -1,4 +1,4 @@
-﻿using ShioriChan.Services.MessagingApis.Messages.Builders;
+﻿using ShioriChan.Services.MessagingApis.Messages.BuilderFactories;
 using System.Threading.Tasks;
 
 namespace ShioriChan.Services.MessagingApis.Messages {
