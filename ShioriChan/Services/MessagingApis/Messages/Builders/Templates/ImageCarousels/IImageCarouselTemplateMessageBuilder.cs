@@ -1,4 +1,4 @@
-﻿namespace ShioriChan.Services.MessagingApis.Messages.Builders {
+﻿namespace ShioriChan.Services.MessagingApis.Messages.Builders.Templates.ImageCarousels {
 
 	/// <summary>
 	/// 画像カルーセルテンプレートを使用する

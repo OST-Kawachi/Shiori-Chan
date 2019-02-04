@@ -1,4 +1,6 @@
-﻿namespace ShioriChan.Services.MessagingApis.Messages.Builders {
+﻿using ShioriChan.Services.MessagingApis.Messages.Builders.Templates.Carousels;
+
+namespace ShioriChan.Services.MessagingApis.Messages.Builders {
 
 	public partial class MessageBuilder {
 

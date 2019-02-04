@@ -1,4 +1,5 @@
 ﻿
+using ShioriChan.Services.MessagingApis.Messages.Senders;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

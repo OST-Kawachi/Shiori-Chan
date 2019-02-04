@@ -1,4 +1,6 @@
-﻿namespace ShioriChan.Services.MessagingApis.Messages.Builders {
+﻿using ShioriChan.Services.MessagingApis.Messages.Builders.Templates.Buttons;
+
+namespace ShioriChan.Services.MessagingApis.Messages.Builders {
 
 	public partial class MessageBuilder {
 
@@ -10,7 +12,7 @@
 			/// <summary>
 			/// 送信パラメータ
 			/// </summary>
-			private MessageParameter parameter;
+			private readonly MessageParameter parameter;
 
 			/// <summary>
 			/// コンストラクタ

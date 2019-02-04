@@ -1,4 +1,4 @@
-﻿namespace ShioriChan.Services.MessagingApis.Messages.Builders {
+﻿namespace ShioriChan.Services.MessagingApis.Messages.Builders.Templates.ImageCarousels {
 
 	public interface IAddColumnOnlyImageCarouselTemplateMessageBuilder {
 

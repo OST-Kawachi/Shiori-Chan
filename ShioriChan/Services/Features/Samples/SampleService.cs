@@ -71,12 +71,7 @@ namespace ShioriChan.Services.Features.Samples {
 			}
 
 			string channelAccessToken = "1gDbkN0BwFl3S6D30NTO5NdhbmmwvIwBEcdHI7aOLgJsT3ZBNDI/N9rVCAscube+JJCy2VJTf4C9ZRPBOv/4rj91pfS7LFHEy4FoWWXp3uN9WOWydouIcNnR4XWjwN2dtCkJf4rhsBUCp5iUcYS0NQdB04t89/1O/w1cDnyilFU=";
-
-			await this.messageService
-				.SendReply(
-					replyToken
-				);
-
+			
 			this.logger.LogTrace( "End" );
 		}
 

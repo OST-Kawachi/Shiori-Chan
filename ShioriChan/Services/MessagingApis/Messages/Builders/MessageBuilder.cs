@@ -1,4 +1,7 @@
-﻿namespace ShioriChan.Services.MessagingApis.Messages.Builders {
+﻿using ShioriChan.Services.MessagingApis.Messages.Builders.Templates;
+using ShioriChan.Services.MessagingApis.Messages.Senders;
+
+namespace ShioriChan.Services.MessagingApis.Messages.Builders {
 
 	/// <summary>
 	/// メッセージBuilder

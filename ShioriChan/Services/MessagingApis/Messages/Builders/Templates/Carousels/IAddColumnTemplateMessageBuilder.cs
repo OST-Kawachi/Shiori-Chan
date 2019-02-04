@@ -1,4 +1,5 @@
-﻿namespace ShioriChan.Services.MessagingApis.Messages.Builders {
+﻿namespace ShioriChan.Services.MessagingApis.Messages.Builders.Templates.Carousels {
+
 	public interface IAddColumnTemplateMessageBuilder {
 
 		/// <summary>

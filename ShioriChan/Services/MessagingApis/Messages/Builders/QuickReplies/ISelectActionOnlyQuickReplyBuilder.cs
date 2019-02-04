@@ -1,4 +1,5 @@
 ﻿namespace ShioriChan.Services.MessagingApis.Messages.Builders {
+
 	/// <summary>
 	/// アクションの選択のみできるQuickReplyBuilder
 	/// </summary>
