@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using ShioriChan.Services.MessagingApis.Messages;
 using ShioriChan.Services.MessagingApis.Messages.Builders;
+using ShioriChan.Services.MessagingApis.Messages.Builders.Templates.Carousels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -73,7 +74,7 @@ namespace ShioriChan.Services.Features.Rooms {
 		/// </summary>
 		/// <param name="roomNumber">部屋番号</param>
 		/// <returns>指定した部屋番号のメンバー一覧</returns>
-		private IEnumerable<User> GetRoomMembers( string roomNumber ) {
+		private List<User> GetRoomMembers( string roomNumber ) {
 			// TODO 仮　実際はDBより取得
 
 			List<User> members = new List<User>();
@@ -112,7 +113,7 @@ namespace ShioriChan.Services.Features.Rooms {
 				return;
 			}
 
-			IEnumerable<User> members = this.GetRoomMembers( myRoomNumber );
+			List<User> members = this.GetRoomMembers( myRoomNumber );
 
 			// メンバー一覧にフロントを追加
 
@@ -120,24 +121,48 @@ namespace ShioriChan.Services.Features.Rooms {
 			string havingKeyUserName = "";
 
 			// リプライ送信
-			await this.messageService.CreateMessageBuilder()
-				// 1通目
+			IAddOnlyQuickReplyBuilder quickReplyBuilder = this.messageService.CreateMessageBuilder()
 				.AddMessage(
 					$"{myRoomNumber}号室の情報です。\n" +
 					$"今鍵を持っているのは{havingKeyUserName}です！\n" +
 					"下のボタンでいつでも鍵を持っている人を切り替えれます！"
 				)
-				// 2通目
-				.AddTemplate( $"{myRoomNumber}号室について" )
-				.UseCarouselTemplateMessageBuilder()
-				.AddColumn("")
-				.AddColumn("aaa")
-				.BuildTemplate()
+
+				// TODO 仮 とりあえずtemplateが完成するまではQuickReplyで代用
+				.AddMessage(
+					$"{myRoomNumber}号室について\n" +
+					$"{havingKeyUserName}がカギを持ってます"
+				)
+				.AddQuickReply();
+
+			IQuickReplyBuilder buildableQuickReplyBuilder = null;
+			foreach( User member in members ) {
+				// 初回のみビルドできるインタフェースに変更する
+				if( buildableQuickReplyBuilder is null ) {
+					buildableQuickReplyBuilder = quickReplyBuilder.AddItem( "" ).UsePostbackAction(
+						member.Name ,
+						"changeHasKey=" + member.Seq + "&roomNumber=" + myRoomNumber ,
+						member.Name + "がカギを持ってます"
+					);
+				}
+				// 2回目以降はインスタンスを上書きしていく
+				// TODO 上書きする必要があるのかどうか未確認
+				else {
+					buildableQuickReplyBuilder = buildableQuickReplyBuilder.AddItem("").UsePostbackAction(
+						member.Name ,
+						"changeHasKey=" + member.Seq + "&roomNumber=" + myRoomNumber ,
+						member.Name + "がカギを持ってます"
+					);
+				}
+			}
+			await buildableQuickReplyBuilder
+				.BuildQuickReply()
 				.BuildMessage()
 				.Reply( replyToken );
 			
 			this.logger.LogTrace( "End" );
 			return;
+
 		}
 
 		/// <summary>

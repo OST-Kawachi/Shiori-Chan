@@ -1,4 +1,5 @@
-﻿using ShioriChan.Services.MessagingApis.Messages.Builders.Templates;
+﻿using ShioriChan.Services.MessagingApis.Messages.Builders.Imagemaps;
+using ShioriChan.Services.MessagingApis.Messages.Builders.Templates;
 
 namespace ShioriChan.Services.MessagingApis.Messages.Builders {
 

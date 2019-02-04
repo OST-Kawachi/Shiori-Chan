@@ -1,4 +1,4 @@
-﻿namespace ShioriChan.Services.MessagingApis.Messages.Builders {
+﻿namespace ShioriChan.Services.MessagingApis.Messages.Builders.Imagemaps {
 
 	/// <summary>
 	/// イメージマップで動画再生後にラベルを表示できるMessageBuilder

@@ -13,7 +13,6 @@ namespace ShioriChan.Services.MessagingApis.Messages.Builders {
 		/// <returns>Item追加のみができるQuickReplyBuilder</returns>
 		IAddOnlyQuickReplyBuilder AddQuickReply();
 
-
 		/// <summary>
 		/// メッセージのBuild
 		/// </summary>

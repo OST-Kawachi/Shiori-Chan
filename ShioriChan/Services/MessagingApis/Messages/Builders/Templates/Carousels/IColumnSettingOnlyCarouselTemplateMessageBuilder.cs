@@ -34,6 +34,7 @@
 		/// </summary>
 		/// <returns>ビルド可能なメッセージBuilder</returns>
 		IMessageBuilder BuildTemplate();
+
 	}
 
 }
