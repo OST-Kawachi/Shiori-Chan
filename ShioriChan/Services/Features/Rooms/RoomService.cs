@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using ShioriChan.Services.MessagingApis.Messages;
-using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.QuickReplies;
+using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.QuickReplies;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -169,6 +169,7 @@ namespace ShioriChan.Services.Features.Rooms {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		public async Task ShowRoomMember( JToken parameter ) {
+			
 		}
 		
 	}

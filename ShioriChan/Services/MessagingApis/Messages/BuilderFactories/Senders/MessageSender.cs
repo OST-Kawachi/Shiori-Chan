@@ -1,15 +1,14 @@
 ﻿
-using ShioriChan.Services.MessagingApis.Messages.Senders;
+using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Senders;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
-
 	public static partial class MessageBuilderFactory {
 
 		/// <summary>
 		/// MessageSender
-		/// 実装は隠したいのでprivateとする
+		/// MessageBuilderFactory内でしか使わないのでprivateとする
 		/// </summary>
 		private class MessageSender : IMessageSender {
 
@@ -124,6 +123,4 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 		}
 
 	}
-
-
 }

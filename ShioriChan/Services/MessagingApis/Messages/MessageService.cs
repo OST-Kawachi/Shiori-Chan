@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ShioriChan.Services.MessagingApis.Messages.BuilderFactories;
+using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders;
 
 namespace ShioriChan.Services.MessagingApis.Messages {
 

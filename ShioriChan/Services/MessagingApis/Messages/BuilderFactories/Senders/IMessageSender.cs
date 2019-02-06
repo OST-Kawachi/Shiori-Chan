@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ShioriChan.Services.MessagingApis.Messages.Senders {
+namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Senders {
 
 	/// <summary>
 	/// MessageSender

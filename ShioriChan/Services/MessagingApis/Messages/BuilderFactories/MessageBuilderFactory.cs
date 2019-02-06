@@ -1,7 +1,10 @@
-﻿using ShioriChan.Services.MessagingApis.Messages.BuilderFactories;
+﻿using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders;
 
 namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 
+	/// <summary>
+	/// メッセージBuilderの生成クラス
+	/// </summary>
 	public static partial class MessageBuilderFactory {
 
 		/// <summary>
