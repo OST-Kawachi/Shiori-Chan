@@ -3,28 +3,28 @@
 	/// <summary>
 	/// 任意項目について設定可能なQuickReply用Builder
 	/// </summary>
-	public interface ISettableDatepickerActionQuickReplyBuilder : IQuickReplyBuilder {
+	public interface ISettableDatepickerActionOfQuickReply : IBuildOrAddItemOfQuickReply {
 
 		/// <summary>
 		/// 日付または時刻の初期値設定
 		/// </summary>
 		/// <param name="initial">日付または時刻の初期値</param>
 		/// <returns>任意項目について設定可能なQuickReply用Builder</returns>
-		ISettableDatepickerActionQuickReplyBuilder SetInitial( string initial );
+		ISettableDatepickerActionOfQuickReply SetInitial( string initial );
 
 		/// <summary>
 		/// 選択可能な日付または時刻の最大値設定
 		/// </summary>
 		/// <param name="max">選択可能な日付または時刻の最大値</param>
 		/// <returns>任意項目について設定可能なQuickReply用Builder</returns>
-		ISettableDatepickerActionQuickReplyBuilder SetMax( string max );
+		ISettableDatepickerActionOfQuickReply SetMax( string max );
 
 		/// <summary>
 		/// 選択可能な日付または時刻の最小値設定
 		/// </summary>
 		/// <param name="min">選択可能な日付または時刻の最小値</param>
 		/// <returns>任意項目について設定可能なQuickReply用Builder</returns>
-		ISettableDatepickerActionQuickReplyBuilder SetMin( string min );
+		ISettableDatepickerActionOfQuickReply SetMin( string min );
 
 	}
 

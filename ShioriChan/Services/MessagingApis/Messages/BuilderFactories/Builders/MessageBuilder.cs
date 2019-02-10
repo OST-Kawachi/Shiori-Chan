@@ -11,7 +11,11 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 		/// メッセージBuilder
 		/// MessageBuilderFactory内でしか使わないのでprivateとする
 		/// </summary>
-		private class MessageBuilder : IMessageBuilder, IBuildOnlyMessageBuilder, ISettableVideoImagemapMessageBuilder, ISettableExternalLinkImageMapMessageBuilder {
+		private class MessageBuilder : 
+			IMessageBuilder , 
+			IBuildOnlyOfMessageBuilder , 
+			ISettableVideoOfImagemapMessager , 
+			ISettableExternalLinkOfImageMapMessage {
 
 			/// <summary>
 			/// 送信用Parameter
@@ -29,7 +33,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// クイックリプライ追加
 			/// </summary>
 			/// <returns>Item追加のみができるQuickReplyBuilder</returns>
-			public IAddOnlyQuickReplyBuilder AddQuickReply()
+			public IAddOnlyItemOfQuickReply AddQuickReply()
 				=> new QuickReplyBuilder( this.parameter );
 
 			/// <summary>
@@ -100,7 +104,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// <param name="baseSizeWidth">基本画像の幅</param>
 			/// <param name="baseSizeHeight">基本画像の高さ</param>
 			/// <returns>ビルド可能でイメージマップで動画を再生できる自身の子クラス</returns>
-			public ISettableVideoImagemapMessageBuilder AddImagemap(
+			public ISettableVideoOfImagemapMessager AddImagemap(
 				string baseUrl ,
 				string altText ,
 				int baseSizeWidth ,
@@ -118,7 +122,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// <param name="areaWidth">動画領域の幅</param>
 			/// <param name="areaHeight">動画領域の高さ</param>
 			/// <returns>イメージマップで動画再生後にラベルを表示できるMessageBuilder</returns>
-			public ISettableExternalLinkImageMapMessageBuilder SetVideo(
+			public ISettableExternalLinkOfImageMapMessage SetVideo(
 				string originalContentUrl ,
 				string previewImageUrl ,
 				int areaX ,
@@ -143,7 +147,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// <param name="altText">代替テキスト</param>
 			/// <param name="templateBuilder">テンプレートBuilder</param>
 			/// <returns>テンプレート選択のみ可能なTemplateBuilder</returns>
-			public ISelectOnlyTemplateMessageBuilder AddTemplate( string altText )
+			public ISelectOnlyTemplate AddTemplate( string altText )
 				=> new TemplateMessageBuilder( this.parameter );
 
 			/// <summary>

@@ -8,7 +8,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 		/// Imageカルーセル用MessageBuilder
 		/// MessageBuilderFactory内でしか使わないのでprivateとする
 		/// </summary>
-		private class ImageCarouselTemplateMessageBuilder : IImageCarouselTemplateMessageBuilder {
+		private class ImageCarouselTemplateMessageBuilder : IBuildOrAddColumnOfImageCarouselTemplate {
 
 			/// <summary>
 			/// 送信パラメータ
@@ -26,7 +26,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// </summary>
 			/// <param name="imageUrl">画像URL</param>
 			/// <returns>ビルド可能な自身の子クラス</returns>
-			public IImageCarouselTemplateMessageBuilder AddColumn( string imageUrl )
+			public IBuildOrAddColumnOfImageCarouselTemplate AddColumn( string imageUrl )
 				=> this;
 
 			/// <summary>

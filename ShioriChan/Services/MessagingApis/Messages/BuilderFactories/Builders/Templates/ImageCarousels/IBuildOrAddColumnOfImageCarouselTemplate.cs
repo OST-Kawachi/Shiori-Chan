@@ -3,7 +3,7 @@
 	/// <summary>
 	/// 画像カルーセルテンプレートを使用する
 	/// </summary>
-	public interface IImageCarouselTemplateMessageBuilder : IAddColumnOnlyImageCarouselTemplateMessageBuilder {
+	public interface IBuildOrAddColumnOfImageCarouselTemplate : IAddOnlyColumnOfImageCarouselTemplate {
 
 		/// <summary>
 		/// テンプレートのBuild

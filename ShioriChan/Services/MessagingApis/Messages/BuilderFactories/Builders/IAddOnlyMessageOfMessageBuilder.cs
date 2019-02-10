@@ -6,7 +6,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders {
 	/// <summary>
 	/// メッセージの追加のみができるMessageBuilder
 	/// </summary>
-	public interface IAddOnlyMessageBuilder {
+	public interface IAddOnlyMessageOfMessageBuilder {
 
 		/// <summary>
 		/// テキストメッセージ追加
@@ -65,7 +65,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders {
 		/// <param name="baseSizeWidth">基本画像の幅</param>
 		/// <param name="baseSizeHeight">基本画像の高さ</param>
 		/// <returns>MessageBuilder</returns>
-		ISettableVideoImagemapMessageBuilder AddImagemap( string baseUrl , string altText , int baseSizeWidth , int baseSizeHeight );
+		ISettableVideoOfImagemapMessager AddImagemap( string baseUrl , string altText , int baseSizeWidth , int baseSizeHeight );
 
 		/// <summary>
 		/// テンプレート追加
@@ -73,7 +73,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders {
 		/// <param name="altText">代替テキスト</param>
 		/// <param name="templateBuilder">テンプレートBuilder</param>
 		/// <returns>テンプレート用Builder</returns>
-		ISelectOnlyTemplateMessageBuilder AddTemplate( string altText );
+		ISelectOnlyTemplate AddTemplate( string altText );
 		
 		/// <summary>
 		/// Flexメッセージ追加

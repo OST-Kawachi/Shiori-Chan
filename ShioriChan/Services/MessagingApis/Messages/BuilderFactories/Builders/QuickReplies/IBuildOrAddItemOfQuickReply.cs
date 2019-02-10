@@ -3,13 +3,13 @@
 	/// <summary>
 	/// QuickReplyBuilder
 	/// </summary>
-	public interface IQuickReplyBuilder : IAddOnlyQuickReplyBuilder {
+	public interface IBuildOrAddItemOfQuickReply : IAddOnlyItemOfQuickReply {
 
 		/// <summary>
 		/// QuickReplyのBuild
 		/// </summary>
 		/// <returns>ビルドしかできないMessageBuilder</returns>
-		IBuildOnlyMessageBuilder BuildQuickReply();
+		IBuildOnlyOfMessageBuilder BuildQuickReply();
 
 	}
 

@@ -9,9 +9,9 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 		/// MessageBuilderFactory内でしか使わないのでprivateとする
 		/// </summary>
 		private class QuickReplyBuilder :
-			IQuickReplyBuilder,
-			ISelectActionOnlyQuickReplyBuilder,
-			ISettableDatepickerActionQuickReplyBuilder {
+			IBuildOrAddItemOfQuickReply,
+			ISelectOnlyActionOfQuickReply,
+			ISettableDatepickerActionOfQuickReply {
 
 			/// <summary>
 			/// 送信用Parameter
@@ -30,7 +30,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// </summary>
 			/// <param name="imageUrl">ボタンの先頭に表示するアイコン</param>
 			/// <returns>QuickReplyのアクション設定クラス</returns>
-			public ISelectActionOnlyQuickReplyBuilder AddItem( string imageUrl )
+			public ISelectOnlyActionOfQuickReply AddItem( string imageUrl )
 				=> this;
 
 			/// <summary>
@@ -40,7 +40,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// <param name="data">データ</param>
 			/// <param name="displayText">表示テキスト</param>
 			/// <returns>ビルド可能なQuickReply用Builder</returns>
-			public IQuickReplyBuilder UsePostbackAction( string label , string data , string displayText )
+			public IBuildOrAddItemOfQuickReply UsePostbackAction( string label , string data , string displayText )
 				=> this;
 
 			/// <summary>
@@ -48,7 +48,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// </summary>
 			/// <param name="label">ラベル</param>
 			/// <returns>ビルド可能なQuickReply用Builder</returns>
-			public IQuickReplyBuilder UseMessageAction( string label , string text )
+			public IBuildOrAddItemOfQuickReply UseMessageAction( string label , string text )
 				=> this;
 
 			/// <summary>
@@ -58,7 +58,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// <param name="data">データ</param>
 			/// <param name="mode">モード</param>
 			/// <returns>任意項目について設定可能なQuickReply用Builder</returns>
-			public ISettableDatepickerActionQuickReplyBuilder UseDatepickerAction( string label , string data , string mode )
+			public ISettableDatepickerActionOfQuickReply UseDatepickerAction( string label , string data , string mode )
 				=> this;
 
 			/// <summary>
@@ -66,7 +66,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// </summary>
 			/// <param name="label">ラベル</param>
 			/// <returns>ビルド可能なQuickReply用Builder</returns>
-			public IQuickReplyBuilder UseCameraAction( string label )
+			public IBuildOrAddItemOfQuickReply UseCameraAction( string label )
 				=> this;
 
 			/// <summary>
@@ -74,7 +74,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// </summary>
 			/// <param name="label">ラベル</param>
 			/// <returns>ビルド可能なQuickReply用Builder</returns>
-			public IQuickReplyBuilder UseCameraRoll( string label )
+			public IBuildOrAddItemOfQuickReply UseCameraRoll( string label )
 				=> this;
 
 			/// <summary>
@@ -82,7 +82,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// </summary>
 			/// <param name="label">ラベル</param>
 			/// <returns>ビルド可能なQuickReply用Builder</returns>
-			public IQuickReplyBuilder UseLocation( string label )
+			public IBuildOrAddItemOfQuickReply UseLocation( string label )
 				=> this;
 
 			/// <summary>
@@ -90,7 +90,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// </summary>
 			/// <param name="initial">日付または時刻の初期値</param>
 			/// <returns>自身のBuilderクラス</returns>
-			public ISettableDatepickerActionQuickReplyBuilder SetInitial( string initial )
+			public ISettableDatepickerActionOfQuickReply SetInitial( string initial )
 				=> this;
 
 			/// <summary>
@@ -98,7 +98,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// </summary>
 			/// <param name="max">選択可能な日付または時刻の最大値</param>
 			/// <returns>自身のBuilderクラス</returns>
-			public ISettableDatepickerActionQuickReplyBuilder SetMax( string max )
+			public ISettableDatepickerActionOfQuickReply SetMax( string max )
 				=> this;
 
 			/// <summary>
@@ -106,7 +106,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// </summary>
 			/// <param name="min">選択可能な日付または時刻の最小値</param>
 			/// <returns>自身のBuilderクラス</returns>
-			public ISettableDatepickerActionQuickReplyBuilder SetMin( string min ) {
+			public ISettableDatepickerActionOfQuickReply SetMin( string min ) {
 
 				this.parameter.q.min = min;
 
@@ -117,7 +117,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// QuickReplyのBuild
 			/// </summary>
 			/// <returns>ビルドしかできないMessageBuilder</returns>
-			public IBuildOnlyMessageBuilder BuildQuickReply() => new MessageBuilder( this.parameter );
+			public IBuildOnlyOfMessageBuilder BuildQuickReply() => new MessageBuilder( this.parameter );
 
 		}
 

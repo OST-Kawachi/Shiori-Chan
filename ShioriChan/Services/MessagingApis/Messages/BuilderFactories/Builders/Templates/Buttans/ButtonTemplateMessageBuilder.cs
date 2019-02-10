@@ -9,10 +9,10 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 		/// MessageBuilderFactory内でしか使わないのでprivateとする
 		/// </summary>
 		private class ButtonTemplateMessageBuilder : 
-			IButtonTemplateMessageBuilder, 
-			IOnlySelectActionButtonTemplateMessageBuilder, 
-			ISettableDatetimePickerActionButtonTemplateMessageBuilder, 
-			ISettablePostbackActionButtonTemplateMessageBuilder 
+			ISettableButtonTemplate, 
+			ISelectOnlyActionOfButtonTemplate, 
+			ISettableDatetimePickerActionOfButtonTemplate, 
+			ISettablePostbackActionOfButtonTemplate 
 		{
 
 			/// <summary>
@@ -31,35 +31,35 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// </summary>
 			/// <param name="thmbnailImageUrl">画像URL</param>
 			/// <returns>自身のBuilderクラス</returns>
-			public IButtonTemplateMessageBuilder SetThumbnailImageUrl( string thmbnailImageUrl ) => this;
+			public ISettableButtonTemplate SetThumbnailImageUrl( string thmbnailImageUrl ) => this;
 
 			/// <summary>
 			/// 画像のアスペクト比設定
 			/// </summary>
 			/// <param name="imageAspectRatio">画像のアスペクト比</param>
 			/// <returns>自身のBuilderクラス</returns>
-			public IButtonTemplateMessageBuilder SetImageAspectRatio( string imageAspectRatio ) => this;
+			public ISettableButtonTemplate SetImageAspectRatio( string imageAspectRatio ) => this;
 
 			/// <summary>
 			/// 画像の表示形式設定
 			/// </summary>
 			/// <param name="imageSize">画像の表示形式</param>
 			/// <returns>自身のBuilderクラス</returns>
-			public IButtonTemplateMessageBuilder SetImageSize( string imageSize ) => this;
+			public ISettableButtonTemplate SetImageSize( string imageSize ) => this;
 
 			/// <summary>
 			/// 画像の背景色設定
 			/// </summary>
 			/// <param name="imageBackGroundColor">画像の背景色</param>
 			/// <returns>自身のBuilderクラス</returns>
-			public IButtonTemplateMessageBuilder SetImageBackgroundColor( string imageBackGroundColor ) => this;
+			public ISettableButtonTemplate SetImageBackgroundColor( string imageBackGroundColor ) => this;
 
 			/// <summary>
 			/// タイトル
 			/// </summary>
 			/// <param name="title">タイトル</param>
 			/// <returns>自身のBuilderクラス</returns>
-			public IButtonTemplateMessageBuilder SetTitle( string title ) => this;
+			public ISettableButtonTemplate SetTitle( string title ) => this;
 
 			/// <summary>
 			/// テンプレートのBuild
@@ -68,17 +68,17 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			public IMessageBuilder BuildTemplate()
 				=> new MessageBuilder( this.parameter );
 
-			public IOnlySelectActionButtonTemplateMessageBuilder SetAction()
+			public ISelectOnlyActionOfButtonTemplate SetAction()
 				=> this;
 
-			public ISettablePostbackActionButtonTemplateMessageBuilder UsePostbackAction( string label , string data ) => this;
-			public IBuildOnlyButtonTemplateMessageBuilder UseMessageAction( string label , string text ) => this;
-			public IBuildOnlyButtonTemplateMessageBuilder UseUriAction( string label , string uri ) => this;
-			public ISettableDatetimePickerActionButtonTemplateMessageBuilder UseDatetimePickerAction( string label , string data , string mode ) => this;
-			public IBuildOnlyButtonTemplateMessageBuilder SetDisplayText( string displayText ) => this;
-			public ISettableDatetimePickerActionButtonTemplateMessageBuilder SetInitial( string initial ) => this;
-			public ISettableDatetimePickerActionButtonTemplateMessageBuilder SetMax( string max ) => this;
-			public ISettableDatetimePickerActionButtonTemplateMessageBuilder SetMin( string min ) => this;
+			public ISettablePostbackActionOfButtonTemplate UsePostbackAction( string label , string data ) => this;
+			public IBuildOnlyOfButtonTemplate UseMessageAction( string label , string text ) => this;
+			public IBuildOnlyOfButtonTemplate UseUriAction( string label , string uri ) => this;
+			public ISettableDatetimePickerActionOfButtonTemplate UseDatetimePickerAction( string label , string data , string mode ) => this;
+			public IBuildOnlyOfButtonTemplate SetDisplayText( string displayText ) => this;
+			public ISettableDatetimePickerActionOfButtonTemplate SetInitial( string initial ) => this;
+			public ISettableDatetimePickerActionOfButtonTemplate SetMax( string max ) => this;
+			public ISettableDatetimePickerActionOfButtonTemplate SetMin( string min ) => this;
 		}
 
 	}

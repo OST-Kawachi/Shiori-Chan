@@ -6,13 +6,13 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders {
 	/// <summary>
 	/// MessageBuilder
 	/// </summary>
-	public interface IMessageBuilder : IAddOnlyMessageBuilder {
+	public interface IMessageBuilder : IAddOnlyMessageOfMessageBuilder {
 
 		/// <summary>
 		/// クイックリプライ追加
 		/// </summary>
 		/// <returns>Item追加のみができるQuickReplyBuilder</returns>
-		IAddOnlyQuickReplyBuilder AddQuickReply();
+		IAddOnlyItemOfQuickReply AddQuickReply();
 
 		/// <summary>
 		/// メッセージのBuild

@@ -8,21 +8,21 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.T
 	/// <summary>
 	/// テンプレート選択のみ可能なTemplateBuilder
 	/// </summary>
-	public interface ISelectOnlyTemplateMessageBuilder {
+	public interface ISelectOnlyTemplate {
 
 		/// <summary>
 		/// ボタンテンプレートを使用する
 		/// </summary>
 		/// <param name="text">テキスト</param>
 		/// <returns>ボタンテンプレートBuilder</returns>
-		IButtonTemplateMessageBuilder UseButtonTemplate( string text );
+		ISettableButtonTemplate UseButtonTemplate( string text );
 
 		/// <summary>
 		/// 確認テンプレートを使用する
 		/// </summary>
 		/// <param name="text">テキスト</param>
 		/// <returns>確認テンプレートBuilder</returns>
-		ISelectPositiveActionConfirmTemplateMessageBuilder UseConfirmTemplate( string text );
+		ISelectOnlyPositiveActionOfConfirmTemplate UseConfirmTemplate( string text );
 
 		/// <summary>
 		/// カルーセルテンプレートを使用する
@@ -34,7 +34,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.T
 		/// 画像カルーセルテンプレートを使用する
 		/// </summary>
 		/// <returns>画像カルーセルテンプレートBuilder</returns>
-		IAddColumnOnlyImageCarouselTemplateMessageBuilder UseImageCarouselTemplateMessageBuilder();
+		IAddOnlyColumnOfImageCarouselTemplate UseImageCarouselTemplateMessageBuilder();
 
 	}
 

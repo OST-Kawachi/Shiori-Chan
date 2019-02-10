@@ -3,7 +3,7 @@
 	/// <summary>
 	/// イメージマップで動画再生後にラベルを表示できるMessageBuilder
 	/// </summary>
-	public interface ISettableExternalLinkImageMapMessageBuilder : IMessageBuilder {
+	public interface ISettableExternalLinkOfImageMapMessage : IMessageBuilder {
 
 		/// <summary>
 		/// 動画再生後にラベルを表示する

@@ -120,7 +120,7 @@ namespace ShioriChan.Services.Features.Rooms {
 			string havingKeyUserName = "";
 
 			// リプライ送信
-			IAddOnlyQuickReplyBuilder quickReplyBuilder = this.messageService.CreateMessageBuilder()
+			IAddOnlyItemOfQuickReply quickReplyBuilder = this.messageService.CreateMessageBuilder()
 				.AddMessage(
 					$"{myRoomNumber}号室の情報です。\n" +
 					$"今鍵を持っているのは{havingKeyUserName}です！\n" +
@@ -134,7 +134,7 @@ namespace ShioriChan.Services.Features.Rooms {
 				)
 				.AddQuickReply();
 
-			IQuickReplyBuilder buildableQuickReplyBuilder = null;
+			IBuildOrAddItemOfQuickReply buildableQuickReplyBuilder = null;
 			foreach( User member in members ) {
 				// 初回のみビルドできるインタフェースに変更する
 				if( buildableQuickReplyBuilder is null ) {

@@ -9,12 +9,12 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 		/// MessageBuilderFactory内でしか使わないのでprivateとする
 		/// </summary>
 		private class ConfirmTemplateMessageBuilder : 
-			ISelectPositiveActionConfirmTemplateMessageBuilder,
-			ISettablePositivePostbackActionConfirmTemplateMessageBuilder,
-			ISettablePositiveDatetimePickerActionConfirmTemplateMessageBuilder,
-			ISelectNegativeActionConfirmTemplateMessageBuilder,
-			ISettableNegativePostbackActionConfirmTemplateMessageBuilder,
-			ISettableNegativeDatetimePickerActionConfirmTemplateMessageBuilder 
+			ISelectOnlyPositiveActionOfConfirmTemplate,
+			ISettablePositivePostbackActionOfConfirmTemplate,
+			ISettablePositiveDatetimePickerActionOfConfirmTemplate,
+			ISelectOnlyNegativeActionOfConfirmTemplate,
+			ISettableNegativePostbackActionOfConfirmTemplate,
+			ISettableNegativeDatetimePickerActionOfConfirmTemplate 
 		{
 
 			/// <summary>
@@ -29,23 +29,23 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			public ConfirmTemplateMessageBuilder( MessageParameter parameter ) => this.parameter = parameter;
 
 			public IMessageBuilder BuildNegativeAction() => new MessageBuilder( this.parameter );
-			public ISelectNegativeActionConfirmTemplateMessageBuilder BuildPositiveAction() => this;
-			public ISettableNegativePostbackActionConfirmTemplateMessageBuilder SetNegativeDisplayText( string displayText ) => this;
-			public ISettableNegativeDatetimePickerActionConfirmTemplateMessageBuilder SetNegativeInitial( string initial ) => this;
-			public ISettableNegativeDatetimePickerActionConfirmTemplateMessageBuilder SetNegativeMax( string max ) => this;
-			public ISettableNegativeDatetimePickerActionConfirmTemplateMessageBuilder SetNegativeMin( string min ) => this;
-			public ISettablePositivePostbackActionConfirmTemplateMessageBuilder SetPositiveDisplayText( string displayText ) => this;
-			public ISettablePositiveDatetimePickerActionConfirmTemplateMessageBuilder SetPositiveInitial( string initial ) => this;
-			public ISettablePositiveDatetimePickerActionConfirmTemplateMessageBuilder SetPositiveMax( string max ) => this;
-			public ISettablePositiveDatetimePickerActionConfirmTemplateMessageBuilder SetPositiveMin( string min ) => this;
-			public ISettableNegativeDatetimePickerActionConfirmTemplateMessageBuilder UseDatetimePickerNegativeAction( string label , string data , string mode ) => this;
-			public ISettablePositiveDatetimePickerActionConfirmTemplateMessageBuilder UseDatetimePickerPositiveAction( string label , string data , string mode ) => this;
-			public IBuildOnlyNegativeActionConfirmTemplateMessageBuilder UseMessageNegativeAction( string label , string text ) => this;
-			public IBuildOnlyPositiveActionConfirmTemplateMessageBuilder UseMessagePositiveAction( string label , string text ) => this;
-			public ISettableNegativePostbackActionConfirmTemplateMessageBuilder UsePostbackNegativeAction( string label , string data ) => this;
-			public ISettablePositivePostbackActionConfirmTemplateMessageBuilder UsePostbackPositiveAction( string label , string data ) => this;
-			public IBuildOnlyNegativeActionConfirmTemplateMessageBuilder UseUriNegativeAction( string label , string uri ) => this;
-			public IBuildOnlyPositiveActionConfirmTemplateMessageBuilder UseUriPositiveAction( string label , string uri ) => this;
+			public ISelectOnlyNegativeActionOfConfirmTemplate BuildPositiveAction() => this;
+			public ISettableNegativePostbackActionOfConfirmTemplate SetNegativeDisplayText( string displayText ) => this;
+			public ISettableNegativeDatetimePickerActionOfConfirmTemplate SetNegativeInitial( string initial ) => this;
+			public ISettableNegativeDatetimePickerActionOfConfirmTemplate SetNegativeMax( string max ) => this;
+			public ISettableNegativeDatetimePickerActionOfConfirmTemplate SetNegativeMin( string min ) => this;
+			public ISettablePositivePostbackActionOfConfirmTemplate SetPositiveDisplayText( string displayText ) => this;
+			public ISettablePositiveDatetimePickerActionOfConfirmTemplate SetPositiveInitial( string initial ) => this;
+			public ISettablePositiveDatetimePickerActionOfConfirmTemplate SetPositiveMax( string max ) => this;
+			public ISettablePositiveDatetimePickerActionOfConfirmTemplate SetPositiveMin( string min ) => this;
+			public ISettableNegativeDatetimePickerActionOfConfirmTemplate UseDatetimePickerNegativeAction( string label , string data , string mode ) => this;
+			public ISettablePositiveDatetimePickerActionOfConfirmTemplate UseDatetimePickerPositiveAction( string label , string data , string mode ) => this;
+			public IBuildOnlyNegativeActionOfConfirmTemplate UseMessageNegativeAction( string label , string text ) => this;
+			public IBuildOnlyPositiveActionOfConfirmTemplate UseMessagePositiveAction( string label , string text ) => this;
+			public ISettableNegativePostbackActionOfConfirmTemplate UsePostbackNegativeAction( string label , string data ) => this;
+			public ISettablePositivePostbackActionOfConfirmTemplate UsePostbackPositiveAction( string label , string data ) => this;
+			public IBuildOnlyNegativeActionOfConfirmTemplate UseUriNegativeAction( string label , string uri ) => this;
+			public IBuildOnlyPositiveActionOfConfirmTemplate UseUriPositiveAction( string label , string uri ) => this;
 
 		}
 
