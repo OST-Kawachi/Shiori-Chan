@@ -44,7 +44,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// カルーセルテンプレートを使用する
 			/// </summary>
 			/// <returns>カルーセルテンプレートBuilder </returns>
-			public IAddAndSetOnlyCarouselTemplateMessageBuilder UseCarouselTemplateMessageBuilder()
+			public ISettableAndAddColumnOfCarouselTemplate UseCarouselTemplateMessageBuilder()
 				=> new CarouselTemplateMessageBuilder( this.parameter );
 
 			/// <summary>
@@ -53,6 +53,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// <returns>画像カルーセルテンプレートBuilder</returns>
 			public IAddOnlyColumnOfImageCarouselTemplate UseImageCarouselTemplateMessageBuilder()
 				=> new ImageCarouselTemplateMessageBuilder( this.parameter );
+
 		}
 
 	}

@@ -1,14 +1,14 @@
 ﻿namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.Templates.Buttons {
 
 	/// <summary>
-	/// ビルドのみ可能インタフェース
+	/// テンプレートのビルド
 	/// </summary>
 	public interface IBuildOnlyOfButtonTemplate {
 
 		/// <summary>
-		/// テンプレートのBuild
+		/// テンプレートのビルド
 		/// </summary>
-		/// <returns>ビルド可能なメッセージBuilder</returns>
+		/// <returns>メッセージの追加＋ビルド</returns>
 		IMessageBuilder BuildTemplate();
 
 	}

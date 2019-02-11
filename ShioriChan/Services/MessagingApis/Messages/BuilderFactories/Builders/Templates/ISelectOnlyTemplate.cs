@@ -6,7 +6,7 @@ using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.Templ
 namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.Templates {
 
 	/// <summary>
-	/// テンプレート選択のみ可能なTemplateBuilder
+	/// テンプレートの選択
 	/// </summary>
 	public interface ISelectOnlyTemplate {
 
@@ -14,26 +14,26 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.T
 		/// ボタンテンプレートを使用する
 		/// </summary>
 		/// <param name="text">テキスト</param>
-		/// <returns>ボタンテンプレートBuilder</returns>
+		/// <returns>ボタンテンプレートの設定</returns>
 		ISettableButtonTemplate UseButtonTemplate( string text );
 
 		/// <summary>
 		/// 確認テンプレートを使用する
 		/// </summary>
 		/// <param name="text">テキスト</param>
-		/// <returns>確認テンプレートBuilder</returns>
+		/// <returns>確認テンプレートのOKボタンのアクション選択</returns>
 		ISelectOnlyPositiveActionOfConfirmTemplate UseConfirmTemplate( string text );
 
 		/// <summary>
 		/// カルーセルテンプレートを使用する
 		/// </summary>
-		/// <returns>カルーセルテンプレートBuilder </returns>
-		IAddAndSetOnlyCarouselTemplateMessageBuilder UseCarouselTemplateMessageBuilder();
+		/// <returns>カルーセルテンプレートの設定＋カラム追加</returns>
+		ISettableAndAddColumnOfCarouselTemplate UseCarouselTemplateMessageBuilder();
 
 		/// <summary>
 		/// 画像カルーセルテンプレートを使用する
 		/// </summary>
-		/// <returns>画像カルーセルテンプレートBuilder</returns>
+		/// <returns>画像カルーセルテンプレートの設定＋カラム追加</returns>
 		IAddOnlyColumnOfImageCarouselTemplate UseImageCarouselTemplateMessageBuilder();
 
 	}

@@ -11,7 +11,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 		/// メッセージBuilder生成
 		/// </summary>
 		/// <param name="channelAccessToken">チャンネルアクセストークン</param>
-		/// <returns>メッセージの追加のみができるMessageBuilder</returns>
+		/// <returns>メッセージの追加</returns>
 		public static IAddOnlyMessageOfMessageBuilder CreateMessageBuilder( string channelAccessToken )
 			=> new MessageBuilder( new MessageParameter() { channelAccessToken = channelAccessToken } );
 

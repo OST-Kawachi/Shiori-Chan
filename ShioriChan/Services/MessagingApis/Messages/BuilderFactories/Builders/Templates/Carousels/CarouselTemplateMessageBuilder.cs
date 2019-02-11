@@ -9,14 +9,15 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 		/// MessageBuilderFactory内でしか使わないのでprivateとする
 		/// </summary>
 		private class CarouselTemplateMessageBuilder :
-			IBuildableCarouselTemplateMessageBuilder,
-			ICarouselTemplateMessageBuilder,
-			ISelectDefaultActionCarouselTemplateMessageBuilder,
-			ISelectOnlyColumnActionCarouselTemplateMessageBuilder,
-			ISettableDatetimePickerColumnActionCarouselTemplateMessageBuilder,
-			ISettableDatetimePickerDefaultActionCarouselTemplateMessageBuilder,
-			ISettablePostbackColumnActionCarouselTemplateMessageBuilder,
-			ISettablePostbackDefaultActionCarouselTemplateMessageBuilder 
+			ISelectColumnActionOfCarouselTemplate,
+			IBuildAndAddColumnOfCarouselTemplate,
+			ISelectDefaultActionOfCarouselTemplate,
+			ISettablePostbackColumnActionOfCarouselTemplate,
+			ISettablePostbackDefaultActionOfCarouselTemplate,
+			ISettableDatetimePickerDefaultActionOfCarouselTemplate,
+			ISettableDatetimePickerColumnActionOfCarouselTemplate,
+			ISettableAndAddColumnOfCarouselTemplate,
+			ISettableColumnOfCarouselTemplate
 		{
 
 			/// <summary>
@@ -30,33 +31,60 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// <param name="parameter">送信パラメータ</param>
 			public CarouselTemplateMessageBuilder( MessageParameter parameter ) => this.parameter = parameter;
 
-			public ISelectOnlyColumnActionCarouselTemplateMessageBuilder AddAction() => this;
-			public IColumnSettingOnlyCarouselTemplateMessageBuilder AddColumn( string text ) => this;
-			public IBuildableCarouselTemplateMessageBuilder BuildColumnAction() => this;
-			public IColumnSettingOnlyCarouselTemplateMessageBuilder BuildDefaultAction() => this;
+			public ISelectColumnActionOfCarouselTemplate AddAction() => this;
+
+			public ISettableColumnOfCarouselTemplate AddColumn( string text ) => this;
+
+			public IBuildAndAddColumnOfCarouselTemplate BuildColumnAction() => this;
+
+			public ISettableColumnOfCarouselTemplate BuildDefaultAction() => this;
+
 			public IMessageBuilder BuildTemplate() => new MessageBuilder( this.parameter );
-			public IBuildOnlyColumnActionCarouselTemplateMessageBuilder SetColumnDisplayText( string displayText ) => this;
-			public ISettableDatetimePickerColumnActionCarouselTemplateMessageBuilder SetColumnInitial( string initial ) => this;
-			public ISettableDatetimePickerColumnActionCarouselTemplateMessageBuilder SetColumnMax( string max ) => this;
-			public ISettableDatetimePickerColumnActionCarouselTemplateMessageBuilder SetColumnMin( string min ) => this;
-			public ISelectDefaultActionCarouselTemplateMessageBuilder SetDefaultAction() => this;
-			public IBuildOnlyDefaultActionCarouselTemplateMessageBuilder SetDefaultDisplayText( string displayText ) => this;
-			public ISettableDatetimePickerDefaultActionCarouselTemplateMessageBuilder SetDefaultInitial( string initial ) => this;
-			public ISettableDatetimePickerDefaultActionCarouselTemplateMessageBuilder SetDefaultMax( string max ) => this;
-			public ISettableDatetimePickerDefaultActionCarouselTemplateMessageBuilder SetDefaultMin( string min ) => this;
-			public IAddAndSetOnlyCarouselTemplateMessageBuilder SetImageAspectRatio( string imageAspectRatio ) => this;
-			public IColumnSettingOnlyCarouselTemplateMessageBuilder SetImageBackgroundColor( string imageBackgroundColor ) => this;
-			public IAddAndSetOnlyCarouselTemplateMessageBuilder SetImageSize( string imageSize ) => this;
-			public IColumnSettingOnlyCarouselTemplateMessageBuilder SetThumbnailImageUrl( string thumbnailImageUrl ) => this;
-			public IColumnSettingOnlyCarouselTemplateMessageBuilder SetTitle( string title ) => this;
-			public ISettableDatetimePickerColumnActionCarouselTemplateMessageBuilder UseDatetimePickerAction( string label , string data , string mode ) => this;
-			public ISettableDatetimePickerDefaultActionCarouselTemplateMessageBuilder UseDatetimePickerDefaultAction( string label , string data , string mode ) => this;
-			public IBuildOnlyColumnActionCarouselTemplateMessageBuilder UseMessageColumnAction( string label , string text ) => this;
-			public IBuildOnlyDefaultActionCarouselTemplateMessageBuilder UseMessageDefaultAction( string label , string text ) => this;
-			public ISettablePostbackColumnActionCarouselTemplateMessageBuilder UsePostbackColumnAction( string label , string data ) => this;
-			public ISettablePostbackDefaultActionCarouselTemplateMessageBuilder UsePostbackDefaultAction( string label , string data ) => this;
-			public IBuildOnlyColumnActionCarouselTemplateMessageBuilder UseUriColumnAction( string label , string uri ) => this;
-			public IBuildOnlyDefaultActionCarouselTemplateMessageBuilder UseUriDefaultAction( string label , string uri ) => this;
+
+			public IBuildAndAddColumnActionOfCarouselTemplate SetColumnDisplayText( string displayText ) => this;
+
+			public ISettableDatetimePickerColumnActionOfCarouselTemplate SetColumnInitial( string initial ) => this;
+
+			public ISettableDatetimePickerColumnActionOfCarouselTemplate SetColumnMax( string max ) => this;
+
+			public ISettableDatetimePickerColumnActionOfCarouselTemplate SetColumnMin( string min ) => this;
+
+			public ISelectDefaultActionOfCarouselTemplate SetDefaultAction() => this;
+
+			public IBuildOnlyDefaultActionOfCarouselTemplate SetDefaultDisplayText( string displayText ) => this;
+
+			public ISettableDatetimePickerDefaultActionOfCarouselTemplate SetDefaultInitial( string initial ) => this;
+
+			public ISettableDatetimePickerDefaultActionOfCarouselTemplate SetDefaultMax( string max ) => this;
+
+			public ISettableDatetimePickerDefaultActionOfCarouselTemplate SetDefaultMin( string min ) => this;
+
+			public ISettableAndAddColumnOfCarouselTemplate SetImageAspectRatio( string imageAspectRatio ) => this;
+
+			public ISettableColumnOfCarouselTemplate SetImageBackgroundColor( string imageBackgroundColor ) => this;
+
+			public ISettableAndAddColumnOfCarouselTemplate SetImageSize( string imageSize ) => this;
+
+			public ISettableColumnOfCarouselTemplate SetThumbnailImageUrl( string thumbnailImageUrl ) => this;
+
+			public ISettableColumnOfCarouselTemplate SetTitle( string title ) => this;
+
+			public ISettableDatetimePickerColumnActionOfCarouselTemplate UseDatetimePickerAction( string label , string data , string mode ) => this;
+
+			public ISettableDatetimePickerDefaultActionOfCarouselTemplate UseDatetimePickerDefaultAction( string label , string data , string mode ) => this;
+
+			public IBuildAndAddColumnActionOfCarouselTemplate UseMessageColumnAction( string label , string text ) => this;
+
+			public IBuildOnlyDefaultActionOfCarouselTemplate UseMessageDefaultAction( string label , string text ) => this;
+
+			public ISettablePostbackColumnActionOfCarouselTemplate UsePostbackColumnAction( string label , string data ) => this;
+
+			public ISettablePostbackDefaultActionOfCarouselTemplate UsePostbackDefaultAction( string label , string data ) => this;
+
+			public IBuildAndAddColumnActionOfCarouselTemplate UseUriColumnAction( string label , string uri ) => this;
+
+			public IBuildOnlyDefaultActionOfCarouselTemplate UseUriDefaultAction( string label , string uri ) => this;
+
 		}
 
 	}

@@ -15,7 +15,8 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			IMessageBuilder , 
 			IBuildOnlyOfMessageBuilder , 
 			ISettableVideoOfImagemapMessager , 
-			ISettableExternalLinkOfImageMapMessage {
+			ISettableExternalLinkOfImageMapMessage 
+		{
 
 			/// <summary>
 			/// 送信用Parameter

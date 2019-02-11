@@ -3,7 +3,7 @@
 namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders {
 
 	/// <summary>
-	/// ビルドしかできないMessageBuilder
+	/// ビルドしかできない
 	/// </summary>
 	public interface IBuildOnlyOfMessageBuilder {
 

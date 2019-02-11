@@ -72,13 +72,21 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 				=> this;
 
 			public ISettablePostbackActionOfButtonTemplate UsePostbackAction( string label , string data ) => this;
+
 			public IBuildOnlyOfButtonTemplate UseMessageAction( string label , string text ) => this;
+
 			public IBuildOnlyOfButtonTemplate UseUriAction( string label , string uri ) => this;
+
 			public ISettableDatetimePickerActionOfButtonTemplate UseDatetimePickerAction( string label , string data , string mode ) => this;
+
 			public IBuildOnlyOfButtonTemplate SetDisplayText( string displayText ) => this;
+
 			public ISettableDatetimePickerActionOfButtonTemplate SetInitial( string initial ) => this;
+
 			public ISettableDatetimePickerActionOfButtonTemplate SetMax( string max ) => this;
+
 			public ISettableDatetimePickerActionOfButtonTemplate SetMin( string min ) => this;
+
 		}
 
 	}

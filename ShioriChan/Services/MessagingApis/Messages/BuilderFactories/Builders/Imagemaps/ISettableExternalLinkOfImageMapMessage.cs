@@ -1,7 +1,7 @@
 ﻿namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.Imagemaps {
 
 	/// <summary>
-	/// イメージマップで動画再生後にラベルを表示できるMessageBuilder
+	/// メッセージの追加＋ビルド＋ビデオ再生後のラベル設定
 	/// </summary>
 	public interface ISettableExternalLinkOfImageMapMessage : IMessageBuilder {
 
@@ -10,7 +10,7 @@
 		/// </summary>
 		/// <param name="url">ウェブページのURL</param>
 		/// <param name="label">ラベル</param>
-		/// <returns>送信可能なメッセージBuilder</returns>
+		/// <returns>メッセージの追加＋ビルド</returns>
 		IMessageBuilder SetExternalLink( string url , string label );
 
 	}

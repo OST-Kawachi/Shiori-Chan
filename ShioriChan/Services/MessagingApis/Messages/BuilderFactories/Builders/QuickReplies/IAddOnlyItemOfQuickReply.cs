@@ -1,7 +1,7 @@
 ﻿namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.QuickReplies {
 
 	/// <summary>
-	/// Item追加のみができるQuickReplyBuilder
+	/// クイックリプライのアイテム追加
 	/// </summary>
 	public interface IAddOnlyItemOfQuickReply {
 
@@ -9,7 +9,7 @@
 		/// アイテムの追加
 		/// </summary>
 		/// <param name="imageUrl">ボタンの先頭に表示するアイコン</param>
-		/// <returns>QuickReplyのアクション設定クラス</returns>
+		/// <returns>クイックリプライのアクション選択</returns>
 		ISelectOnlyActionOfQuickReply AddItem( string imageUrl );
 
 	}

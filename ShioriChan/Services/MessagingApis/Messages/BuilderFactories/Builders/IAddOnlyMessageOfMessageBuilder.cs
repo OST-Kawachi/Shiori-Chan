@@ -4,7 +4,7 @@ using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.Templ
 namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders {
 
 	/// <summary>
-	/// メッセージの追加のみができるMessageBuilder
+	/// メッセージの追加
 	/// </summary>
 	public interface IAddOnlyMessageOfMessageBuilder {
 
@@ -12,7 +12,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders {
 		/// テキストメッセージ追加
 		/// </summary>
 		/// <param name="text">テキスト本文</param>
-		/// <returns>MessageBuilder</returns>
+		/// <returns>メッセージの追加＋ビルド</returns>
 		IMessageBuilder AddMessage( string text );
 
 		/// <summary>
@@ -20,7 +20,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders {
 		/// </summary>
 		/// <param name="packageId">スタンプセットのパッケージID</param>
 		/// <param name="stickerId">スタンプID</param>
-		/// <returns>MessageBuilder</returns>
+		/// <returns>メッセージの追加＋ビルド</returns>
 		IMessageBuilder AddSticker( string packageId , string stickerId );
 
 		/// <summary>
@@ -28,7 +28,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders {
 		/// </summary>
 		/// <param name="originalContentUrl">画像のURL</param>
 		/// <param name="previewImageUrl">プレビュー画像のURL</param>
-		/// <returns>MessageBuilder</returns>
+		/// <returns>メッセージの追加＋ビルド</returns>
 		IMessageBuilder AddImage( string originalContentUrl , string previewImageUrl );
 
 		/// <summary>
@@ -36,7 +36,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders {
 		/// </summary>
 		/// <param name="originalContentUrl">動画ファイルのURL</param>
 		/// <param name="previewImageUrl">プレビュー画像のURL</param>
-		/// <returns>MessageBuilder</returns>
+		/// <returns>メッセージの追加＋ビルド</returns>
 		IMessageBuilder AddVideo( string originalContentUrl , string previewImageUrl );
 
 		/// <summary>
@@ -44,7 +44,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders {
 		/// </summary>
 		/// <param name="originalContentUrl">音声ファイルのURL</param>
 		/// <param name="duration">音声ファイルの長さ</param>
-		/// <returns>MessageBuilder</returns>
+		/// <returns>メッセージの追加＋ビルド</returns>
 		IMessageBuilder AddAudio( string originalContentUrl , int duration );
 
 		/// <summary>
@@ -54,7 +54,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders {
 		/// <param name="address">住所</param>
 		/// <param name="latitude">緯度</param>
 		/// <param name="longitude">経度</param>
-		/// <returns>MessageBuilder</returns>
+		/// <returns>メッセージの追加＋ビルド</returns>
 		IMessageBuilder AddLocation( string title , string address , double latitude , double longitude );
 
 		/// <summary>
@@ -64,7 +64,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders {
 		/// <param name="altText">代替テキスト</param>
 		/// <param name="baseSizeWidth">基本画像の幅</param>
 		/// <param name="baseSizeHeight">基本画像の高さ</param>
-		/// <returns>MessageBuilder</returns>
+		/// <returns>メッセージの追加＋ビルド＋ビデオの設定</returns>
 		ISettableVideoOfImagemapMessager AddImagemap( string baseUrl , string altText , int baseSizeWidth , int baseSizeHeight );
 
 		/// <summary>
@@ -72,14 +72,14 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders {
 		/// </summary>
 		/// <param name="altText">代替テキスト</param>
 		/// <param name="templateBuilder">テンプレートBuilder</param>
-		/// <returns>テンプレート用Builder</returns>
+		/// <returns>テンプレートの選択</returns>
 		ISelectOnlyTemplate AddTemplate( string altText );
-		
+
 		/// <summary>
 		/// Flexメッセージ追加
 		/// </summary>
 		/// <param name="altText">代替テキスト</param>
-		/// <returns>Flex用Builder</returns>
+		/// <returns>メッセージの追加＋ビルド</returns>
 		IMessageBuilder AddFlexMessage( string altText );
 
 	}

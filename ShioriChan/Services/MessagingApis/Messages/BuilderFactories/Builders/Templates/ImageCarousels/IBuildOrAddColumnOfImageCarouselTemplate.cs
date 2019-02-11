@@ -1,14 +1,14 @@
 ﻿namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.Templates.ImageCarousels {
 
 	/// <summary>
-	/// 画像カルーセルテンプレートを使用する
+	/// カラムの追加＋ビルド
 	/// </summary>
 	public interface IBuildOrAddColumnOfImageCarouselTemplate : IAddOnlyColumnOfImageCarouselTemplate {
 
 		/// <summary>
-		/// テンプレートのBuild
+		/// ビルド
 		/// </summary>
-		/// <returns>ビルド可能なメッセージBuilder</returns>
+		/// <returns>メッセージの追加＋ビルド</returns>
 		IMessageBuilder BuildTemplate();
 
 	}

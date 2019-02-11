@@ -11,7 +11,8 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 		private class QuickReplyBuilder :
 			IBuildOrAddItemOfQuickReply,
 			ISelectOnlyActionOfQuickReply,
-			ISettableDatepickerActionOfQuickReply {
+			ISettableDatepickerActionOfQuickReply 
+		{
 
 			/// <summary>
 			/// 送信用Parameter

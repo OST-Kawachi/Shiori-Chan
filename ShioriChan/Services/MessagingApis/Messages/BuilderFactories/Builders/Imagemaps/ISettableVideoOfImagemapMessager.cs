@@ -1,7 +1,7 @@
 ﻿namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.Imagemaps {
 
 	/// <summary>
-	/// イメージマップで動画再生を設定できるMessageBuilder
+	/// メッセージの追加＋ビルド＋ビデオの設定
 	/// </summary>
 	public interface ISettableVideoOfImagemapMessager : IMessageBuilder {
 
@@ -14,7 +14,7 @@
 		/// <param name="areaY">動画領域の位置</param>
 		/// <param name="areaWidth">動画領域の幅</param>
 		/// <param name="areaHeight">動画領域の高さ</param>
-		/// <returns>イメージマップで動画再生後にラベルを表示できるMessageBuilder</returns>
+		/// <returns>メッセージの追加＋ビルド＋ビデオ再生後のラベル設定</returns>
 		ISettableExternalLinkOfImageMapMessage SetVideo( string originalContentUrl , string previewImageUrl , int areaX , int areaY , int areaWidth , int areaHeight );
 
 	}
