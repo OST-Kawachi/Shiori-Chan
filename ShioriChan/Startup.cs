@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ShioriChan.Repositories.Rooms;
 using ShioriChan.Services.Features;
+using ShioriChan.Services.Features.Rooms;
 using ShioriChan.Services.Features.Samples;
 using ShioriChan.Services.MessagingApis.Groups;
 using ShioriChan.Services.MessagingApis.Messages;
@@ -47,8 +49,12 @@ namespace ShioriChan {
 				// 共通部
 				services.AddSingleton<IFeatureFacade , FeatureFacade>();
 
+				// Repositories
+				services.AddSingleton<IRoomRepository , RoomRepository>();
+
 				// Features
 				services.AddSingleton<ISampleService , SampleService>();
+				services.AddSingleton<IRoomService , RoomService>();
 
 				// MessagingApis
 				services.AddSingleton<IGroupService , GroupService>();

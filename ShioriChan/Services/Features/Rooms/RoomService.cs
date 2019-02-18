@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using ShioriChan.Repositories.Rooms;
 using ShioriChan.Services.MessagingApis.Messages;
 using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.QuickReplies;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ShioriChan.Services.Features.Rooms {
@@ -30,15 +32,24 @@ namespace ShioriChan.Services.Features.Rooms {
 		private readonly IMessageService messageService;
 
 		/// <summary>
+		/// 部屋情報Repository
+		/// </summary>
+		private readonly IRoomRepository roomRepository;
+
+		/// <summary>
 		/// コンストラクタ
 		/// </summary>
 		/// <param name="logger">ログ</param>
+		/// <param name="messageService">メッセージService</param>
+		/// <param name="roomRepository">部屋情報Repository</param>
 		public RoomService(
 			ILogger<FeatureFacade> logger ,
-			IMessageService messageService
+			IMessageService messageService,
+			IRoomRepository roomRepository
 		) {
 			this.logger = logger;
 			this.messageService = messageService;
+			this.roomRepository = roomRepository;
 		}
 
 		/// <summary>
@@ -46,27 +57,58 @@ namespace ShioriChan.Services.Features.Rooms {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		/// <returns>ユーザID</returns>
-		private string GetUserId( JToken parameter )
-			// TODO 仮　実際はパラメータより取得
-			=> "";
+		private string GetUserId( JToken parameter ) {
+			JArray events = (JArray)parameter[ "events" ];
+			JObject firstEvent = (JObject)events[ 0 ];
+
+			JToken source = firstEvent[ "source" ];
+			string userId = source[ "userId" ].ToString();
+			this.logger.LogTrace( $"User Id is {userId}." );
+
+			return userId;
+		}
 
 		/// <summary>
 		/// リプライトークンを取得
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		/// <returns>リプライトークン</returns>
-		private string GetReplyToken( JToken parameter )
-			// TODO 仮　実際はパラメータより取得
-			=> "";
+		private string GetReplyToken( JToken parameter ) {
+			JArray events = (JArray)parameter[ "events" ];
+			JObject firstEvent = (JObject)events[ 0 ];
+
+			string replyToken = firstEvent[ "replyToken" ].ToString();
+			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+
+			return replyToken;
+		}
+
+		/// <summary>
+		/// ポストバックデータを取得
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		/// <returns>ポストバックデータ</returns>
+		private string GetPostbackData( JToken parameter ) {
+			JArray events = (JArray)parameter[ "events" ];
+			JObject firstEvent = (JObject)events[ 0 ];
+
+			JToken postback = firstEvent[ "postback" ];
+			string data = postback[ "data" ].ToString();
+			this.logger.LogTrace( $"Postback Data is {data}." );
+			return data;
+		}
 
 		/// <summary>
 		/// 自分の部屋番号を取得
 		/// </summary>
 		/// <param name="userId">ユーザID</param>
 		/// <returns>自分の部屋番号</returns>
-		private string GetMyRoomNumber( string userId )
+		private string GetMyRoomNumber( string userId ) {
 			// TODO 仮　実際はDBより取得
-			=> "202";
+			string roomNumber = "202";
+			this.logger.LogTrace( $"Room Number is {roomNumber}." );
+			return roomNumber;
+		}
 
 		/// <summary>
 		/// 指定した部屋番号のメンバーを取得する
@@ -93,13 +135,20 @@ namespace ShioriChan.Services.Features.Rooms {
 			return members;
 		}
 
-
-
+		/// <summary>
+		/// 鍵を持っているメンバーを更新する
+		/// </summary>
+		/// <param name="roomNumber">部屋番号</param>
+		/// <param name="userSeq">鍵を持っているユーザシーケンス</param>
+		private void UpdateHavingKeyUser( string roomNumber , int userSeq ) {
+			// TODO 実際はDBを更新
+		}
+		
 		/// <summary>
 		/// 同じ部屋のメンバーを表示する
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public async Task ChangeHavingKeyUser( JToken parameter ) {
+		public async Task ShowRoomMember( JToken parameter ) {
 			this.logger.LogTrace( "Start" );
 
 			string userId = this.GetUserId( parameter );
@@ -112,25 +161,22 @@ namespace ShioriChan.Services.Features.Rooms {
 				return;
 			}
 
-			List<User> members = this.GetRoomMembers( myRoomNumber );
-
 			// メンバー一覧にフロントを追加
+			List<User> members = this.GetRoomMembers( myRoomNumber );
+			members.Add( new User() {
+				Seq = -1 ,
+				Name = "フロント" ,
+				IsHavingKey = !members.Any( member => member.IsHavingKey == true ) // 鍵を持っているメンバーが一人でもいればフロントがカギを持っていることになる
+			} );
 
-			// 鍵を持っている人の名前
-			string havingKeyUserName = "";
+			string havingKeyUserName = members.FirstOrDefault( member => member.IsHavingKey ).Name;
+			this.logger.LogTrace( $"Having Key User Name is {havingKeyUserName}." );
 
-			// リプライ送信
 			IAddOnlyItemOfQuickReply quickReplyBuilder = this.messageService.CreateMessageBuilder()
 				.AddMessage(
 					$"{myRoomNumber}号室の情報です。\n" +
 					$"今鍵を持っているのは{havingKeyUserName}です！\n" +
 					"下のボタンでいつでも鍵を持っている人を切り替えれます！"
-				)
-
-				// TODO 仮 とりあえずtemplateが完成するまではQuickReplyで代用
-				.AddMessage(
-					$"{myRoomNumber}号室について\n" +
-					$"{havingKeyUserName}がカギを持ってます"
 				)
 				.AddQuickReply();
 
@@ -145,7 +191,6 @@ namespace ShioriChan.Services.Features.Rooms {
 					);
 				}
 				// 2回目以降はインスタンスを上書きしていく
-				// TODO 上書きする必要があるのかどうか未確認
 				else {
 					buildableQuickReplyBuilder = buildableQuickReplyBuilder.AddItem("").UsePostbackAction(
 						member.Name ,
@@ -168,83 +213,39 @@ namespace ShioriChan.Services.Features.Rooms {
 		/// 鍵を持っているメンバーを変更する
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public async Task ShowRoomMember( JToken parameter ) {
-			
+		public async Task ChangeHavingKeyUser( JToken parameter ) {
+			this.logger.LogTrace( "Start" );
+
+			string postbackData = this.GetPostbackData( parameter );
+
+			string roomNumber = "";
+			int userSeq = -1;
+			{
+				string[] keyValue = postbackData.Split( "&" );
+				userSeq = int.Parse( keyValue[ 0 ].Split( "=" )[ 1 ] );
+				roomNumber = keyValue[ 1 ].Split( "=" )[ 1 ];
+			}
+			this.logger.LogTrace( $"Room Number is {roomNumber}." );
+			this.logger.LogTrace( $"User Seq is {userSeq}." );
+
+			string replyToken = this.GetReplyToken( parameter );
+
+			this.UpdateHavingKeyUser( roomNumber , userSeq );
+
+			List<User> members = this.GetRoomMembers( roomNumber );
+			string havingKeyUserName = members.First( member => member.IsHavingKey == true )?.Name;
+			havingKeyUserName = havingKeyUserName is null ? "フロント" : havingKeyUserName + "さん";
+			this.logger.LogTrace( $"Having Key User Name is {havingKeyUserName}." );
+
+			await this.messageService.CreateMessageBuilder()
+				.AddMessage( $"{havingKeyUserName}がカギを持ってるんですね！\n承知しました！" )
+				.BuildMessage()
+				.Reply( replyToken );
+
+			this.logger.LogTrace( "End" );
+			return;
 		}
-		
+
 	}
 
 }
-
-/*
-
-	// フロント追加　鍵を持っているメンバーの名前を取得
-	string havingKeyMember = "フロント";
-	{
-		bool isFlontHavingKey = true;
-		foreach( Member member in members ) {
-			if( member.isHavingKey ) {
-				havingKeyMember = member.name + "さん";
-				isFlontHavingKey = false;
-				break;
-			}
-		}
-		members.Add(
-			new Member() {
-				userSeq = -1 ,
-				name = "フロント" ,
-				isHavingKey = isFlontHavingKey
-			}
-		);
-	}
-
-	JObject replyRequestBody = new JObject();
-	replyRequestBody[ "replyToken" ] = replyToken;
-
-	JArray messages = new JArray();
-
-
-	// secondMessage作成
-	{
-	
-		JObject template = new JObject();
-		template[ "type" ] = "carousel";
-
-		// カラムにつくアクションの数は統一しなければならない
-		int actionNumber;
-		if( members.Count % 3 == 0 )
-			actionNumber = 3;
-		else if( members.Count % 2 == 0 )
-			actionNumber = 2;
-		else
-			actionNumber = 1;
-
-		JArray columns = new JArray();
-		// 1カラムにアクション数分ボタンを表示
-		for( int i = 0 ; i < members.Count / actionNumber + ( members.Count % actionNumber == 0 ? 0 : 1 ) ; i++ ) {
-			JObject column = new JObject();
-			column[ "text" ] = "鍵を持っている人を変更できます";
-			JArray actions = new JArray();
-
-			for( int j = i * actionNumber, count = 0 ; j < members.Count && count < actionNumber ; j++, count++ ) {
-				JObject action = new JObject();
-				action[ "type" ] = "postback";
-				action[ "label" ] = members[ j ].name;
-				action[ "displayText" ] = members[ j ].name + "がカギを持ってます";
-				action[ "data" ] = "changeHasKey=" + members[ j ].userSeq + "&roomNumber=" + myRoomNumber;
-				actions.Add( action );
-			}
-			column[ "actions" ] = actions;
-			columns.Add( column );
-
-		}
-		template[ "columns" ] = columns;
-
-		secondMessage[ "template" ] = template;
-
-		messages.Add( secondMessage );
-
-	}
-	
-
-	*/
