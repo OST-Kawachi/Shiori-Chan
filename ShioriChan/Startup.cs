@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,6 +40,12 @@ namespace ShioriChan {
 		/// <remarks>Runtimeによって呼び出される</remarks>
 		/// <param name="services">Service</param>
 		public void ConfigureServices( IServiceCollection services ) {
+
+			// 必須ではないCookieに対するユーザーの同意が特定のリクエストに必要かどうかを決定する
+			services.Configure<CookiePolicyOptions>( options => {
+				options.CheckConsentNeeded = context => true;
+				options.MinimumSameSitePolicy = SameSiteMode.None;
+			} );
 
 			services.AddMvc().SetCompatibilityVersion( CompatibilityVersion.Version_2_1 );
 
@@ -80,10 +87,18 @@ namespace ShioriChan {
 				app.UseDeveloperExceptionPage();
 			}
 			else {
+				app.UseExceptionHandler( "/Home/Error" );
 				app.UseHsts();
 			}
 			app.UseHttpsRedirection();
-			app.UseMvc();
+			app.UseStaticFiles();
+			app.UseCookiePolicy();
+			app.UseMvc( routes => {
+				routes.MapRoute(
+					name: "default" ,
+					template: "{controller=Tops}/{action=Index}/{id?}" );
+			} );
+
 		}
 
 	}

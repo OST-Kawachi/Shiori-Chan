@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Views\Logins\" />
+    <Folder Include="Views\Tops\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
