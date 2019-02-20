@@ -1,33 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace ShioriChan.Controllers.RollCalls {
 
 	/// <summary>
 	/// 点呼Controller
 	/// </summary>
-	public class RollCallController : ControllerBase {
+	[Route( "shiori-chan" )]
+	public class RollCallsController : Controller {
 
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
-		public RollCallController() {
+		public RollCallsController() {
 
 		}
 
 		/// <summary>
 		/// 点呼一覧画面取得
 		/// </summary>
-		public void GetListView() {
-
-		}
+		[Route( "roll-call/list" )]
+		[ActionName("List")]
+		public IActionResult GetListView() => this.View();
 
 		/// <summary>
 		/// 点呼一覧取得API
 		/// </summary>
+		[Route( "api/roll-call/list" )]
 		public void GetList() {
 
 		}
@@ -35,6 +33,7 @@ namespace ShioriChan.Controllers.RollCalls {
 		/// <summary>
 		/// 点呼受付開始API
 		/// </summary>
+		[Route( "api/roll-call/start-accepting" )]
 		public void StartAccepting() {
 
 		}
