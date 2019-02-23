@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using ShioriChan.Services.Features.MeetingPlaces;
 using ShioriChan.Services.Features.Rooms;
 using ShioriChan.Services.Features.Samples;
 using System.Threading.Tasks;
@@ -210,21 +211,30 @@ namespace ShioriChan.Services.Features {
 		/// </summary>
 		private readonly IRoomService roomService;
 
+		/// <summary>
+		/// 集合場所Service
+		/// </summary>
+		private readonly IMeetingPlaceService meetingPlaceService;
+
 		#endregion
 
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
 		/// <param name="logger">ログ</param>
-		/// <param name="service">サンプル用Service</param>
+		/// <param name="sampleService">サンプル用Service</param>
+		/// <param name="roomService">部屋情報Service</param>
+		/// <param name="meetingPlaceService">集合場所Service</param>
 		public FeatureFacade(
 			ILogger<FeatureFacade> logger , 
 			ISampleService sampleService ,
-			IRoomService roomService 
+			IRoomService roomService ,
+			IMeetingPlaceService meetingPlaceService
 		) {
 			this.logger = logger;
 			this.sampleService = sampleService;
 			this.roomService = roomService;
+			this.meetingPlaceService = meetingPlaceService;
 		}
 		
 		/// <summary>
@@ -455,7 +465,7 @@ namespace ShioriChan.Services.Features {
 								break;
 							}
 
-							await this.ShowGather( parameter );
+							await this.ShowMeetingPlace( parameter );
 
 							break;
 
@@ -630,8 +640,7 @@ namespace ShioriChan.Services.Features {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		private async Task RecodeLocation( JToken parameter )
-			// TODO 位置情報の登録
-			=> await this.sampleService.Execute( parameter );
+			=> await this.meetingPlaceService.Register( parameter );
 
 		/// <summary>
 		/// 連絡先の表示
@@ -724,9 +733,8 @@ namespace ShioriChan.Services.Features {
 		/// 集合場所の表示
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		private async Task ShowGather( JToken parameter )
-			// TODO 集合場所の表示
-			=> await this.sampleService.Execute( parameter );
+		private async Task ShowMeetingPlace( JToken parameter )
+			=> await this.meetingPlaceService.Show( parameter );
 
 		/// <summary>
 		/// 参加者の表示

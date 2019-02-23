@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShioriChan.Repositories.Rooms;
 using ShioriChan.Services.Features;
+using ShioriChan.Services.Features.MeetingPlaces;
 using ShioriChan.Services.Features.Rooms;
 using ShioriChan.Services.Features.Samples;
 using ShioriChan.Services.MessagingApis.Groups;
@@ -62,6 +63,7 @@ namespace ShioriChan {
 				// Features
 				services.AddSingleton<ISampleService , SampleService>();
 				services.AddSingleton<IRoomService , RoomService>();
+				services.AddSingleton<IMeetingPlaceService , IMeetingPlaceService>();
 
 				// MessagingApis
 				services.AddSingleton<IGroupService , GroupService>();
