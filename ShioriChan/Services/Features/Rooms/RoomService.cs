@@ -43,7 +43,7 @@ namespace ShioriChan.Services.Features.Rooms {
 		/// <param name="messageService">メッセージService</param>
 		/// <param name="roomRepository">部屋情報Repository</param>
 		public RoomService(
-			ILogger<FeatureFacade> logger ,
+			ILogger<RoomService> logger ,
 			IMessageService messageService,
 			IRoomRepository roomRepository
 		) {
