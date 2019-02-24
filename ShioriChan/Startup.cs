@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ShioriChan.Repositories.MeetingPlaces;
 using ShioriChan.Repositories.Rooms;
 using ShioriChan.Services.Features;
 using ShioriChan.Services.Features.MeetingPlaces;
@@ -59,6 +60,7 @@ namespace ShioriChan {
 
 				// Repositories
 				services.AddSingleton<IRoomRepository , RoomRepository>();
+				services.AddSingleton<IMeetingPlaceRepository , MeetingPlaceRepository>();
 
 				// Features
 				services.AddSingleton<ISampleService , SampleService>();
