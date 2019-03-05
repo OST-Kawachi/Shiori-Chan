@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using ShioriChan.Services.MessagingApis.Messages.BuilderFactories;
 using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders;
+using ShioriChan.Services.MessagingApis.OAuthes.ChannelAccessTokens;
 
 namespace ShioriChan.Services.MessagingApis.Messages {
 
@@ -21,10 +22,15 @@ namespace ShioriChan.Services.MessagingApis.Messages {
 		private readonly ILogger logger;
 
 		/// <summary>
+		/// チャンネルアクセストークン発行クラス
+		/// </summary>
+		private IChannelAccessTokenService channelAccessTokenService;
+
+		/// <summary>
 		/// コンストラクタ
 		/// </summary>
 		/// <param name="loggerFactory">ログ作成クラス</param>
-		public MessageService( ILoggerFactory loggerFactory ) {
+		public MessageService( ILoggerFactory loggerFactory , IChannelAccessTokenService channelAccessTokenService ) {
 			this.loggerFactory = loggerFactory;
 			this.logger = this.loggerFactory.CreateLogger<MessageService>();
 		}

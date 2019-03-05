@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShioriChan.Repositories.MeetingPlaces;
@@ -17,6 +18,8 @@ using ShioriChan.Services.MessagingApis.OAuthes.LinkTokens;
 using ShioriChan.Services.MessagingApis.Profiles;
 using ShioriChan.Services.MessagingApis.RichMenus;
 using ShioriChan.Services.MessagingApis.TalkRooms;
+using ShioriChan.Settings;
+using System.Data.SqlClient;
 
 namespace ShioriChan {
 
@@ -51,8 +54,7 @@ namespace ShioriChan {
 
 			services.AddMvc().SetCompatibilityVersion( CompatibilityVersion.Version_2_1 );
 
-			// Serviceクラスに関して依存関係を挿入
-			// Service自体はシングルトンとして追加
+			// Serviceクラス、Repositoryクラスに関して依存関係をシングルトンとして挿入
 			{
 
 				// 共通部
@@ -65,7 +67,7 @@ namespace ShioriChan {
 				// Features
 				services.AddSingleton<ISampleService , SampleService>();
 				services.AddSingleton<IRoomService , RoomService>();
-				services.AddSingleton<IMeetingPlaceService , IMeetingPlaceService>();
+				services.AddSingleton<IMeetingPlaceService , MeetingPlaceService>();
 
 				// MessagingApis
 				services.AddSingleton<IGroupService , GroupService>();
@@ -76,6 +78,23 @@ namespace ShioriChan {
 				services.AddSingleton<IRichMenuService , RichMenuService>();
 				services.AddSingleton<ITalkRoomService , TalkRoomService>();
 
+			}
+
+			// 設定ファイルのバインド
+			services.Configure<MessagingApiSetting>( this.Configuration.GetSection( "MessagingApi" ) );
+
+			// RepositoryのDBContextを登録
+			{
+
+				SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder() {
+					DataSource = "shiori-chan-server.database.windows.net" ,
+					IntegratedSecurity = false ,
+					UserID = "shassbeleth" ,
+					Password = "@^p^@123" ,
+					InitialCatalog = "ShioriChanDatabase"
+				};
+
+				services.AddDbContext<RoomRepository>( options => options.UseSqlServer( "" ) );
 			}
 
 		}
