@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using ShioriChan.Entities;
 using ShioriChan.Repositories.Rooms;
 using ShioriChan.Services.MessagingApis.Messages;
 using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.QuickReplies;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,13 +14,6 @@ namespace ShioriChan.Services.Features.Rooms {
 	/// 部屋情報
 	/// </summary>
 	public class RoomService : IRoomService {
-
-		// TODO 仮データ
-		private class User {
-			public int Seq { set; get; }
-			public string Name { set; get; }
-			public bool IsHavingKey { set; get; }
-		}
 
 		/// <summary>
 		/// ログ
@@ -37,7 +28,7 @@ namespace ShioriChan.Services.Features.Rooms {
 		/// <summary>
 		/// 部屋情報Repository
 		/// </summary>
-		private readonly RoomRepository roomRepository;
+		private readonly IRoomRepository roomRepository;
 		
 		/// <summary>
 		/// コンストラクタ
@@ -48,7 +39,7 @@ namespace ShioriChan.Services.Features.Rooms {
 		public RoomService(
 			ILogger<RoomService> logger ,
 			IMessageService messageService,
-			RoomRepository roomRepository
+			IRoomRepository roomRepository
 		) {
 			this.logger = logger;
 			this.messageService = messageService;
@@ -102,52 +93,6 @@ namespace ShioriChan.Services.Features.Rooms {
 		}
 
 		/// <summary>
-		/// 自分の部屋番号を取得
-		/// </summary>
-		/// <param name="userId">ユーザID</param>
-		/// <returns>自分の部屋番号</returns>
-		private string GetMyRoomNumber( string userId ) {
-			// TODO 仮　実際はDBより取得
-			string roomNumber = "202";
-			this.logger.LogTrace( $"Room Number is {roomNumber}." );
-			return roomNumber;
-		}
-
-		/// <summary>
-		/// 指定した部屋番号のメンバーを取得する
-		/// </summary>
-		/// <param name="roomNumber">部屋番号</param>
-		/// <returns>指定した部屋番号のメンバー一覧</returns>
-		private List<User> GetRoomMembers( string roomNumber ) {
-			// TODO 仮　実際はDBより取得
-
-			List<User> members = new List<User>();
-
-			//ログ
-			#region ログ
-			this.logger.LogTrace( $"Members Count is { members.Count }" );
-			members.ForEach( member => {
-				this.logger.LogTrace( "====================" );
-				this.logger.LogTrace( $"User Seq is {member.Seq}" );
-				this.logger.LogTrace( $"User Name is {member.Name}" );
-				this.logger.LogTrace( $"Having Key is {member.IsHavingKey}" );
-			} );
-			this.logger.LogTrace( "====================" );
-			#endregion
-
-			return members;
-		}
-
-		/// <summary>
-		/// 鍵を持っているメンバーを更新する
-		/// </summary>
-		/// <param name="roomNumber">部屋番号</param>
-		/// <param name="userSeq">鍵を持っているユーザシーケンス</param>
-		private void UpdateHavingKeyUser( string roomNumber , int userSeq ) {
-			// TODO 実際はDBを更新
-		}
-		
-		/// <summary>
 		/// 同じ部屋のメンバーを表示する
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
@@ -157,17 +102,21 @@ namespace ShioriChan.Services.Features.Rooms {
 			string userId = this.GetUserId( parameter );
 			string replyToken = this.GetReplyToken( parameter );
 
-			string myRoomNumber = this.GetMyRoomNumber( userId );
+			Room myRoom = await this.roomRepository.GetMyRoom( userId );
+			string myRoomNumber = myRoom.Number;
 			if( string.IsNullOrEmpty( myRoomNumber ) ) {
 				this.logger.LogError( "User Id Target Does Not Exist." );
 				this.logger.LogTrace( "End" );
 				return;
 			}
 
+			/*
 			// メンバー一覧にフロントを追加
-			List<User> members = this.GetRoomMembers( myRoomNumber );
-			members.Add( new User() {
-				Seq = -1 ,
+			List<RoomMember> members = this.GetRoomMembers( myRoomNumber );
+			members.Add( new RoomMember() {
+				UserSeq = -1,
+				
+				a
 				Name = "フロント" ,
 				IsHavingKey = !members.Any( member => member.IsHavingKey == true ) // 鍵を持っているメンバーが一人でもいればフロントがカギを持っていることになる
 			} );
@@ -206,7 +155,8 @@ namespace ShioriChan.Services.Features.Rooms {
 				.BuildQuickReply()
 				.BuildMessage()
 				.Reply( replyToken );
-			
+			*/
+
 			this.logger.LogTrace( "End" );
 			return;
 
@@ -233,6 +183,8 @@ namespace ShioriChan.Services.Features.Rooms {
 
 			string replyToken = this.GetReplyToken( parameter );
 
+			/*
+
 			this.UpdateHavingKeyUser( roomNumber , userSeq );
 
 			List<User> members = this.GetRoomMembers( roomNumber );
@@ -244,6 +196,7 @@ namespace ShioriChan.Services.Features.Rooms {
 				.AddMessage( $"{havingKeyUserName}がカギを持ってるんですね！\n承知しました！" )
 				.BuildMessage()
 				.Reply( replyToken );
+			*/
 
 			this.logger.LogTrace( "End" );
 			return;

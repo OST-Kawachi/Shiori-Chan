@@ -49,7 +49,7 @@ namespace ShioriChan.Services.MessagingApis.OAuthes.ChannelAccessTokens {
 		public async Task<ChannelAccessToken> Issue() {
 			this.logger.LogTrace( "Start" );
 
-			JObject request = new JObject {
+			JObject request = new JObject() {
 				{"grant_type","client_credentials" },
 				{"client_id",this.ClientId } ,
 				{"client_secret",this.ClientSecret }
