@@ -244,9 +244,7 @@ namespace ShioriChan.Services.Features {
 		/// TODO かなり1メソッドの役割が大きいので細分化したい
 		public async Task Execute( JToken parameter ) {
 			this.logger.LogTrace( "Start" );
-
-			this.roomService.ShowRoomMember( parameter );
-
+			
 			if( parameter is null ) {
 				this.logger.LogWarning( "Parameter is NULL." );
 				this.logger.LogTrace( "End" );

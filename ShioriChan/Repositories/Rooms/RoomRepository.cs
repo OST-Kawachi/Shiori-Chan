@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -10,45 +11,27 @@ namespace ShioriChan.Repositories.Rooms {
 	/// <summary>
 	/// 部屋情報Repository
 	/// </summary>
-	public class RoomRepository : DbContext, IRoomRepository {
+	public class RoomRepository : IRoomRepository {
 
 		/// <summary>
 		/// ログ
 		/// </summary>
-		private ILogger logger;
+		private readonly ILogger logger;
 
 		/// <summary>
-		/// 部屋情報
+		/// DBモデル
 		/// </summary>
-		private DbSet<Room> Rooms { set; get; }
-
-		/// <summary>
-		/// 部屋メンバー
-		/// </summary>
-		private DbSet<RoomMember> RoomMembers { set; get; }
-
-		/// <summary>
-		/// ユーザ情報
-		/// </summary>
-		private DbSet<UserInfo> UserInfos { set; get; }
+		private readonly ModelCreator model;
 
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
 		public RoomRepository(
-			DbContextOptions<RoomRepository> options ,
-			ILogger<RoomRepository> logger
-		) : base( options )
-			=> this.logger = logger;
-
-		/// <summary>
-		/// モデル作成
-		/// </summary>
-		/// <param name="modelBuilder"></param>
-		protected override void OnModelCreating( ModelBuilder modelBuilder ) {
-			modelBuilder.Entity<Room>().ToTable( "Room" );
-			modelBuilder.Entity<RoomMember>().ToTable( "RoomMember" );
-			modelBuilder.Entity<UserInfo>().ToTable( "UserInfo" );
+			ILogger<RoomRepository> logger ,
+			ModelCreator model
+		) {
+			this.logger = logger;
+			this.model = model;
 		}
 
 		/// <summary>
@@ -60,17 +43,31 @@ namespace ShioriChan.Repositories.Rooms {
 			this.logger.LogTrace( "Start" );
 			this.logger.LogTrace( $"User Id is {userId}." );
 
+			this.logger.LogTrace( "Seq Show Start" );
+			try {
+				DbSet<Room> rooms = this.model.Rooms;
+				this.logger.LogTrace( "Rooms!" );
+				List<Room> roomList = await rooms.ToListAsync();
+				this.logger.LogTrace( "RoomList!" );
+				this.logger.LogTrace( "Room List Count is " + roomList.Count );
+
+				roomList.ForEach( room => this.logger.LogInformation( $"Seq is {room.Seq}" ) );
+			}
+			catch( Exception e ) {
+				this.logger.LogError( "{e}" , e );
+			}
+			this.logger.LogTrace( "Seq Show End" );
+
 			// ユーザIDはLINEアカウント単位で一意なのでリストで取得するが要素数は0または1
-			List<UserInfo> user = await this.UserInfos
+			List<UserInfo> user = await this.model.UserInfos
 				.Where( userInfo => userInfo.Id.Equals( userId ) )
-				.ToListAsync().ConfigureAwait( false );
+				.ToListAsync();
 
 			this.logger.LogTrace( $"User Id Count is {user.Count()}" );
 			if( user.Count() == 0 ) {
 				this.logger.LogTrace( "End" );
 				return null;
 			}
-
 
 			return null;
 		}

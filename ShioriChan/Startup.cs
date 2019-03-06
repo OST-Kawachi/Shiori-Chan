@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ShioriChan.Repositories;
 using ShioriChan.Repositories.MeetingPlaces;
 using ShioriChan.Repositories.Rooms;
 using ShioriChan.Services.Features;
@@ -19,7 +20,6 @@ using ShioriChan.Services.MessagingApis.Profiles;
 using ShioriChan.Services.MessagingApis.RichMenus;
 using ShioriChan.Services.MessagingApis.TalkRooms;
 using ShioriChan.Settings;
-using System.Data.SqlClient;
 
 namespace ShioriChan {
 
@@ -83,10 +83,8 @@ namespace ShioriChan {
 			// 設定ファイルのバインド
 			services.Configure<MessagingApiSetting>( this.Configuration.GetSection( "MessagingApi" ) );
 
-			// RepositoryのDBContextを登録
-			{
-				services.AddDbContext<RoomRepository>( options => options.UseSqlServer( this.Configuration.GetConnectionString( "Database" ) ) );
-			}
+			// DBContextを登録
+			services.AddDbContext<ModelCreator>( options => options.UseSqlServer( this.Configuration.GetConnectionString( "Database" ) ) );
 
 		}
 

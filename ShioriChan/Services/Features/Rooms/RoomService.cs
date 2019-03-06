@@ -103,7 +103,7 @@ namespace ShioriChan.Services.Features.Rooms {
 			string replyToken = this.GetReplyToken( parameter );
 
 			Room myRoom = await this.roomRepository.GetMyRoom( userId );
-			string myRoomNumber = myRoom.Number;
+			string myRoomNumber = myRoom?.Number;
 			if( string.IsNullOrEmpty( myRoomNumber ) ) {
 				this.logger.LogError( "User Id Target Does Not Exist." );
 				this.logger.LogTrace( "End" );

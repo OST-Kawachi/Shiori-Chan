@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ShioriChan.Entities {
 
@@ -7,10 +8,11 @@ namespace ShioriChan.Entities {
 	/// ユーザ
 	/// </summary>
 	public class UserInfo {
-	
+
 		/// <summary>
 		/// ユーザ管理番号
 		/// </summary>
+		[Key]
 		public int Seq { set; get; }
 
 		/// <summary>

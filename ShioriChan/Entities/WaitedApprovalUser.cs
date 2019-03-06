@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ShioriChan.Entities {
 
@@ -10,6 +11,7 @@ namespace ShioriChan.Entities {
 		/// <summary>
 		/// 承認待ち管理番号
 		/// </summary>
+		[Key]
 		public int Seq { set; get; }
 
 		/// <summary>
