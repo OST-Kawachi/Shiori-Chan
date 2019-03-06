@@ -1,28 +1,11 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
-namespace ShioriChan.Models {
+namespace ShioriChan.Entities {
 
 	/// <summary>
-	/// 部屋情報
+	/// 参加者
 	/// </summary>
-	public class Room {
-
-		/// <summary>
-		/// 部屋管理番号
-		/// </summary>
-		[Key]
-		public int Seq { set; get; }
-
-		/// <summary>
-		/// 宿泊施設管理番号
-		/// </summary>
-		public int HotelSeq { set; get; }
-
-		/// <summary>
-		/// 部屋番号
-		/// </summary>
-		public string Number { set; get; }
+	public class Participant {
 
 		/// <summary>
 		/// イベント管理番号
@@ -30,9 +13,14 @@ namespace ShioriChan.Models {
 		public int EventSeq { set; get; }
 
 		/// <summary>
-		/// 鍵を持っている参加者管理番号
+		/// ユーザ管理番号
 		/// </summary>
-		public int HavingKeyUserSeq { set; get; }
+		public int UserSeq { set; get; }
+
+		/// <summary>
+		/// 点呼状況
+		/// </summary>
+		public bool? RollCall { set; get; }
 
 		/// <summary>
 		/// 登録者管理番号

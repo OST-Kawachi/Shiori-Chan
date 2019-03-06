@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
-using ShioriChan.Models;
+using ShioriChan.Entities;
 using ShioriChan.Repositories.Rooms;
 using ShioriChan.Services.MessagingApis.Messages;
 using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.QuickReplies;
@@ -218,21 +218,7 @@ namespace ShioriChan.Services.Features.Rooms {
 		/// <param name="parameter">パラメータ</param>
 		public async Task ChangeHavingKeyUser( JToken parameter ) {
 			this.logger.LogTrace( "Start" );
-			this.logger.LogTrace( "Seq Show Start" );
-			try {
-				DbSet<Room> rooms = this.roomRepository.Rooms;
-				this.logger.LogTrace( "Rooms!" );
-				List<Room> roomList = await rooms.ToListAsync();
-				this.logger.LogTrace( "RoomList!" );
-				this.logger.LogTrace( "Room List Count is " + roomList.Count );
-			
-				roomList.ForEach( room => this.logger.LogInformation( $"Seq is {room.Seq}" ) );
-			}
-			catch( Exception e ) {
-				this.logger.LogError( "{e}" , e );
-			}
-			this.logger.LogTrace( "Seq Show End" );
-			return;
+
 			string postbackData = this.GetPostbackData( parameter );
 
 			string roomNumber = "";
@@ -262,6 +248,24 @@ namespace ShioriChan.Services.Features.Rooms {
 			this.logger.LogTrace( "End" );
 			return;
 		}
+
+/*
+this.logger.LogTrace( "Seq Show Start" );
+try {
+	DbSet<Room> rooms = this.roomRepository.Rooms;
+	this.logger.LogTrace( "Rooms!" );
+	List<Room> roomList = await rooms.ToListAsync();
+	this.logger.LogTrace( "RoomList!" );
+	this.logger.LogTrace( "Room List Count is " + roomList.Count );
+
+	roomList.ForEach( room => this.logger.LogInformation( $"Seq is {room.Seq}" ) );
+}
+catch( Exception e ) {
+	this.logger.LogError( "{e}" , e );
+}
+this.logger.LogTrace( "Seq Show End" );
+*/
+
 
 	}
 

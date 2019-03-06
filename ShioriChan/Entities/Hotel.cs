@@ -1,11 +1,16 @@
 ﻿using System;
 
-namespace ShioriChan.Models {
+namespace ShioriChan.Entities {
 
 	/// <summary>
-	/// 参加者
+	/// 宿泊施設
 	/// </summary>
-	public class Participant {
+	public class Hotel {
+
+		/// <summary>
+		/// 宿泊施設管理番号
+		/// </summary>
+		public int Seq { set; get; }
 
 		/// <summary>
 		/// イベント管理番号
@@ -13,14 +18,39 @@ namespace ShioriChan.Models {
 		public int EventSeq { set; get; }
 
 		/// <summary>
-		/// ユーザ管理番号
+		/// 宿泊施設名
 		/// </summary>
-		public int UserSeq { set; get; }
+		public string Name { set; get; }
 
 		/// <summary>
-		/// 点呼状況
+		/// チェックイン
 		/// </summary>
-		public bool RollCall { set; get; }
+		public DateTime CheckIn { set; get; }
+
+		/// <summary>
+		/// チェックアウト
+		/// </summary>
+		public DateTime CheckOut { set; get; }
+
+		/// <summary>
+		/// URL
+		/// </summary>
+		public string Url { set; get; }
+
+		/// <summary>
+		/// 住所
+		/// </summary>
+		public string Address { set; get; }
+
+		/// <summary>
+		/// 緯度
+		/// </summary>
+		public double? Latitude { set; get; }
+
+		/// <summary>
+		/// 経度
+		/// </summary>
+		public double? Longitude { set; get; }
 
 		/// <summary>
 		/// 登録者管理番号

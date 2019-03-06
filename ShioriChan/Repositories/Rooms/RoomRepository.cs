@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ShioriChan.Models;
+using ShioriChan.Entities;
 
 namespace ShioriChan.Repositories.Rooms {
 
@@ -9,14 +9,22 @@ namespace ShioriChan.Repositories.Rooms {
 	public class RoomRepository : DbContext, IRoomRepository {
 
 		/// <summary>
+		/// 部屋情報
+		/// </summary>
+		public DbSet<Room> Rooms { set; get; }
+
+		/// <summary>
 		/// コンストラクタ
 		/// </summary>
 		public RoomRepository( DbContextOptions<RoomRepository> options ) : base( options ) {}
 
-		public DbSet<Room> Rooms { set; get; }
-
-		protected override void OnModelCreating( ModelBuilder modelBuilder ) => modelBuilder.Entity<Room>().ToTable( "Room" );
-
+		/// <summary>
+		/// モデル作成
+		/// </summary>
+		/// <param name="modelBuilder"></param>
+		protected override void OnModelCreating( ModelBuilder modelBuilder )
+			=> modelBuilder.Entity<Room>().ToTable( "Room" );
+		
 	}
 
 }

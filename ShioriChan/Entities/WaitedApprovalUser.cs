@@ -1,26 +1,26 @@
 ﻿using System;
 
-namespace ShioriChan.Models {
+namespace ShioriChan.Entities {
 
 	/// <summary>
-	/// 部屋メンバー
+	/// 承認待ちユーザ
 	/// </summary>
-	public class RoomMember {
+	public class WaitedApprovalUser {
 
 		/// <summary>
-		/// 部屋管理番号
+		/// 承認待ち管理番号
 		/// </summary>
-		public int RoomSeq { set; get; }
+		public int Seq { set; get; }
 
 		/// <summary>
-		/// イベント管理番号
+		/// ユーザID
 		/// </summary>
-		public int EventSeq { set; get; }
+		public string UserId { set; get; }
 
 		/// <summary>
-		/// ユーザ管理番号
+		/// ユーザ名
 		/// </summary>
-		public int UserSeq { set; get; }
+		public string UserName { set; get; }
 
 		/// <summary>
 		/// 登録者管理番号
@@ -46,6 +46,11 @@ namespace ShioriChan.Models {
 		/// バージョン
 		/// </summary>
 		public int Version { set; get; }
+
+		/// <summary>
+		/// ユーザ情報
+		/// </summary>
+		public UserInfo UserInfo { set; get; }
 
 	}
 

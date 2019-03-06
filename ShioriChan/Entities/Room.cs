@@ -1,27 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace ShioriChan.Models {
+namespace ShioriChan.Entities {
 
 	/// <summary>
-	/// ユーザ
+	/// 部屋情報
 	/// </summary>
-	public class UserInfo {
-	
+	public class Room {
+
 		/// <summary>
-		/// ユーザ管理番号
+		/// 部屋管理番号
 		/// </summary>
+		[Key]
 		public int Seq { set; get; }
 
 		/// <summary>
-		/// ユーザID
+		/// 宿泊施設管理番号
 		/// </summary>
-		public string Id { set; get; }
+		public int HotelSeq { set; get; }
 
 		/// <summary>
-		/// ユーザ名
+		/// 部屋番号
 		/// </summary>
-		public string Name { set; get; }
+		public string Number { set; get; }
+
+		/// <summary>
+		/// イベント管理番号
+		/// </summary>
+		public int EventSeq { set; get; }
+
+		/// <summary>
+		/// 鍵を持っている参加者管理番号
+		/// </summary>
+		public int? HavingKeyUserSeq { set; get; }
 
 		/// <summary>
 		/// 登録者管理番号
@@ -47,16 +58,6 @@ namespace ShioriChan.Models {
 		/// バージョン
 		/// </summary>
 		public int Version { set; get; }
-
-		/// <summary>
-		/// プッシュ通知
-		/// </summary>
-		public ICollection<PushNotification> PushNotifications { set; get; }
-
-		/// <summary>
-		/// ユーザ権限
-		/// </summary>
-		public ICollection<UserPermission> UserPermissions { set; get; }
 
 	}
 

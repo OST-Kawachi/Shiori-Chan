@@ -1,56 +1,31 @@
 ﻿using System;
 
-namespace ShioriChan.Models {
+namespace ShioriChan.Entities {
 
 	/// <summary>
-	/// 宿泊施設
+	/// プッシュ通知
 	/// </summary>
-	public class Hotel {
+	public class PushNotification {
 
 		/// <summary>
-		/// 宿泊施設管理番号
+		/// 通知管理番号
 		/// </summary>
 		public int Seq { set; get; }
 
 		/// <summary>
-		/// イベント管理番号
+		/// ユーザ管理番号
 		/// </summary>
-		public int EventSeq { set; get; }
+		public int UserSeq { set; get; }
 
 		/// <summary>
-		/// 宿泊施設名
+		/// 通知状況
 		/// </summary>
-		public string Name { set; get; }
+		public int Status { set; get; }
 
 		/// <summary>
-		/// チェックイン
+		/// 通知内容
 		/// </summary>
-		public DateTime CheckIn { set; get; }
-
-		/// <summary>
-		/// チェックアウト
-		/// </summary>
-		public DateTime CheckOut { set; get; }
-
-		/// <summary>
-		/// URL
-		/// </summary>
-		public string Url { set; get; }
-
-		/// <summary>
-		/// 住所
-		/// </summary>
-		public string Address { set; get; }
-
-		/// <summary>
-		/// 緯度
-		/// </summary>
-		public double Latitude { set; get; }
-
-		/// <summary>
-		/// 経度
-		/// </summary>
-		public double Longitude { set; get; }
+		public string Text { set; get; }
 
 		/// <summary>
 		/// 登録者管理番号

@@ -85,16 +85,7 @@ namespace ShioriChan {
 
 			// RepositoryのDBContextを登録
 			{
-
-				SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder() {
-					DataSource = "shiori-chan-server.database.windows.net" ,
-					IntegratedSecurity = false ,
-					UserID = "shassbeleth" ,
-					Password = "@^p^@123" ,
-					InitialCatalog = "ShioriChanDatabase"
-				};
-
-				services.AddDbContext<RoomRepository>( options => options.UseSqlServer( "" ) );
+				services.AddDbContext<RoomRepository>( options => options.UseSqlServer( this.Configuration.GetConnectionString( "Database" ) ) );
 			}
 
 		}

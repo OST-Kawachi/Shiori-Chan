@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ShioriChan.Models {
+namespace ShioriChan.Entities {
 
 	/// <summary>
 	/// 権限
@@ -8,9 +8,9 @@ namespace ShioriChan.Models {
 	public class Permission {
 
 		/// <summary>
-		/// 権限ID
+		/// 権限管理番号
 		/// </summary>
-		public int Id { set; get; }
+		public int Seq{ set; get; }
 
 		/// <summary>
 		/// 権限名

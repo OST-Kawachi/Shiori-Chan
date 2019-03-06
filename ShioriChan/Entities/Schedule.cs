@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ShioriChan.Models {
+namespace ShioriChan.Entities {
 
 	/// <summary>
 	/// スケジュール
@@ -18,6 +18,11 @@ namespace ShioriChan.Models {
 		public string Name { set; get; }
 
 		/// <summary>
+		/// イベント管理番号
+		/// </summary>
+		public int EventSeq { set; get; }
+
+		/// <summary>
 		/// 開始日時
 		/// </summary>
 		public DateTime StartDatetime { set; get; }
@@ -30,12 +35,12 @@ namespace ShioriChan.Models {
 		/// <summary>
 		/// 集合場所緯度
 		/// </summary>
-		public double Latitude { set; get; }
+		public double? Latitude { set; get; }
 
 		/// <summary>
 		/// 集合場所経度
 		/// </summary>
-		public double Longitude { set; get; }
+		public double? Longitude { set; get; }
 
 		/// <summary>
 		/// 登録者管理番号

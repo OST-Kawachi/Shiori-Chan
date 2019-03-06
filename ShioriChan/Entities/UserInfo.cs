@@ -1,31 +1,32 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace ShioriChan.Models {
+namespace ShioriChan.Entities {
 
 	/// <summary>
-	/// プッシュ通知
+	/// ユーザ
 	/// </summary>
-	public class PushNotification {
-
+	public class UserInfo {
+	
 		/// <summary>
-		/// 通知管理番号
+		/// ユーザ管理番号
 		/// </summary>
 		public int Seq { set; get; }
 
 		/// <summary>
-		/// ユーザ管理番号
+		/// ユーザID
 		/// </summary>
-		public int UserSeq { set; get; }
+		public string Id { set; get; }
 
 		/// <summary>
-		/// 通知状況
+		/// ユーザ名
 		/// </summary>
-		public int Status { set; get; }
+		public string Name { set; get; }
 
 		/// <summary>
-		/// 通知内容
+		/// 参加中イベント管理番号
 		/// </summary>
-		public string Text { set; get; }
+		public int? ParticipatingEventSeq { set; get; }
 
 		/// <summary>
 		/// 登録者管理番号
@@ -51,6 +52,16 @@ namespace ShioriChan.Models {
 		/// バージョン
 		/// </summary>
 		public int Version { set; get; }
+
+		/// <summary>
+		/// プッシュ通知
+		/// </summary>
+		public ICollection<PushNotification> PushNotifications { set; get; }
+
+		/// <summary>
+		/// ユーザ権限
+		/// </summary>
+		public ICollection<UserPermission> UserPermissions { set; get; }
 
 	}
 
