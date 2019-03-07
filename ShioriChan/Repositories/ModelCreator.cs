@@ -81,14 +81,14 @@ namespace ShioriChan.Repositories {
 			modelBuilder.Entity<AccessToken>().ToTable( "AccessToken" );
 			modelBuilder.Entity<Event>().ToTable( "Event" );
 			modelBuilder.Entity<Hotel>().ToTable( "Hotel" );
-			modelBuilder.Entity<Participant>().HasKey( participant => new { participant.EventSeq , participant.UserSeq } );
+			modelBuilder.Entity<Participant>().ToTable("Participant").HasKey( participant => new { participant.EventSeq , participant.UserSeq } );
 			modelBuilder.Entity<Permission>().ToTable( "Permission" );
 			modelBuilder.Entity<PushNotification>().ToTable( "PushNotification" );
 			modelBuilder.Entity<Room>().ToTable( "Room" );
-			modelBuilder.Entity<RoomMember>().HasKey( roomMember => new { roomMember.RoomSeq , roomMember.EventSeq , roomMember.UserSeq } );
-			modelBuilder.Entity<Schedule>().HasKey( schedule => new { schedule.Seq , schedule.Name } );
+			modelBuilder.Entity<RoomMember>().ToTable("RoomMember").HasKey( roomMember => new { roomMember.RoomSeq , roomMember.EventSeq , roomMember.UserSeq } );
+			modelBuilder.Entity<Schedule>().ToTable("Schedule").HasKey( schedule => new { schedule.Seq , schedule.Name } );
 			modelBuilder.Entity<UserInfo>().ToTable( "UserInfo" );
-			modelBuilder.Entity<UserPermission>().HasKey( userPermission => new { userPermission.UserSeq , userPermission.EventSeq , userPermission.PermissionSeq } );
+			modelBuilder.Entity<UserPermission>().ToTable("UserPermission").HasKey( userPermission => new { userPermission.UserSeq , userPermission.EventSeq , userPermission.PermissionSeq } );
 			modelBuilder.Entity<WaitedApprovalUser>().ToTable( "WaitedApprovalUser" );
 		}
 

@@ -4,6 +4,7 @@ using ShioriChan.Entities;
 using ShioriChan.Repositories.Rooms;
 using ShioriChan.Services.MessagingApis.Messages;
 using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.QuickReplies;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -110,13 +111,14 @@ namespace ShioriChan.Services.Features.Rooms {
 				return;
 			}
 
-			/*
 			// メンバー一覧にフロントを追加
-			List<RoomMember> members = this.GetRoomMembers( myRoomNumber );
+			List<RoomMember> members = this.roomRepository.GetRoomMembers( myRoom.Seq );
+			
+
+/*
 			members.Add( new RoomMember() {
 				UserSeq = -1,
 				
-				a
 				Name = "フロント" ,
 				IsHavingKey = !members.Any( member => member.IsHavingKey == true ) // 鍵を持っているメンバーが一人でもいればフロントがカギを持っていることになる
 			} );

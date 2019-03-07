@@ -17,11 +17,11 @@ namespace ShioriChan.Repositories.Rooms {
 		Task<Room> GetMyRoom( string userId );
 		
 		/// <summary>
-		/// 指定した部屋番号のメンバーを取得する
+		/// 指定した部屋のメンバーを取得する
 		/// </summary>
-		/// <param name="roomNumber">部屋番号</param>
+		/// <param name="roomSeq">部屋管理番号</param>
 		/// <returns>指定した部屋番号のメンバー一覧</returns>
-		List<RoomMember> GetRoomMembers( string roomNumber );
+		List<RoomMember> GetRoomMembers( int roomSeq );
 
 		/// <summary>
 		/// 鍵を持っているメンバーを更新する
