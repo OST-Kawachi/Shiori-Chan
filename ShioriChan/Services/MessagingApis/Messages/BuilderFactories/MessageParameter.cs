@@ -14,18 +14,36 @@
 
 			public string replyToken;
 
-			public class QuickReply {
+			public string to;
 
-				// datetimepickerだったら使う項目
-				public string initial;
+			public string[] toList;
 
-				public string max;
+			public class Message {
 
-				public string min;
-
+				public class QuickReply {
+					public class Item {
+						public string type;
+						public string imageUrl;
+						public class Action {
+							public string type;
+							public string label;
+							public string data;
+							public string displayText;
+							public string text;
+							public string uri;
+							public class AltUri {
+								public string desktop;
+							}
+							public AltUri altUri;
+							// 日時選択アクションから
+						}
+						public Action action;
+					}
+					public Item[] items;
+				}
+				public QuickReply quickReply;
 			}
-
-			public QuickReply q;
+			public Message[] messages;
 
 		}
 

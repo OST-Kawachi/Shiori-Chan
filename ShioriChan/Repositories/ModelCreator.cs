@@ -85,7 +85,7 @@ namespace ShioriChan.Repositories {
 			modelBuilder.Entity<Permission>().ToTable( "Permission" );
 			modelBuilder.Entity<PushNotification>().ToTable( "PushNotification" );
 			modelBuilder.Entity<Room>().ToTable( "Room" );
-			modelBuilder.Entity<RoomMember>().ToTable("RoomMember").HasKey( roomMember => new { roomMember.RoomSeq , roomMember.EventSeq , roomMember.UserSeq } );
+			modelBuilder.Entity<RoomMember>().ToTable("RoomMember").HasKey( roomMember => new { roomMember.RoomSeq , roomMember.UserSeq } );
 			modelBuilder.Entity<Schedule>().ToTable("Schedule").HasKey( schedule => new { schedule.Seq , schedule.Name } );
 			modelBuilder.Entity<UserInfo>().ToTable( "UserInfo" );
 			modelBuilder.Entity<UserPermission>().ToTable("UserPermission").HasKey( userPermission => new { userPermission.UserSeq , userPermission.EventSeq , userPermission.PermissionSeq } );

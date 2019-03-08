@@ -80,7 +80,6 @@ namespace ShioriChan.Repositories.Rooms {
 			// 宿泊する部屋を取得
 			List<RoomMember> roomMembers = await this.model.RoomMembers
 				.Where( rm =>
-					rm.EventSeq == eventSeq &&
 					rm.UserSeq == userSeq
 				)
 				.ToListAsync();
@@ -94,7 +93,6 @@ namespace ShioriChan.Repositories.Rooms {
 			// 宿泊中の施設の部屋情報のみを取得
 			List<Room> rooms = await this.model.Rooms
 				.Where( r =>
-					r.EventSeq == eventSeq &&
 					r.HotelSeq == hotelSeq &&
 					roomMembers.Any( rm => rm.RoomSeq == r.Seq )
 				)
@@ -106,6 +104,7 @@ namespace ShioriChan.Repositories.Rooms {
 				return null;
 			}
 
+			this.logger.LogTrace( "Start" );
 			return rooms[0];
 		}
 
@@ -113,15 +112,54 @@ namespace ShioriChan.Repositories.Rooms {
 		/// 指定した部屋番号のメンバーを取得する
 		/// </summary>
 		/// <param name="roomSeq">部屋管理番号</param>
-		/// <returns>指定した部屋番号のメンバー一覧</returns>
-		public List<RoomMember> GetRoomMembers( int roomSeq ) => null;
+		/// <returns>指定した部屋番号のメンバー一覧と鍵を持っているユーザの管理番号</returns>
+		public (List<UserInfo>,int?) GetRoomMembers( int roomSeq ) {
+			this.logger.LogTrace( "Start" );
+			this.logger.LogTrace( $"Room Seq is {roomSeq}." );
+
+			// 鍵を持っているユーザの管理番号を取得
+			List<Room> rooms = this.model.Rooms
+				.Where( r => r.Seq == roomSeq )
+				.ToList();
+			this.logger.LogTrace( $"Rooms Count is {rooms.Count}." );
+			if( rooms.Count == 0 ) {
+				this.logger.LogTrace( "End" );
+				return (null,null);
+			}
+			int? havingKeyUserSeq = rooms[ 0 ].HavingKeyUserSeq;
+			this.logger.LogTrace( $"Having Key User Seq is {havingKeyUserSeq?.ToString() ?? "None"}" );
+
+			// メンバーのユーザ情報を取得する
+			List<RoomMember> roomMembers = this.model.RoomMembers
+				.Where( rm => rm.RoomSeq == roomSeq )
+				.ToList();
+			this.logger.LogTrace( $"Room Members Count is {roomMembers.Count}" );
+			if( roomMembers.Count == 0 ) {
+				this.logger.LogTrace( "End" );
+				return (null,null);
+			}
+			roomMembers.ForEach( rm => this.logger.LogTrace( $"Room Member Uesr Seq is {rm.UserSeq}" ) );
+			List<UserInfo> userInfos = this.model.UserInfos
+				.Where( ui => roomMembers.Any( rm => rm.UserSeq == ui.Seq ) )
+				.ToList();
+			this.logger.LogTrace( $"User Infos Count is {userInfos.Count}" );
+			if( userInfos.Count == 0 ) {
+				this.logger.LogTrace( "End" );
+				return (null, null);
+			}
+
+			this.logger.LogTrace( "End" );
+			return (userInfos, havingKeyUserSeq);
+		}
 
 		/// <summary>
 		/// 鍵を持っているメンバーを更新する
 		/// </summary>
-		/// <param name="roomNumber">部屋番号</param>
-		/// <param name="userSeq">鍵を持っているユーザシーケンス</param>
-		public void UpdateHavingKeyUser( string roomNumber , int userSeq ) {
+		/// <param name="roomNumber">部屋管理番号</param>
+		/// <param name="userSeq">鍵を持っているユーザ管理番号</param>
+		public void UpdateHavingKeyUser( int roomSeq , int userSeq ) {
+
+
 
 		}
 

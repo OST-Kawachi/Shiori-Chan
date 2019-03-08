@@ -25,11 +25,6 @@ namespace ShioriChan.Entities {
 		public string Number { set; get; }
 
 		/// <summary>
-		/// イベント管理番号
-		/// </summary>
-		public int EventSeq { set; get; }
-
-		/// <summary>
 		/// 鍵を持っている参加者管理番号
 		/// </summary>
 		public int? HavingKeyUserSeq { set; get; }

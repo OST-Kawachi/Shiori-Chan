@@ -4,7 +4,6 @@ using ShioriChan.Entities;
 using ShioriChan.Repositories.Rooms;
 using ShioriChan.Services.MessagingApis.Messages;
 using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.QuickReplies;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -110,21 +109,17 @@ namespace ShioriChan.Services.Features.Rooms {
 				this.logger.LogTrace( "End" );
 				return;
 			}
+			this.logger.LogTrace( $"My Room Number is {myRoomNumber}" );
 
-			// メンバー一覧にフロントを追加
-			List<RoomMember> members = this.roomRepository.GetRoomMembers( myRoom.Seq );
-			
+			(List<UserInfo> members , int? havingKeyUserSeq ) = this.roomRepository.GetRoomMembers( myRoom.Seq );
+			this.logger.LogTrace( $"Members Count is {members.Count}" );
+			this.logger.LogTrace( $"Having Key User Seq is { havingKeyUserSeq ?? -1 }" );
 
-/*
-			members.Add( new RoomMember() {
-				UserSeq = -1,
-				
-				Name = "フロント" ,
-				IsHavingKey = !members.Any( member => member.IsHavingKey == true ) // 鍵を持っているメンバーが一人でもいればフロントがカギを持っていることになる
-			} );
-
-			string havingKeyUserName = members.FirstOrDefault( member => member.IsHavingKey ).Name;
-			this.logger.LogTrace( $"Having Key User Name is {havingKeyUserName}." );
+			string havingKeyUserName = members.FirstOrDefault( member => havingKeyUserSeq.HasValue && havingKeyUserSeq.Value == member.Seq )?.Name ?? "フロント";
+			if( !"フロント".Equals( havingKeyUserName ) ) {
+				havingKeyUserName += "さん";
+			}
+			this.logger.LogTrace( $"Having Key User Name is {havingKeyUserName}" );
 
 			IAddOnlyItemOfQuickReply quickReplyBuilder = this.messageService.CreateMessageBuilder()
 				.AddMessage(
@@ -135,30 +130,36 @@ namespace ShioriChan.Services.Features.Rooms {
 				.AddQuickReply();
 
 			IBuildOrAddItemOfQuickReply buildableQuickReplyBuilder = null;
-			foreach( User member in members ) {
+			foreach( UserInfo member in members ) {
 				// 初回のみビルドできるインタフェースに変更する
 				if( buildableQuickReplyBuilder is null ) {
 					buildableQuickReplyBuilder = quickReplyBuilder.AddItem( "" ).UsePostbackAction(
 						member.Name ,
-						"changeHasKey=" + member.Seq + "&roomNumber=" + myRoomNumber ,
-						member.Name + "がカギを持ってます"
+						"changeHasKey=" + member.Seq + "&roomNumber=" + myRoom.Seq ,
+						member.Name + "さんがカギを持ってます"
 					);
 				}
 				// 2回目以降はインスタンスを上書きしていく
 				else {
-					buildableQuickReplyBuilder = buildableQuickReplyBuilder.AddItem("").UsePostbackAction(
+					buildableQuickReplyBuilder = buildableQuickReplyBuilder.AddItem( "" ).UsePostbackAction(
 						member.Name ,
-						"changeHasKey=" + member.Seq + "&roomNumber=" + myRoomNumber ,
-						member.Name + "がカギを持ってます"
+						"changeHasKey=" + member.Seq + "&roomNumber=" + myRoom.Seq ,
+						member.Name + "さんがカギを持ってます"
 					);
 				}
 			}
+			// フロントの追加
+			buildableQuickReplyBuilder = buildableQuickReplyBuilder.AddItem( "" ).UsePostbackAction(
+				"フロント" ,
+				"changeHasKey=" + -1 + "&roomNumber=" + myRoom.Seq ,
+				"フロントにカギを預けてます"
+			);
+
 			await buildableQuickReplyBuilder
 				.BuildQuickReply()
 				.BuildMessage()
 				.Reply( replyToken );
-			*/
-
+			
 			this.logger.LogTrace( "End" );
 			return;
 
@@ -173,17 +174,20 @@ namespace ShioriChan.Services.Features.Rooms {
 
 			string postbackData = this.GetPostbackData( parameter );
 
-			string roomNumber = "";
+			int roomSeq = -1;
 			int userSeq = -1;
 			{
 				string[] keyValue = postbackData.Split( "&" );
 				userSeq = int.Parse( keyValue[ 0 ].Split( "=" )[ 1 ] );
-				roomNumber = keyValue[ 1 ].Split( "=" )[ 1 ];
+				roomSeq = int.Parse( keyValue[ 1 ].Split( "=" )[ 1 ] );
 			}
-			this.logger.LogTrace( $"Room Number is {roomNumber}." );
+			this.logger.LogTrace( $"Room Seq is {roomSeq}." );
 			this.logger.LogTrace( $"User Seq is {userSeq}." );
 
 			string replyToken = this.GetReplyToken( parameter );
+
+			this.roomRepository.UpdateHavingKeyUser( roomSeq , userSeq );
+
 
 			/*
 
@@ -203,25 +207,7 @@ namespace ShioriChan.Services.Features.Rooms {
 			this.logger.LogTrace( "End" );
 			return;
 		}
-
-/*
-this.logger.LogTrace( "Seq Show Start" );
-try {
-	DbSet<Room> rooms = this.roomRepository.Rooms;
-	this.logger.LogTrace( "Rooms!" );
-	List<Room> roomList = await rooms.ToListAsync();
-	this.logger.LogTrace( "RoomList!" );
-	this.logger.LogTrace( "Room List Count is " + roomList.Count );
-
-	roomList.ForEach( room => this.logger.LogInformation( $"Seq is {room.Seq}" ) );
-}
-catch( Exception e ) {
-	this.logger.LogError( "{e}" , e );
-}
-this.logger.LogTrace( "Seq Show End" );
-*/
-
-
+		
 	}
 
 }
