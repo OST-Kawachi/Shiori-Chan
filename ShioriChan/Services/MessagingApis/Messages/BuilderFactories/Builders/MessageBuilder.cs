@@ -1,4 +1,5 @@
-﻿using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders;
+﻿using Newtonsoft.Json.Linq;
+using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders;
 using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.Imagemaps;
 using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.QuickReplies;
 using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.Templates;
@@ -28,22 +29,32 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// 直接インスタンスを生成してほしくないのでprivateにする
 			/// </summary>
 			/// <param name="parameter">送信用Parameter</param>
-			public MessageBuilder( MessageParameter parameter ) => this.parameter = parameter;
+			public MessageBuilder( MessageParameter parameter )
+				=> this.parameter = parameter;
 
 			/// <summary>
 			/// クイックリプライ追加
 			/// </summary>
 			/// <returns>Item追加のみができるQuickReplyBuilder</returns>
-			public IAddOnlyItemOfQuickReply AddQuickReply()
-				=> new QuickReplyBuilder( this.parameter );
+			public IAddOnlyItemOfQuickReply AddQuickReply() {
+				this.parameter.Messages.Last[ "quickReply" ] = new JObject(){
+					{ "items" , new JArray() }
+				};
+				return new QuickReplyBuilder( this.parameter );
+			}
 
 			/// <summary>
 			/// テキストメッセージ追加
 			/// </summary>
 			/// <param name="text">テキスト本文</param>
 			/// <returns>ビルド可能な自身の子クラス</returns>
-			public IMessageBuilder AddMessage( string text )
-				=> this;
+			public IMessageBuilder AddMessage( string text ) {
+				this.parameter.Messages.Add( new JObject() {
+					{ "type" , "text" },
+					{ "text" , text }
+				} );
+				return this;
+			}
 
 			/// <summary>
 			/// スタンプメッセージ追加
@@ -51,8 +62,14 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// <param name="packageId">スタンプセットのパッケージID</param>
 			/// <param name="stickerId">スタンプID</param>
 			/// <returns>ビルド可能な自身の子クラス</returns>
-			public IMessageBuilder AddSticker( string packageId , string stickerId )
-				=> this;
+			public IMessageBuilder AddSticker( string packageId , string stickerId ) {
+				this.parameter.Messages.Add( new JObject {
+					{ "type" , "sticker" } ,
+					{ "packageId" , packageId } ,
+					{ "stickerId" , stickerId }
+				} );
+				return this;
+			}
 
 			/// <summary>
 			/// 画像メッセージ追加
@@ -60,8 +77,17 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// <param name="originalContentUrl">画像のURL</param>
 			/// <param name="previewImageUrl">プレビュー画像のURL</param>
 			/// <returns>ビルド可能な自身の子クラス</returns>
-			public IMessageBuilder AddImage( string originalContentUrl , string previewImageUrl )
-				=> this;
+			public IMessageBuilder AddImage(
+				string originalContentUrl ,
+				string previewImageUrl
+			) {
+				this.parameter.Messages.Add( new JObject() {
+					{ "type" , "image" } ,
+					{ "originalContentUrl" , originalContentUrl } ,
+					{ "previewImageUrl" , previewImageUrl }
+				} );
+				return this;
+			}
 
 			/// <summary>
 			/// 動画メッセージ追加
@@ -69,8 +95,17 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// <param name="originalContentUrl">動画ファイルのURL</param>
 			/// <param name="previewImageUrl">プレビュー画像のURL</param>
 			/// <returns>ビルド可能な自身の子クラス</returns>
-			public IMessageBuilder AddVideo( string originalContentUrl , string previewImageUrl )
-				=> this;
+			public IMessageBuilder AddVideo(
+				string originalContentUrl ,
+				string previewImageUrl
+			) {
+				this.parameter.Messages.Add( new JObject(){
+					{ "type" , "video" } ,
+					{ "originalContentUrl" , originalContentUrl } ,
+					{ "previewImageUrl" , previewImageUrl }
+				} );
+				return this;
+			}
 
 			/// <summary>
 			/// 音声メッセージ追加
@@ -78,8 +113,14 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// <param name="originalContentUrl">音声ファイルのURL</param>
 			/// <param name="duration">音声ファイルの長さ</param>
 			/// <returns>ビルド可能な自身の子クラス</returns>
-			public IMessageBuilder AddAudio( string originalContentUrl , int duration )
-				=> this;
+			public IMessageBuilder AddAudio( string originalContentUrl , int duration ) {
+				this.parameter.Messages.Add( new JObject(){
+					{ "type" , "audio" } ,
+					{ "originalContentUrl" , originalContentUrl } ,
+					{ "duration" , duration }
+				} );
+				return this;
+			}
 
 			/// <summary>
 			/// 位置情報メッセージ追加
@@ -94,8 +135,16 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 				string address ,
 				double latitude ,
 				double longitude
-			)
-				=> this;
+			) {
+				this.parameter.Messages.Add( new JObject() {
+					{ "type" , "location" } ,
+					{ "title",title } ,
+					{ "address",address } ,
+					{ "latitude",latitude } ,
+					{ "longitude",longitude }
+				} );
+				return this;
+			}
 
 			/// <summary>
 			/// イメージマップメッセージ追加
@@ -110,8 +159,18 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 				string altText ,
 				int baseSizeWidth ,
 				int baseSizeHeight
-			)
-				=> this;
+			) {
+				this.parameter.Messages.Add( new JObject(){
+					{ "type" , "imagemap" } ,
+					{ "baseUrl" , baseUrl } ,
+					{ "altText" , altText } ,
+					{ "baseSize" , new JObject() {
+						{ "width" , baseSizeWidth } ,
+						{ "height" , baseSizeHeight }
+					} }
+				} );
+				return this;
+			}
 
 			/// <summary>
 			/// イメージマップで動画を再生する
@@ -130,8 +189,19 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 				int areaY ,
 				int areaWidth ,
 				int areaHeight
-			)
-				=> this;
+			) {
+				this.parameter.Messages.Last[ "video" ] = new JObject {
+					{ "originalContentUrl" , originalContentUrl } ,
+					{ "previewImageUrl" , previewImageUrl } ,
+					{ "area" , new JObject() {
+						{ "x" , areaX } ,
+						{ "y" , areaY } ,
+						{ "width" , areaWidth } ,
+						{ "height" , areaHeight }
+					} }
+				};
+				return this;
+			}
 
 			/// <summary>
 			/// 動画再生後にラベルを表示する
@@ -139,8 +209,14 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// <param name="url">ウェブページのURL</param>
 			/// <param name="label">ラベル</param>
 			/// <returns>送信可能なメッセージBuilder</returns>
-			public IMessageBuilder SetExternalLink( string url , string label )
-				=> this;
+			public IMessageBuilder SetExternalLink( string url , string label ) {
+				this.parameter.Messages.Last[ "video" ][ "externalLink" ]
+					= new JObject(){
+						{ "linkUri" , url } ,
+						{ "label" , label }
+					};
+				return this;
+			}
 
 			/// <summary>
 			/// テンプレート追加
@@ -148,8 +224,14 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// <param name="altText">代替テキスト</param>
 			/// <param name="templateBuilder">テンプレートBuilder</param>
 			/// <returns>テンプレート選択のみ可能なTemplateBuilder</returns>
-			public ISelectOnlyTemplate AddTemplate( string altText )
-				=> new TemplateMessageBuilder( this.parameter );
+			public ISelectOnlyTemplate AddTemplate( string altText ) {
+				this.parameter.Messages.Add( new JObject(){
+					{ "type" , "template" } ,
+					{ "altText" , altText } ,
+					{ "template" , new JObject() }
+				} );
+				return new TemplateMessageBuilder( this.parameter );
+			}
 
 			/// <summary>
 			/// Flexメッセージ追加

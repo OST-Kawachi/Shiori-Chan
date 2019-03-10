@@ -1,6 +1,11 @@
 ﻿
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Senders;
+using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
@@ -17,63 +22,36 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			/// </summary>
 			private readonly MessageParameter parameter;
 
+			private readonly ILogger logger;
+
 			/// <summary>
 			/// コンストラクタ
 			/// 直接インスタンス生成してほしくないのでprivateとする
 			/// </summary>
 			/// <param name="parameter">送信用パラメータ</param>
-			public MessageSender( MessageParameter parameter ) => this.parameter = parameter;
+			public MessageSender( MessageParameter parameter ) {
+				this.parameter = parameter;
+				this.logger = this.parameter.LoggerFactory.CreateLogger<MessageSender>();
+			}
 
 			/// <summary>
 			/// 送信
 			/// </summary>
 			/// <param name="replyToken">リプライトークン</param>
-			public Task Reply( string replyToken ) => null;
-
-			/// <summary>
-			/// プッシュ通知
-			/// </summary>
-			/// <param name="to">対象者ID</param>
-			public Task Push( string to ) => null;
-
-			/// <summary>
-			/// 複数人プッシュ通知
-			/// </summary>
-			/// <param name="toList">対象者ID一覧</param>
-			public Task Multicast( List<string> toList ) => null;
-
-			/*
-			/// <summary>
-			/// リプライを送信する
-			/// </summary>
-			/// <param name="builder">ビルド可能メッセージBuilder</param>
-			public async Task SendReply( MessageBuilder.BuildableMessageBuilder builder ) {
-				this.logger.LogTrace( "Start" );
-
-				// TODO 仮
-				#region 仮
-
-				JObject message = new JObject {
-					{ "type" , "text" } ,
-					{ "text" , "サンプル" }
-				};
-
-				JArray messages = new JArray {
-					message
-				};
-
-				JObject requestParameter = new JObject {
+			public async Task Reply( string replyToken ) {
+				JObject parameter = new JObject{
 					{ "replyToken" , replyToken } ,
-					{ "messages" , messages }
+					{ "messages" , this.parameter.Messages }
 				};
+				this.logger.LogTrace( $"Parameter is {parameter}" );
 
-				StringContent content = new StringContent( requestParameter.ToString() );
+				StringContent content = new StringContent( parameter.ToString() );
 				content.Headers.ContentType = new MediaTypeHeaderValue( "application/json" );
 				this.logger.LogTrace( "Content is {content}" , content );
 
 				HttpClient client = new HttpClient();
 				client.DefaultRequestHeaders.Accept.Add( new MediaTypeWithQualityHeaderValue( "application/json" ) );
-				client.DefaultRequestHeaders.Add( "Authorization" , "Bearer " + "" );
+				client.DefaultRequestHeaders.Add( "Authorization" , "Bearer " + this.parameter.ChannelAccessToken );
 
 				try {
 					this.logger.LogTrace( "Start Post Async" );
@@ -100,25 +78,39 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 					return;
 				}
 
-				#endregion
-
 			}
 
 			/// <summary>
-			/// プッシュ通知を送信する
+			/// プッシュ通知
 			/// </summary>
-			/// <param name="to">送信先ID</param>
-			[Obsolete( "未完成です" , true )]
-			public async Task SendPush( string to ) { }
+			/// <param name="to">対象者ID</param>
+			public Task Push( string to ) {
+				JObject parameter = new JObject{
+					{ "to" , to } ,
+					{ "messages" , this.parameter.Messages }
+				};
+				this.logger.LogTrace( $"Parameter is {parameter}" );
+
+
+				return null;
+			}
 
 			/// <summary>
-			/// 複数人宛にプッシュ通知を送信する
+			/// 複数人プッシュ通知
 			/// </summary>
-			/// <param name="toList">送信先リスト</param>
-			[Obsolete( "未完成です" , true )]
-			public async Task SendMulticast( List<string> toList ) { }
+			/// <param name="toList">対象者ID一覧</param>
+			public Task Multicast( List<string> toList ) {
+				JArray to = new JArray();
+				toList.ForEach( t => to.Add( t ) );
+				JObject parameter = new JObject{
+					{ "to" , to } ,
+					{ "messages" , this.parameter.Messages }
+				};
+				this.logger.LogTrace( $"Parameter is {parameter}" );
 
-			*/
+
+				return null;
+			}
 
 		}
 

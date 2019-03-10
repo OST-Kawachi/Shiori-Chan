@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 
 namespace ShioriChan.Services.MessagingApis.OAuthes.ChannelAccessTokens {
 
@@ -13,7 +12,7 @@ namespace ShioriChan.Services.MessagingApis.OAuthes.ChannelAccessTokens {
 		/// </summary>
 		/// <param name="clientId">チャネルID</param>
 		/// <param name="clientSecret">チャネルシークレット</param>
-		Task<ChannelAccessToken> Issue();
+		ChannelAccessToken Issue();
 
 		/// <summary>
 		/// 取り消し

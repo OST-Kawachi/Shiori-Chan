@@ -60,41 +60,22 @@ namespace ShioriChan.Repositories.Rooms {
 			this.logger.LogTrace( $"Event Seq is {eventSeq}" );
 			if( eventSeq == -1 ) {
 				this.logger.LogTrace( "End" );
-			}
-
-			// 宿泊中の施設を取得
-			List<Hotel> hotels = await this.model.Hotels
-				.Where( h =>
-					h.EventSeq == eventSeq &&
-					h.CheckIn <= DateTime.Now && DateTime.Now <= h.CheckOut
-				)
-				.ToListAsync();
-
-			this.logger.LogTrace( $"Hotels Count is {hotels.Count}" );
-			if( hotels.Count == 0 ) {
-				this.logger.LogTrace( "End" );
-				return null;
-			}
-			int hotelSeq = hotels[ 0 ].Seq;
-
-			// 宿泊する部屋を取得
-			List<RoomMember> roomMembers = await this.model.RoomMembers
-				.Where( rm =>
-					rm.UserSeq == userSeq
-				)
-				.ToListAsync();
-
-			this.logger.LogTrace( $"My Rooms Count is {roomMembers.Count}" );
-			if( roomMembers.Count == 0 ) {
-				this.logger.LogTrace( "End" );
 				return null;
 			}
 
 			// 宿泊中の施設の部屋情報のみを取得
 			List<Room> rooms = await this.model.Rooms
 				.Where( r =>
-					r.HotelSeq == hotelSeq &&
-					roomMembers.Any( rm => rm.RoomSeq == r.Seq )
+					this.model.Hotels
+						.Where( h =>
+							h.EventSeq == eventSeq &&
+							h.CheckIn <= DateTime.Now && DateTime.Now <= h.CheckOut
+						)
+						.Any( h => h.Seq == r.HotelSeq )
+					&&
+					this.model.RoomMembers
+						.Where( rm => rm.UserSeq == userSeq )
+						.Any( rm => rm.RoomSeq == r.Seq )
 				)
 				.ToListAsync();
 
@@ -113,14 +94,14 @@ namespace ShioriChan.Repositories.Rooms {
 		/// </summary>
 		/// <param name="roomSeq">部屋管理番号</param>
 		/// <returns>指定した部屋番号のメンバー一覧と鍵を持っているユーザの管理番号</returns>
-		public (List<UserInfo>,int?) GetRoomMembers( int roomSeq ) {
+		public async Task<(List<UserInfo>,int?)> GetRoomMembers( int roomSeq ) {
 			this.logger.LogTrace( "Start" );
 			this.logger.LogTrace( $"Room Seq is {roomSeq}." );
 
 			// 鍵を持っているユーザの管理番号を取得
-			List<Room> rooms = this.model.Rooms
+			List<Room> rooms = await this.model.Rooms
 				.Where( r => r.Seq == roomSeq )
-				.ToList();
+				.ToListAsync();
 			this.logger.LogTrace( $"Rooms Count is {rooms.Count}." );
 			if( rooms.Count == 0 ) {
 				this.logger.LogTrace( "End" );
@@ -130,18 +111,18 @@ namespace ShioriChan.Repositories.Rooms {
 			this.logger.LogTrace( $"Having Key User Seq is {havingKeyUserSeq?.ToString() ?? "None"}" );
 
 			// メンバーのユーザ情報を取得する
-			List<RoomMember> roomMembers = this.model.RoomMembers
+			List<RoomMember> roomMembers = await this.model.RoomMembers
 				.Where( rm => rm.RoomSeq == roomSeq )
-				.ToList();
+				.ToListAsync();
 			this.logger.LogTrace( $"Room Members Count is {roomMembers.Count}" );
 			if( roomMembers.Count == 0 ) {
 				this.logger.LogTrace( "End" );
 				return (null,null);
 			}
 			roomMembers.ForEach( rm => this.logger.LogTrace( $"Room Member Uesr Seq is {rm.UserSeq}" ) );
-			List<UserInfo> userInfos = this.model.UserInfos
+			List<UserInfo> userInfos = await this.model.UserInfos
 				.Where( ui => roomMembers.Any( rm => rm.UserSeq == ui.Seq ) )
-				.ToList();
+				.ToListAsync();
 			this.logger.LogTrace( $"User Infos Count is {userInfos.Count}" );
 			if( userInfos.Count == 0 ) {
 				this.logger.LogTrace( "End" );

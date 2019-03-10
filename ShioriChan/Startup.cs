@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShioriChan.Repositories;
 using ShioriChan.Repositories.MeetingPlaces;
+using ShioriChan.Repositories.OAuthes;
 using ShioriChan.Repositories.Rooms;
 using ShioriChan.Services.Features;
 using ShioriChan.Services.Features.MeetingPlaces;
@@ -63,6 +64,7 @@ namespace ShioriChan {
 				// Repositories
 				services.AddSingleton<IRoomRepository , RoomRepository>();
 				services.AddSingleton<IMeetingPlaceRepository , MeetingPlaceRepository>();
+				services.AddSingleton<IOAuthRepository , OAuthRepository>();
 
 				// Features
 				services.AddSingleton<ISampleService , SampleService>();

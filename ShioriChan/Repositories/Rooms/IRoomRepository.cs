@@ -21,7 +21,7 @@ namespace ShioriChan.Repositories.Rooms {
 		/// </summary>
 		/// <param name="roomSeq">部屋管理番号</param>
 		/// <returns>指定した部屋番号のメンバー一覧と鍵を持っているユーザの管理番号</returns>
-		(List<UserInfo>, int?) GetRoomMembers( int roomSeq );
+		Task<(List<UserInfo>, int?)> GetRoomMembers( int roomSeq );
 
 		/// <summary>
 		/// 鍵を持っているメンバーを更新する

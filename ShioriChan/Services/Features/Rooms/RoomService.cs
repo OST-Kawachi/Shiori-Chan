@@ -111,7 +111,7 @@ namespace ShioriChan.Services.Features.Rooms {
 			}
 			this.logger.LogTrace( $"My Room Number is {myRoomNumber}" );
 
-			(List<UserInfo> members , int? havingKeyUserSeq ) = this.roomRepository.GetRoomMembers( myRoom.Seq );
+			(List<UserInfo> members , int? havingKeyUserSeq ) = await this.roomRepository.GetRoomMembers( myRoom.Seq );
 			this.logger.LogTrace( $"Members Count is {members.Count}" );
 			this.logger.LogTrace( $"Having Key User Seq is { havingKeyUserSeq ?? -1 }" );
 
@@ -133,7 +133,7 @@ namespace ShioriChan.Services.Features.Rooms {
 			foreach( UserInfo member in members ) {
 				// 初回のみビルドできるインタフェースに変更する
 				if( buildableQuickReplyBuilder is null ) {
-					buildableQuickReplyBuilder = quickReplyBuilder.AddItem( "" ).UsePostbackAction(
+					buildableQuickReplyBuilder = quickReplyBuilder.AddItem( null ).UsePostbackAction(
 						member.Name ,
 						"changeHasKey=" + member.Seq + "&roomNumber=" + myRoom.Seq ,
 						member.Name + "さんがカギを持ってます"
@@ -141,7 +141,7 @@ namespace ShioriChan.Services.Features.Rooms {
 				}
 				// 2回目以降はインスタンスを上書きしていく
 				else {
-					buildableQuickReplyBuilder = buildableQuickReplyBuilder.AddItem( "" ).UsePostbackAction(
+					buildableQuickReplyBuilder = buildableQuickReplyBuilder.AddItem( null ).UsePostbackAction(
 						member.Name ,
 						"changeHasKey=" + member.Seq + "&roomNumber=" + myRoom.Seq ,
 						member.Name + "さんがカギを持ってます"
@@ -149,7 +149,7 @@ namespace ShioriChan.Services.Features.Rooms {
 				}
 			}
 			// フロントの追加
-			buildableQuickReplyBuilder = buildableQuickReplyBuilder.AddItem( "" ).UsePostbackAction(
+			buildableQuickReplyBuilder = buildableQuickReplyBuilder.AddItem( null ).UsePostbackAction(
 				"フロント" ,
 				"changeHasKey=" + -1 + "&roomNumber=" + myRoom.Seq ,
 				"フロントにカギを預けてます"

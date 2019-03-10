@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using ShioriChan.Repositories.OAuthes;
 using ShioriChan.Services.MessagingApis.Messages.BuilderFactories;
 using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders;
 using ShioriChan.Services.MessagingApis.OAuthes.ChannelAccessTokens;
@@ -24,15 +25,26 @@ namespace ShioriChan.Services.MessagingApis.Messages {
 		/// <summary>
 		/// チャンネルアクセストークン発行クラス
 		/// </summary>
-		private IChannelAccessTokenService channelAccessTokenService;
+		private readonly IChannelAccessTokenService channelAccessTokenService;
+
+		/// <summary>
+		/// 認証用Repository
+		/// </summary>
+		private readonly IOAuthRepository oAuthRepository;
 
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
 		/// <param name="loggerFactory">ログ作成クラス</param>
-		public MessageService( ILoggerFactory loggerFactory , IChannelAccessTokenService channelAccessTokenService ) {
+		public MessageService( 
+			ILoggerFactory loggerFactory , 
+			IChannelAccessTokenService channelAccessTokenService ,
+			IOAuthRepository oAuthRepository
+		) {
 			this.loggerFactory = loggerFactory;
 			this.logger = this.loggerFactory.CreateLogger<MessageService>();
+			this.oAuthRepository = oAuthRepository;
+			this.channelAccessTokenService = channelAccessTokenService;
 		}
 
 		/// <summary>
@@ -40,8 +52,14 @@ namespace ShioriChan.Services.MessagingApis.Messages {
 		/// </summary>
 		/// <returns>メッセージBuilder</returns>
 		public IAddOnlyMessageOfMessageBuilder CreateMessageBuilder() {
-			string channelAccessToken = "";
-			return MessageBuilderFactory.CreateMessageBuilder( channelAccessToken );
+			string channelAccessToken = this.oAuthRepository.GetNewlyChannelAccessToken();
+			this.logger.LogTrace( $"Channel Access Token is {channelAccessToken}" );
+			if( string.IsNullOrEmpty( channelAccessToken ) ) {
+				ChannelAccessToken cat = this.channelAccessTokenService.Issue();
+				channelAccessToken = cat.AccessToken;
+				this.oAuthRepository.RegisterChannelAccessToken( channelAccessToken );
+			}
+			return MessageBuilderFactory.CreateMessageBuilder( channelAccessToken , this.loggerFactory );
 		}
 		
 		/// <summary>

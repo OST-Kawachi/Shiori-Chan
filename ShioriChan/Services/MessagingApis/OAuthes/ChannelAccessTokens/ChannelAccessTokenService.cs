@@ -3,8 +3,12 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using ShioriChan.Settings;
 using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ShioriChan.Services.MessagingApis.OAuthes.ChannelAccessTokens {
@@ -46,44 +50,42 @@ namespace ShioriChan.Services.MessagingApis.OAuthes.ChannelAccessTokens {
 		/// <summary>
 		/// 発行
 		/// </summary>
-		public async Task<ChannelAccessToken> Issue() {
+		public ChannelAccessToken Issue() {
 			this.logger.LogTrace( "Start" );
 
-			JObject request = new JObject() {
-				{"grant_type","client_credentials" },
-				{"client_id",this.ClientId } ,
-				{"client_secret",this.ClientSecret }
+			WebClient webClient = new WebClient();
+			string url = "https://api.line.me/v2/oauth/accessToken";
+			webClient.Encoding = Encoding.UTF8;
+			webClient.Headers[ HttpRequestHeader.ContentType ] = "application/x-www-form-urlencoded";
+			NameValueCollection nameValueCollection = new NameValueCollection {
+				[ "grant_type" ] = "client_credentials" ,
+				[ "client_id" ] = this.ClientId ,
+				[ "client_secret" ] = this.ClientSecret
 			};
 
-			StringContent content = new StringContent( request.ToString() );
-			content.Headers.ContentType = new MediaTypeHeaderValue( "application/x-www-form-urlencoded" );
-
-			HttpClient client = new HttpClient();
-			client.DefaultRequestHeaders.Accept.Add( new MediaTypeWithQualityHeaderValue( "application/x-www-form-urlencoded" ) );
-			
 			try {
 				this.logger.LogTrace( "Start Post Async" );
-				HttpResponseMessage response = await client.PostAsync( "https://api.line.me/v2/oauth/accessToken" , content ).ConfigureAwait( false );
+				byte[] bResult = webClient.UploadValues( url , nameValueCollection );
+				string result = Encoding.UTF8.GetString( bResult );
 				this.logger.LogTrace( "End Post Async" );
-				ChannelAccessToken result = await response?.Content.ReadAsAsync<ChannelAccessToken>();
 				this.logger.LogTrace( "Post Async Result is {result}" , result );
-				response.Dispose();
-				client.Dispose();
-				return result;
+				JToken token = JObject.Parse( result );
+				return new ChannelAccessToken() {
+					AccessToken = token[ "access_token" ].ToString() ,
+					ExpiresIn = int.Parse( token[ "expires_in" ].ToString() ) ,
+					TokenType = token[ "token_type" ].ToString()
+				};
 			}
 			catch( ArgumentNullException ) {
 				this.logger.LogError( "Argument Null Exception" );
-				client.Dispose();
 				return null;
 			}
 			catch( HttpRequestException ) {
 				this.logger.LogError( "Http Request Exception" );
-				client.Dispose();
 				return null;
 			}
 			catch( Exception ) {
 				this.logger.LogError( "Exception" );
-				client.Dispose();
 				return null;
 			}
 
