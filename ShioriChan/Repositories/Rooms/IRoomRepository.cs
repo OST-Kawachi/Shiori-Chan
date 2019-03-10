@@ -28,7 +28,7 @@ namespace ShioriChan.Repositories.Rooms {
 		/// </summary>
 		/// <param name="roomSeq">部屋管理番号</param>
 		/// <param name="userSeq">鍵を持っているユーザ管理番号</param>
-		void UpdateHavingKeyUser( int roomSeq , int userSeq );
+		void UpdateHavingKeyUser( int roomSeq , int? userSeq );
 		
 	}
 

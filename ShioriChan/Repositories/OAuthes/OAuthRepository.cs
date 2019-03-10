@@ -63,7 +63,7 @@ namespace ShioriChan.Repositories.OAuthes {
 		/// <param name="channelAccessToken">チャンネルアクセストークン</param>
 		public void RegisterChannelAccessToken( string channelAccessToken ) {
 			this.model.AccessTokens.Add( new AccessToken() {
-				Seq = 10 ,
+				Seq = this.model.AccessTokens.Max( at => at.Seq ) + 1 ,
 				Token = channelAccessToken ,
 				StartDateTime = DateTime.Now ,
 				RegisterUserSeq = 0 ,

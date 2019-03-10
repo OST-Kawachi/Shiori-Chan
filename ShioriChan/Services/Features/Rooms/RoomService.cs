@@ -175,7 +175,7 @@ namespace ShioriChan.Services.Features.Rooms {
 			string postbackData = this.GetPostbackData( parameter );
 
 			int roomSeq = -1;
-			int userSeq = -1;
+			int? userSeq = -1;
 			{
 				string[] keyValue = postbackData.Split( "&" );
 				userSeq = int.Parse( keyValue[ 0 ].Split( "=" )[ 1 ] );
@@ -186,23 +186,22 @@ namespace ShioriChan.Services.Features.Rooms {
 
 			string replyToken = this.GetReplyToken( parameter );
 
-			this.roomRepository.UpdateHavingKeyUser( roomSeq , userSeq );
+			this.roomRepository.UpdateHavingKeyUser( roomSeq , userSeq == -1 ? null : userSeq );
+			string havingKeyUserName = "フロント";
 
+			if( userSeq != -1 ) {
+				(List<UserInfo>users , int? havingKeyUserSeq) = await this.roomRepository.GetRoomMembers( roomSeq );
+				havingKeyUserName = users
+					.FirstOrDefault( user => user.Seq == havingKeyUserSeq.Value )
+					.Name + "さん";
+			}
 
-			/*
-
-			this.UpdateHavingKeyUser( roomNumber , userSeq );
-
-			List<User> members = this.GetRoomMembers( roomNumber );
-			string havingKeyUserName = members.First( member => member.IsHavingKey == true )?.Name;
-			havingKeyUserName = havingKeyUserName is null ? "フロント" : havingKeyUserName + "さん";
 			this.logger.LogTrace( $"Having Key User Name is {havingKeyUserName}." );
 
 			await this.messageService.CreateMessageBuilder()
 				.AddMessage( $"{havingKeyUserName}がカギを持ってるんですね！\n承知しました！" )
 				.BuildMessage()
 				.Reply( replyToken );
-			*/
 
 			this.logger.LogTrace( "End" );
 			return;

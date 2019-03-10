@@ -138,10 +138,17 @@ namespace ShioriChan.Repositories.Rooms {
 		/// </summary>
 		/// <param name="roomNumber">部屋管理番号</param>
 		/// <param name="userSeq">鍵を持っているユーザ管理番号</param>
-		public void UpdateHavingKeyUser( int roomSeq , int userSeq ) {
+		public void UpdateHavingKeyUser( int roomSeq , int? userSeq ) {
+			this.logger.LogTrace( "Start" );
+			this.logger.LogTrace( $"Room Seq is {roomSeq}." );
+			this.logger.LogTrace( $"UserSeq is {userSeq}." );
 
+			Room room = this.model.Rooms.Single( r => r.Seq == roomSeq );
+			room.HavingKeyUserSeq = userSeq;
 
+			this.model.SaveChanges();
 
+			this.logger.LogTrace( "End" );
 		}
 
 	}
