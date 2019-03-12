@@ -103,43 +103,30 @@ namespace ShioriChan.Services.Features.MeetingPlaces {
 			JObject firstEvent = (JObject)events[ 0 ];
 
 			JToken message = firstEvent[ "message" ];
-			string title = message[ "title" ].ToString();
-			string address = message[ "address" ].ToString();
+			string title = message[ "title" ]?.ToString();
+			string address = message[ "address" ]?.ToString();
 			double latitude = double.Parse( message[ "latitude" ].ToString() );
 			double longitude = double.Parse( message[ "longitude" ].ToString() );
 
+			this.logger.LogTrace( $"Title is { title ?? "None" }" );
+			this.logger.LogTrace( $"Address is { address ?? "None" }" );
+			this.logger.LogTrace( $"Latitude is {latitude}" );
+			this.logger.LogTrace( $"Longitude is {longitude}" );
+
 			return (title, address, latitude, longitude);
 		}
-
-		/// <summary>
-		/// 位置情報の登録
-		/// </summary>
-		/// <param name="userId">ユーザID</param>
-		/// <param name="title">タイトル</param>
-		/// <param name="address">住所</param>
-		/// <param name="latitude">緯度</param>
-		/// <param name="longitude">経度</param>
-		private void RegisterLocation( 
-			string userId , 
-			string title , 
-			string address , 
-			double latitude , 
-			double longitude 
-		) {
-			// TODO 実際はRepositoryよりDB登録
-		}
-
+		
 		/// <summary>
 		/// 集合場所の登録
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public async Task Register( JToken parameter ) {
+		public void Register( JToken parameter ) {
 
 			string userId = this.GetUserId( parameter );
 			( string title, string address, double latitude, double longitude)
 				= this.GetLocation( parameter );
 
-			this.RegisterLocation( userId , title , address , latitude , longitude );
+			this.meetingPlaceRepository.Register( userId , title , address , latitude , longitude );
 			return;
 		}
 

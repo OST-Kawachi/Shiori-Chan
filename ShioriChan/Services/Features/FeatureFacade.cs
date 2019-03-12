@@ -316,7 +316,7 @@ namespace ShioriChan.Services.Features {
 
 						case MessageTypeLocation:
 							this.logger.LogInformation( "Start Location Message Event" );
-							await this.RecodeLocation( parameter );
+							this.RecodeLocation( parameter );
 							break;
 
 						default:
@@ -639,8 +639,8 @@ namespace ShioriChan.Services.Features {
 		/// 位置情報の登録
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		private async Task RecodeLocation( JToken parameter )
-			=> await this.meetingPlaceService.Register( parameter );
+		private void RecodeLocation( JToken parameter )
+			=> this.meetingPlaceService.Register( parameter );
 
 		/// <summary>
 		/// 連絡先の表示
