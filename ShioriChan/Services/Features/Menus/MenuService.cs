@@ -42,6 +42,13 @@ namespace ShioriChan.Services.Features.Menus {
 			=> throw new System.NotImplementedException();
 
 		/// <summary>
+		/// メニューを変更する
+		/// </summary>
+		/// <param name="userId">ユーザID</param>
+		/// <param name="menuId">メニューID</param>
+		public Task ChangeMenu( string userId , string menuId ) => throw new System.NotImplementedException();
+
+		/// <summary>
 		/// メニュー画像を更新する
 		/// </summary>
 		public Task UpdateImage() => throw new System.NotImplementedException();

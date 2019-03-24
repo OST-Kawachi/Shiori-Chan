@@ -15,6 +15,13 @@ namespace ShioriChan.Services.Features.Menus {
 		Task ChangeMenu( JToken parameter );
 
 		/// <summary>
+		/// メニューを変更する
+		/// </summary>
+		/// <param name="userId">ユーザID</param>
+		/// <param name="menuId">メニューID</param>
+		Task ChangeMenu( string userId , string menuId );
+
+		/// <summary>
 		/// メニュー画像を更新する
 		/// </summary>
 		/// <returns></returns>
