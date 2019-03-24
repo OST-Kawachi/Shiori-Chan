@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using ShioriChan.Services.Features.Users;
 
 namespace ShioriChan.Controllers.Users {
 
@@ -10,42 +12,66 @@ namespace ShioriChan.Controllers.Users {
 	public class UsersController : Controller {
 
 		/// <summary>
+		/// ログ
+		/// </summary>
+		private readonly ILogger logger;
+
+		/// <summary>
+		/// ユーザService
+		/// </summary>
+		private readonly IUserService userService;
+
+		/// <summary>
 		/// コンストラクタ
 		/// </summary>
-		public UsersController() {
-
+		/// <param name="logger">ログ</param>
+		/// <param name="userService">ユーザService</param>
+		public UsersController(
+			ILogger<UsersController> logger ,
+			IUserService userService
+		)
+		{
+			this.logger = logger;
+			this.userService = userService;
 		}
 
 		/// <summary>
-		/// ユーザ登録画面取得
+		/// ユーザ申請画面取得
 		/// </summary>
 		/// <param name="encryptedUserSeq">暗号化されたユーザ管理番号</param>
-		[Route( "user/register/{encryptedUserSeq}" )]
-		[ActionName( "Register" )]
-		public IActionResult GetRegisterView( string encryptedUserSeq ) => this.View();
+		[Route( "user/apply/{encryptedUserSeq}" )]
+		[ActionName( "Apply" )]
+		public IActionResult GetApplyView( string encryptedUserSeq )
+			=> this.View();
 
 		/// <summary>
 		/// ユーザ登録承認画面取得
 		/// </summary>
 		[Route( "user/approval" )]
-		[ActionName("Approval")]
-		public IActionResult GetApprovalView() => this.View();
+		[ActionName( "Approval" )]
+		public IActionResult GetApprovalView()
+			=> this.View();
 
 		/// <summary>
-		/// ユーザ登録API
+		/// ユーザ申請API
 		/// </summary>
-		[Route("api/user/register")]
-		public void Register() {
+		[Route( "api/user/apply" )]
+		public void Apply()
+			=> this.userService.Apply();
 
-		}
+		/// <summary>
+		/// 承認待ちユーザ一覧取得API
+		/// </summary>
+		[Route( "api/user/waiting-approval-users" )]
+		public void GetAwaitingApprovalUsers()
+			=> this.userService.GetAwaitingApprovalUsers();
 
 		/// <summary>
 		/// ユーザ登録承認API
 		/// </summary>
-		[Route("api/user/approval")]
-		public void Approval() {
-
-		}
+		[Route( "api/user/approval" )]
+		public void Approval()
+			=> this.userService.Approval();
 
 	}
 

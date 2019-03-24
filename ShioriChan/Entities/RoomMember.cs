@@ -11,7 +11,7 @@ namespace ShioriChan.Entities {
 		/// 部屋管理番号
 		/// </summary>
 		public int RoomSeq { set; get; }
-		
+
 		/// <summary>
 		/// ユーザ管理番号
 		/// </summary>

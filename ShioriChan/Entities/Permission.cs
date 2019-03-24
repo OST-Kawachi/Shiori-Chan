@@ -12,7 +12,7 @@ namespace ShioriChan.Entities {
 		/// 権限管理番号
 		/// </summary>
 		[Key]
-		public int Seq{ set; get; }
+		public int Seq { set; get; }
 
 		/// <summary>
 		/// 権限名

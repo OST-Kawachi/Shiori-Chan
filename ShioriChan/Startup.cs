@@ -12,7 +12,6 @@ using ShioriChan.Repositories.Rooms;
 using ShioriChan.Services.Features;
 using ShioriChan.Services.Features.MeetingPlaces;
 using ShioriChan.Services.Features.Rooms;
-using ShioriChan.Services.Features.Samples;
 using ShioriChan.Services.MessagingApis.Groups;
 using ShioriChan.Services.MessagingApis.Messages;
 using ShioriChan.Services.MessagingApis.OAuthes.ChannelAccessTokens;
@@ -45,13 +44,16 @@ namespace ShioriChan {
 		/// </summary>
 		/// <remarks>Runtimeによって呼び出される</remarks>
 		/// <param name="services">Service</param>
-		public void ConfigureServices( IServiceCollection services ) {
+		public void ConfigureServices( IServiceCollection services )
+		{
 
 			// 必須ではないCookieに対するユーザーの同意が特定のリクエストに必要かどうかを決定する
-			services.Configure<CookiePolicyOptions>( options => {
-				options.CheckConsentNeeded = context => true;
-				options.MinimumSameSitePolicy = SameSiteMode.None;
-			} );
+			services.Configure<CookiePolicyOptions>(
+				options => {
+					options.CheckConsentNeeded = context => true;
+					options.MinimumSameSitePolicy = SameSiteMode.None;
+				}
+			);
 
 			services.AddMvc().SetCompatibilityVersion( CompatibilityVersion.Version_2_1 );
 
@@ -67,7 +69,6 @@ namespace ShioriChan {
 				services.AddSingleton<IOAuthRepository , OAuthRepository>();
 
 				// Features
-				services.AddSingleton<ISampleService , SampleService>();
 				services.AddSingleton<IRoomService , RoomService>();
 				services.AddSingleton<IMeetingPlaceService , MeetingPlaceService>();
 
@@ -86,7 +87,11 @@ namespace ShioriChan {
 			services.Configure<MessagingApiSetting>( this.Configuration.GetSection( "MessagingApi" ) );
 
 			// DBContextを登録
-			services.AddDbContext<ModelCreator>( options => options.UseSqlServer( this.Configuration.GetConnectionString( "Database" ) ) );
+			services.AddDbContext<ModelCreator>(
+				options => options.UseSqlServer(
+					this.Configuration.GetConnectionString( "Database" )
+				)
+			);
 
 		}
 
@@ -96,7 +101,8 @@ namespace ShioriChan {
 		/// <param name="app"></param>
 		/// <param name="env"></param>
 		/// <remarks>Runtimeによって呼び出される</remarks>
-		public void Configure( IApplicationBuilder app , IHostingEnvironment env ) {
+		public void Configure( IApplicationBuilder app , IHostingEnvironment env )
+		{
 			if( env.IsDevelopment() ) {
 				app.UseDeveloperExceptionPage();
 			}

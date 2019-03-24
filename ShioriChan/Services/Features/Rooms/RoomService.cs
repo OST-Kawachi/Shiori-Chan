@@ -132,21 +132,17 @@ namespace ShioriChan.Services.Features.Rooms {
 			IBuildOrAddItemOfQuickReply buildableQuickReplyBuilder = null;
 			foreach( UserInfo member in members ) {
 				// 初回のみビルドできるインタフェースに変更する
-				if( buildableQuickReplyBuilder is null ) {
-					buildableQuickReplyBuilder = quickReplyBuilder.AddItem( null ).UsePostbackAction(
+				buildableQuickReplyBuilder = buildableQuickReplyBuilder is null
+					? quickReplyBuilder.AddItem( null ).UsePostbackAction(
+						member.Name ,
+						"changeHasKey=" + member.Seq + "&roomNumber=" + myRoom.Seq ,
+						member.Name + "さんがカギを持ってます"
+					)
+					: buildableQuickReplyBuilder.AddItem( null ).UsePostbackAction(
 						member.Name ,
 						"changeHasKey=" + member.Seq + "&roomNumber=" + myRoom.Seq ,
 						member.Name + "さんがカギを持ってます"
 					);
-				}
-				// 2回目以降はインスタンスを上書きしていく
-				else {
-					buildableQuickReplyBuilder = buildableQuickReplyBuilder.AddItem( null ).UsePostbackAction(
-						member.Name ,
-						"changeHasKey=" + member.Seq + "&roomNumber=" + myRoom.Seq ,
-						member.Name + "さんがカギを持ってます"
-					);
-				}
 			}
 			// フロントの追加
 			buildableQuickReplyBuilder = buildableQuickReplyBuilder.AddItem( null ).UsePostbackAction(

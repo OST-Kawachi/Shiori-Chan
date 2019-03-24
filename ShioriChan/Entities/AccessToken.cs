@@ -23,7 +23,7 @@ namespace ShioriChan.Entities {
 		/// 開始日時
 		/// </summary>
 		public DateTime StartDateTime { set; get; }
-		
+
 		/// <summary>
 		/// 登録者管理番号
 		/// </summary>

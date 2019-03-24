@@ -1,8 +1,16 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using ShioriChan.Services.Features.Contacts;
+using ShioriChan.Services.Features.Hotels;
 using ShioriChan.Services.Features.MeetingPlaces;
+using ShioriChan.Services.Features.Menus;
+using ShioriChan.Services.Features.Notifications;
+using ShioriChan.Services.Features.Participants;
+using ShioriChan.Services.Features.RollCalls;
 using ShioriChan.Services.Features.Rooms;
-using ShioriChan.Services.Features.Samples;
+using ShioriChan.Services.Features.Schedule;
+using ShioriChan.Services.Features.TouristSpots;
+using ShioriChan.Services.Features.Users;
 using System.Threading.Tasks;
 
 namespace ShioriChan.Services.Features {
@@ -12,7 +20,7 @@ namespace ShioriChan.Services.Features {
 	/// </summary>
 	/// TODO 定数群を別クラスに置きたい
 	public class FeatureFacade : IFeatureFacade {
-		
+
 		#region イベント種別
 
 		/// <summary>
@@ -202,11 +210,6 @@ namespace ShioriChan.Services.Features {
 		#region 各機能Servvice
 
 		/// <summary>
-		/// サンプル用Service
-		/// </summary>
-		private readonly ISampleService sampleService;
-
-		/// <summary>
 		/// 部屋情報Service
 		/// </summary>
 		private readonly IRoomService roomService;
@@ -216,35 +219,106 @@ namespace ShioriChan.Services.Features {
 		/// </summary>
 		private readonly IMeetingPlaceService meetingPlaceService;
 
+		/// <summary>
+		/// メニューService
+		/// </summary>
+		private readonly IMenuService menuService;
+
+		/// <summary>
+		/// ユーザService
+		/// </summary>
+		private readonly IUserService userService;
+
+		/// <summary>
+		/// 連絡先Service
+		/// </summary>
+		private readonly IContactService contactService;
+
+		/// <summary>
+		/// 観光地Service
+		/// </summary>
+		private readonly ITouristSpotService touristSpotService;
+
+		/// <summary>
+		/// 宿泊施設Service
+		/// </summary>
+		private readonly IHotelService hotelService;
+
+		/// <summary>
+		/// スケジュールService
+		/// </summary>
+		private readonly IScheduleService scheduleService;
+
+		/// <summary>
+		/// 点呼Service
+		/// </summary>
+		private readonly IRollCallService rollCallService;
+
+		/// <summary>
+		/// 参加者Service
+		/// </summary>
+		private readonly IParticipantService participantService;
+
+		/// <summary>
+		/// 通知Service
+		/// </summary>
+		private readonly INotificationService notificationService;
+
 		#endregion
 
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
 		/// <param name="logger">ログ</param>
-		/// <param name="sampleService">サンプル用Service</param>
 		/// <param name="roomService">部屋情報Service</param>
 		/// <param name="meetingPlaceService">集合場所Service</param>
+		/// <param name="menuService">メニューService</param>
+		/// <param name="userService">ユーザService</param>
+		/// <param name="contactService">連絡先Service</param>
+		/// <param name="touristSpotService">観光地Service</param>
+		/// <param name="hotelService">宿泊施設Service</param>
+		/// <param name="scheduleService">スケジュールService</param>
+		/// <param name="rollCallService">点呼Service</param>
+		/// <param name="participantService">参加者Service</param>
+		/// <param name="notificationService">通知Service</param>
 		public FeatureFacade(
-			ILogger<FeatureFacade> logger , 
-			ISampleService sampleService ,
+			ILogger<FeatureFacade> logger ,
 			IRoomService roomService ,
-			IMeetingPlaceService meetingPlaceService
-		) {
+			IMeetingPlaceService meetingPlaceService ,
+			IMenuService menuService ,
+			IUserService userService ,
+			IContactService contactService ,
+			ITouristSpotService touristSpotService ,
+			IHotelService hotelService ,
+			IScheduleService scheduleService ,
+			IRollCallService rollCallService ,
+			IParticipantService participantService ,
+			INotificationService notificationService
+		)
+		{
 			this.logger = logger;
-			this.sampleService = sampleService;
 			this.roomService = roomService;
 			this.meetingPlaceService = meetingPlaceService;
+			this.menuService = menuService;
+			this.userService = userService;
+			this.contactService = contactService;
+			this.touristSpotService = touristSpotService;
+			this.hotelService = hotelService;
+			this.scheduleService = scheduleService;
+			this.rollCallService = rollCallService;
+			this.participantService = participantService;
+			this.notificationService = notificationService;
 		}
-		
+
 		/// <summary>
 		/// 実行
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		/// TODO かなり1メソッドの役割が大きいので細分化したい
-		public async Task Execute( JToken parameter ) {
+		public async Task Execute( JToken parameter )
+		{
 			this.logger.LogTrace( "Start" );
-			
+
 			if( parameter is null ) {
 				this.logger.LogWarning( "Parameter is NULL." );
 				this.logger.LogTrace( "End" );
@@ -261,7 +335,7 @@ namespace ShioriChan.Services.Features {
 
 				case EventTypeFollow:
 					this.logger.LogInformation( "Start Follow Event." );
-					await this.ShowLastNameHead( parameter );
+					await this.ShowMenuAndUrlIfNotRegistered( parameter );
 					break;
 
 				case EventTypeMessage:
@@ -280,30 +354,19 @@ namespace ShioriChan.Services.Features {
 						case MessageTypeText:
 							this.logger.LogInformation( "Start Text Message Event" );
 
-							await this.RecodeMessage( parameter );
+							await this.RegisterMessage( parameter );
 
 							string message = firstEvent[ "message" ][ "text" ].ToString();
 							this.logger.LogInformation( "Message is {message}." , message );
-							if( message.Contains( ResetMessage ) ) {
-								this.logger.LogInformation( "Start Reset Exist Users" );
-
-								await this.ResetExistUser( parameter );
-
-							}
-							else if(
+							
+							if(
 								message.Contains( ExistMessage1 ) ||
 								message.Contains( ExistMessage2 ) ||
 								message.Contains( ExistMessage3 )
 							) {
 								this.logger.LogInformation( "Start Exist User" );
 
-								await this.ExistUser( parameter );
-
-							}
-							else if( message.Contains( ExistList ) ) {
-								this.logger.LogInformation( "Start Show Exist Users" );
-
-								await this.ShowExistUsers( parameter );
+								await this.Reply( parameter );
 
 							}
 							// TODO 仮
@@ -311,7 +374,7 @@ namespace ShioriChan.Services.Features {
 								this.logger.LogInformation( "Temp" );
 								await this.ShowRoomMember( parameter );
 							}
-							
+
 							break;
 
 						case MessageTypeLocation:
@@ -429,7 +492,7 @@ namespace ShioriChan.Services.Features {
 								break;
 							}
 
-							await this.WichSchedule( parameter );
+							await this.ChooseSchedule( parameter );
 
 							break;
 
@@ -501,7 +564,7 @@ namespace ShioriChan.Services.Features {
 								break;
 							}
 
-							await this.PushLatestMessage( parameter );
+							await this.ConfirmPush( parameter );
 
 							break;
 
@@ -513,7 +576,7 @@ namespace ShioriChan.Services.Features {
 								break;
 							}
 
-							await this.ReSchedule( parameter );
+							await this.SelectToChange( parameter );
 
 							break;
 
@@ -542,26 +605,14 @@ namespace ShioriChan.Services.Features {
 							break;
 
 						default:
-							if( postbackData.StartsWith( PostbackSelectedHeadConditions ) ) {
-								this.logger.LogInformation( "Start Select Name" );
-
-								await this.SelectName( parameter );
-								
-							}
-							else if( postbackData.StartsWith( PostbackDecideUserConditions ) ) {
-								this.logger.LogInformation( "Start Decide User" );
-								
-								await this.DecideUser( parameter );
-
-							}
-							else if( postbackData.StartsWith( PostbackChangeHasKeyConditions ) ) {
+							if( postbackData.StartsWith( PostbackChangeHasKeyConditions ) ) {
 								this.logger.LogInformation( "Start Change Has Key User" );
 
 								if( this.IsUnknownUser( userId ) ) {
 									this.logger.LogWarning( "User is Unknown." );
 									break;
 								}
-								
+
 								await this.ChangeHavingKeyUser( parameter );
 
 							}
@@ -573,7 +624,7 @@ namespace ShioriChan.Services.Features {
 									break;
 								}
 
-								await this.DecidePush( parameter );
+								await this.Push( parameter );
 
 							}
 							else if( postbackData.StartsWith( PostbackUpdateScheduleConditions ) ) {
@@ -607,7 +658,8 @@ namespace ShioriChan.Services.Features {
 		/// </summary>
 		/// <param name="userId">ユーザID</param>
 		/// <returns>登録されていないユーザかどうか</returns>
-		private bool IsUnknownUser( string userId ) {
+		private bool IsUnknownUser( string userId )
+		{
 
 			if( userId is null ) {
 				this.logger.LogInformation( "User Id is Null." );
@@ -623,17 +675,15 @@ namespace ShioriChan.Services.Features {
 		/// ユーザ追加イベント実行
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		private async Task ShowLastNameHead( JToken parameter )
-			// TODO 頭文字選択
-			=> await this.sampleService.Execute( parameter );
+		private async Task ShowMenuAndUrlIfNotRegistered( JToken parameter )
+			=> await this.userService.ShowMenuAndUrlIfNotRegistered( parameter );
 
 		/// <summary>
 		/// メッセージの登録
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		private async Task RecodeMessage( JToken parameter )
-			// TODO メッセージ登録
-			=> await this.sampleService.Execute( parameter );
+		private async Task RegisterMessage( JToken parameter )
+			=> await this.notificationService.Register( parameter );
 
 		/// <summary>
 		/// 位置情報の登録
@@ -647,16 +697,14 @@ namespace ShioriChan.Services.Features {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		private async Task ReplyContent( JToken parameter )
-			// TODO 連絡先の表示
-			=> await this.sampleService.Execute( parameter );
+			=> await this.contactService.Show( parameter );
 
 		/// <summary>
 		/// 地図メニュー表示
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		private async Task ChangeMenuMap( JToken parameter )
-			// TODO 地図メニュー表示
-			=> await this.sampleService.Execute( parameter );
+			=> await this.menuService.ChangeMenu( parameter );
 
 		/// <summary>
 		/// 同じ部屋のメンバー表示
@@ -670,64 +718,56 @@ namespace ShioriChan.Services.Features {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		private async Task ChangeMenuAdmin( JToken parameter )
-			// TODO 管理メニュー表示
-			=> await this.sampleService.Execute( parameter );
+			=> await this.menuService.ChangeMenu( parameter );
 
 		/// <summary>
 		/// スケジュールメニュー表示
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		private async Task ChangeMenuSchedule( JToken parameter )
-			// TODO スケジュールメニュー表示
-			=> await this.sampleService.Execute( parameter );
+			=> await this.menuService.ChangeMenu( parameter );
 
 		/// <summary>
 		/// 観光地情報の表示
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		private async Task ShowTouristShop( JToken parameter )
-			// TODO 観光地情報表示
-			=> await this.sampleService.Execute( parameter );
+			=> await this.touristSpotService.Show( parameter );
 
 		/// <summary>
 		/// ホテル情報の表示
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		private async Task ShowHotel( JToken parameter )
-			// TODO ホテル情報の表示
-			=> await this.sampleService.Execute( parameter );
+			=> await this.hotelService.Show( parameter );
 
 		/// <summary>
 		/// マップから戻る
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		private async Task BackFromMap( JToken parameter )
-			// TODO マップから戻る
-			=> await this.sampleService.Execute( parameter );
+			=> await this.menuService.ChangeMenu( parameter );
 
 		/// <summary>
 		/// 全体スケジュールの表示
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		private async Task WichSchedule( JToken parameter )
-			// TODO 全体スケジュールの表示
-			=> await this.sampleService.Execute( parameter );
+		private async Task ChooseSchedule( JToken parameter )
+			=> await this.scheduleService.ChooseDate( parameter );
 
 		/// <summary>
 		/// 1日目の全体スケジュール表示
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		private async Task ShowFirstSchedule( JToken parameter )
-			// TODO 1日目の全体スケジュール表示
-			=> await this.sampleService.Execute( parameter );
+			=> await this.scheduleService.Show( parameter );
 
 		/// <summary>
 		/// 2日目の全体スケジュール表示
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		private async Task ShowSecondSchedule( JToken parameter )
-			// TODO 2日目の全体スケジュール表示
-			=> await this.sampleService.Execute( parameter );
+			=> await this.scheduleService.Show( parameter );
 
 		/// <summary>
 		/// 集合場所の表示
@@ -741,66 +781,43 @@ namespace ShioriChan.Services.Features {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		private async Task ShowParticipant( JToken parameter )
-			// TODO 参加者の表示
-			=> await this.sampleService.Execute( parameter );
+			=> await this.participantService.Show( parameter );
 
 		/// <summary>
 		///スケジュールから戻る
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		private async Task BackFromSchedule( JToken parameter )
-			// TODO スケジュールから戻る
-			=> await this.sampleService.Execute( parameter );
+			=> await this.menuService.ChangeMenu( parameter );
 
 		/// <summary>
-		/// プッシュ通知
+		/// プッシュ通知を送るか確認する
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		private async Task PushLatestMessage( JToken parameter )
-			// TODO プッシュ通知
-			=> await this.sampleService.Execute( parameter );
-		
+		private async Task ConfirmPush( JToken parameter )
+			=> await this.notificationService.Confirm( parameter );
+
 		/// <summary>
 		/// リスケ
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		private async Task ReSchedule( JToken parameter )
-			// TODO リスケ
-			=> await this.sampleService.Execute( parameter );
+		private async Task SelectToChange( JToken parameter )
+			=> await this.scheduleService.SelectToChange( parameter );
 
 		/// <summary>
 		/// 管理メニューから戻る
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		private async Task BackFromAdmin( JToken parameter )
-			// TODO 管理メニューから戻る
-			=> await this.sampleService.Execute( parameter );
+			=> await this.menuService.ChangeMenu( parameter );
 
 		/// <summary>
 		/// ランダムに名前を表示
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		private async Task ShowRandomName( JToken parameter )
-			// TODO ランダムに名前を表示
-			=> await this.sampleService.Execute( parameter );
-
-
-		/// <summary>
-		/// 名前を選択する
-		/// </summary>
-		/// <param name="parameter">パラメータ</param>
-		private async Task SelectName( JToken parameter )
-			// TODO 名前を選択する
-			=> await this.sampleService.Execute( parameter );
-
-		/// <summary>
-		/// 名前を決定する
-		/// </summary>
-		/// <param name="parameter">パラメータ</param>
-		private async Task DecideUser( JToken parameter )
-			// TODO 名前を決定する
-			=> await this.sampleService.Execute( parameter );
-
+			=> await this.userService.ShowRandomly( parameter );
+		
 		/// <summary>
 		/// 鍵を持っている人を変更する
 		/// </summary>
@@ -812,41 +829,22 @@ namespace ShioriChan.Services.Features {
 		/// プッシュ通知を送信する
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		private async Task DecidePush( JToken parameter )
-			// TODO プッシュ通知を送信する
-			=> await this.sampleService.Execute( parameter );
+		private async Task Push( JToken parameter )
+			=> await this.notificationService.Push( parameter );
 
 		/// <summary>
 		/// スケジュールを変更
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		private async Task UpdateSchedule( JToken parameter )
-			// TODO スケジュールを変更
-			=> await this.sampleService.Execute( parameter );
-
-		/// <summary>
-		/// 点呼リセット
-		/// </summary>
-		/// <param name="parameter">パラメータ</param>
-		private async Task ResetExistUser( JToken parameter )
-			// TODO 点呼リセット
-			=> await this.sampleService.Execute( parameter );
+			=> await this.scheduleService.Update( parameter );
 
 		/// <summary>
 		/// 点呼
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		private async Task ExistUser( JToken parameter )
-			// TODO 点呼
-			=> await this.sampleService.Execute( parameter );
-
-		/// <summary>
-		/// 点呼一覧表示
-		/// </summary>
-		/// <param name="parameter">パラメータ</param>
-		private async Task ShowExistUsers( JToken parameter )
-			// TODO 点呼一覧表示
-			=> await this.sampleService.Execute( parameter );
+		private async Task Reply( JToken parameter )
+			=> await this.rollCallService.Reply( parameter );
 
 	}
 

@@ -36,7 +36,8 @@ namespace ShioriChan.Services.Features.MeetingPlaces {
 			ILogger<MeetingPlaceService> logger ,
 			IMessageService messageService ,
 			IMeetingPlaceRepository meetingPlaceRepository
-		) {
+		)
+		{
 			this.logger = logger;
 			this.messageService = messageService;
 			this.meetingPlaceRepository = meetingPlaceRepository;
@@ -47,7 +48,8 @@ namespace ShioriChan.Services.Features.MeetingPlaces {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		/// <returns>ユーザID</returns>
-		private string GetUserId( JToken parameter ) {
+		private string GetUserId( JToken parameter )
+		{
 			JArray events = (JArray)parameter[ "events" ];
 			JObject firstEvent = (JObject)events[ 0 ];
 
@@ -63,7 +65,8 @@ namespace ShioriChan.Services.Features.MeetingPlaces {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		/// <returns>リプライトークン</returns>
-		private string GetReplyToken( JToken parameter ) {
+		private string GetReplyToken( JToken parameter )
+		{
 			JArray events = (JArray)parameter[ "events" ];
 			JObject firstEvent = (JObject)events[ 0 ];
 
@@ -78,7 +81,8 @@ namespace ShioriChan.Services.Features.MeetingPlaces {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		/// <returns>ポストバックデータ</returns>
-		private string GetPostbackData( JToken parameter ) {
+		private string GetPostbackData( JToken parameter )
+		{
 			JArray events = (JArray)parameter[ "events" ];
 			JObject firstEvent = (JObject)events[ 0 ];
 
@@ -98,7 +102,8 @@ namespace ShioriChan.Services.Features.MeetingPlaces {
 			string address,
 			double latitude,
 			double longitude
-		) GetLocation( JToken parameter ) {
+		) GetLocation( JToken parameter )
+		{
 			JArray events = (JArray)parameter[ "events" ];
 			JObject firstEvent = (JObject)events[ 0 ];
 
@@ -115,15 +120,16 @@ namespace ShioriChan.Services.Features.MeetingPlaces {
 
 			return (title, address, latitude, longitude);
 		}
-		
+
 		/// <summary>
 		/// 集合場所の登録
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public void Register( JToken parameter ) {
+		public async Task Register( JToken parameter )
+		{
 
 			string userId = this.GetUserId( parameter );
-			( string title, string address, double latitude, double longitude)
+			(string title, string address, double latitude, double longitude)
 				= this.GetLocation( parameter );
 
 			this.meetingPlaceRepository.Register( userId , title , address , latitude , longitude );
@@ -134,7 +140,8 @@ namespace ShioriChan.Services.Features.MeetingPlaces {
 		/// 集合場所の表示
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public async Task Show( JToken parameter ) {
+		public async Task Show( JToken parameter )
+		{
 
 
 			return;

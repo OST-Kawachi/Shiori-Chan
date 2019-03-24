@@ -12,7 +12,7 @@ namespace ShioriChan.Services.Features.MeetingPlaces {
 		/// 集合場所の登録
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		void Register( JToken parameter );
+		Task Register( JToken parameter );
 
 		/// <summary>
 		/// 集合場所の表示

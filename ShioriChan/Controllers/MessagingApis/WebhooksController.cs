@@ -27,22 +27,26 @@ namespace ShioriChan.Controllers.MessagingApis {
 
 		/// <summary>
 		/// コンストラクタ
-		/// 依存性が挿入されたServiceクラスを取得する
 		/// </summary>
 		/// <param name="logger">ログ</param>
 		/// <param name="featureFacade">何のイベントを実行するかを決める窓口</param>
-		public WebhooksController( ILogger<WebhooksController> logger , IFeatureFacade featureFacade ) {
+		public WebhooksController( 
+			ILogger<WebhooksController> logger , 
+			IFeatureFacade featureFacade 
+		)
+		{
 			this.logger = logger;
 			this.featureFacade = featureFacade;
 		}
-		
+
 		/// <summary>
 		/// Webhookの受け口
 		/// </summary>
 		/// <returns>必ずステータス200を返す</returns>
-		[Route("api")]
+		[Route( "api" )]
 		[HttpPost]
-		public async Task<StatusCodeResult> Post() {
+		public async Task<StatusCodeResult> Post()
+		{
 			this.logger.LogTrace( "Start" );
 
 			// TODO リクエストボディをJTokenの形で受け取れれば必要ない変換処理

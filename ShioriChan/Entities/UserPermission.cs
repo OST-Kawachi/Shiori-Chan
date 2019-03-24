@@ -46,7 +46,7 @@ namespace ShioriChan.Entities {
 		/// バージョン
 		/// </summary>
 		public int Version { set; get; }
-		
+
 	}
 
 }
