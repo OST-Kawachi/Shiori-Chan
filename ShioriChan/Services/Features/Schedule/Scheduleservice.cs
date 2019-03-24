@@ -1,12 +1,47 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using ShioriChan.Repositories.Schedules;
+using ShioriChan.Services.MessagingApis.Messages;
 
 namespace ShioriChan.Services.Features.Schedule {
 
 	/// <summary>
 	/// スケジュールService
 	/// </summary>
-	public class Scheduleservice : IScheduleService {
+	public class ScheduleService : IScheduleService {
+
+		/// <summary>
+		/// ログ
+		/// </summary>
+		private readonly ILogger logger;
+
+		/// <summary>
+		/// スケジュールRepository
+		/// </summary>
+		private readonly IScheduleRepository scheduleRepository;
+
+		/// <summary>
+		/// メッセージService
+		/// </summary>
+		private readonly IMessageService messageService;
+
+		/// <summary>
+		/// コンストラクタ
+		/// </summary>
+		/// <param name="logger">ログ</param>
+		/// <param name="messageService">メッセージService</param>
+		/// <param name="scheduleRepository">スケジュールRepository</param>
+		public ScheduleService(
+			ILogger<ScheduleService> logger ,
+			IMessageService messageService ,
+			IScheduleRepository scheduleRepository
+		)
+		{
+			this.logger = logger;
+			this.messageService = messageService;
+			this.scheduleRepository = scheduleRepository;
+		}
 
 		/// <summary>
 		/// 通知する

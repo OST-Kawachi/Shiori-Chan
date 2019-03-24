@@ -29,7 +29,8 @@ namespace ShioriChan.Repositories.Rooms {
 		public RoomRepository(
 			ILogger<RoomRepository> logger ,
 			ModelCreator model
-		) {
+		)
+		{
 			this.logger = logger;
 			this.model = model;
 		}
@@ -39,10 +40,11 @@ namespace ShioriChan.Repositories.Rooms {
 		/// </summary>
 		/// <param name="userId">ユーザID</param>
 		/// <returns>部屋情報</returns>
-		public async Task<Room> GetMyRoom( string userId ) {
+		public async Task<Room> GetMyRoom( string userId )
+		{
 			this.logger.LogTrace( "Start" );
 			this.logger.LogTrace( $"User Id is {userId}." );
-			
+
 			// ユーザIDはLINEアカウント単位で一意なのでリストで取得するが要素数は0または1
 			List<UserInfo> user = await this.model.UserInfos
 				.Where( u => u.Id.Equals( userId ) )
@@ -86,7 +88,7 @@ namespace ShioriChan.Repositories.Rooms {
 			}
 
 			this.logger.LogTrace( "Start" );
-			return rooms[0];
+			return rooms[ 0 ];
 		}
 
 		/// <summary>
@@ -94,7 +96,8 @@ namespace ShioriChan.Repositories.Rooms {
 		/// </summary>
 		/// <param name="roomSeq">部屋管理番号</param>
 		/// <returns>指定した部屋番号のメンバー一覧と鍵を持っているユーザの管理番号</returns>
-		public async Task<(List<UserInfo>,int?)> GetRoomMembers( int roomSeq ) {
+		public async Task<(List<UserInfo>, int?)> GetRoomMembers( int roomSeq )
+		{
 			this.logger.LogTrace( "Start" );
 			this.logger.LogTrace( $"Room Seq is {roomSeq}." );
 
@@ -105,7 +108,7 @@ namespace ShioriChan.Repositories.Rooms {
 			this.logger.LogTrace( $"Rooms Count is {rooms.Count}." );
 			if( rooms.Count == 0 ) {
 				this.logger.LogTrace( "End" );
-				return (null,null);
+				return (null, null);
 			}
 			int? havingKeyUserSeq = rooms[ 0 ].HavingKeyUserSeq;
 			this.logger.LogTrace( $"Having Key User Seq is {havingKeyUserSeq?.ToString() ?? "None"}" );
@@ -117,7 +120,7 @@ namespace ShioriChan.Repositories.Rooms {
 			this.logger.LogTrace( $"Room Members Count is {roomMembers.Count}" );
 			if( roomMembers.Count == 0 ) {
 				this.logger.LogTrace( "End" );
-				return (null,null);
+				return (null, null);
 			}
 			roomMembers.ForEach( rm => this.logger.LogTrace( $"Room Member Uesr Seq is {rm.UserSeq}" ) );
 			List<UserInfo> userInfos = await this.model.UserInfos
@@ -138,7 +141,8 @@ namespace ShioriChan.Repositories.Rooms {
 		/// </summary>
 		/// <param name="roomNumber">部屋管理番号</param>
 		/// <param name="userSeq">鍵を持っているユーザ管理番号</param>
-		public void UpdateHavingKeyUser( int roomSeq , int? userSeq ) {
+		public void UpdateHavingKeyUser( int roomSeq , int? userSeq )
+		{
 			this.logger.LogTrace( "Start" );
 			this.logger.LogTrace( $"Room Seq is {roomSeq}." );
 			this.logger.LogTrace( $"UserSeq is {userSeq}." );

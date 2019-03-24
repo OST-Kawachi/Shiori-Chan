@@ -14,7 +14,7 @@ namespace ShioriChan.Repositories.OAuthes {
 		/// <summary>
 		/// ログ
 		/// </summary>
-		private ILogger logger;
+		private readonly ILogger logger;
 
 		/// <summary>
 		/// DBモデル
@@ -28,7 +28,8 @@ namespace ShioriChan.Repositories.OAuthes {
 		public OAuthRepository(
 			ILogger<OAuthRepository> logger ,
 			ModelCreator model
-		) {
+		)
+		{
 			this.logger = logger;
 			this.model = model;
 		}
@@ -37,10 +38,11 @@ namespace ShioriChan.Repositories.OAuthes {
 		/// 最新のチャンネルアクセストークンを取得
 		/// </summary>
 		/// <returns>チャンネルアクセストークン</returns>
-		public string GetNewlyChannelAccessToken() {
+		public string GetNewlyChannelAccessToken()
+		{
 			this.logger.LogTrace( "Start" );
 			List<AccessToken> accessTokens = this.model.AccessTokens
-				.Where( at => 
+				.Where( at =>
 					at.StartDateTime <= DateTime.Now &&
 					DateTime.Now <= at.StartDateTime.AddDays( 30.0 )
 				)
@@ -61,8 +63,10 @@ namespace ShioriChan.Repositories.OAuthes {
 		/// チャンネルアクセストークンを登録する
 		/// </summary>
 		/// <param name="channelAccessToken">チャンネルアクセストークン</param>
-		public void RegisterChannelAccessToken( string channelAccessToken ) {
-			this.model.AccessTokens.Add( new AccessToken() {
+		public void RegisterChannelAccessToken( string channelAccessToken )
+		{
+			this.model.AccessTokens.Add( new AccessToken()
+			{
 				Seq = this.model.AccessTokens.Max( at => at.Seq ) + 1 ,
 				Token = channelAccessToken ,
 				StartDateTime = DateTime.Now ,

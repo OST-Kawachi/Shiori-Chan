@@ -7,11 +7,25 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShioriChan.Repositories;
 using ShioriChan.Repositories.MeetingPlaces;
+using ShioriChan.Repositories.Notifications;
 using ShioriChan.Repositories.OAuthes;
+using ShioriChan.Repositories.Participants;
+using ShioriChan.Repositories.RollCalls;
 using ShioriChan.Repositories.Rooms;
+using ShioriChan.Repositories.Schedules;
+using ShioriChan.Repositories.Users;
 using ShioriChan.Services.Features;
+using ShioriChan.Services.Features.Contacts;
+using ShioriChan.Services.Features.Hotels;
 using ShioriChan.Services.Features.MeetingPlaces;
+using ShioriChan.Services.Features.Menus;
+using ShioriChan.Services.Features.Notifications;
+using ShioriChan.Services.Features.Participants;
+using ShioriChan.Services.Features.RollCalls;
 using ShioriChan.Services.Features.Rooms;
+using ShioriChan.Services.Features.Schedule;
+using ShioriChan.Services.Features.TouristSpots;
+using ShioriChan.Services.Features.Users;
 using ShioriChan.Services.MessagingApis.Groups;
 using ShioriChan.Services.MessagingApis.Messages;
 using ShioriChan.Services.MessagingApis.OAuthes.ChannelAccessTokens;
@@ -64,13 +78,27 @@ namespace ShioriChan {
 				services.AddSingleton<IFeatureFacade , FeatureFacade>();
 
 				// Repositories
-				services.AddSingleton<IRoomRepository , RoomRepository>();
 				services.AddSingleton<IMeetingPlaceRepository , MeetingPlaceRepository>();
+				services.AddSingleton<INotificationRepository , NotificationRepository>();
 				services.AddSingleton<IOAuthRepository , OAuthRepository>();
+				services.AddSingleton<IParticipantRepository , ParticipantRepository>();
+				services.AddSingleton<IRollCallRepository , RollCallRepository>();
+				services.AddSingleton<IRoomRepository , RoomRepository>();
+				services.AddSingleton<IScheduleRepository , ScheduleRepository>();
+				services.AddSingleton<IUserRepository , UserRepository>();
 
 				// Features
-				services.AddSingleton<IRoomService , RoomService>();
+				services.AddSingleton<IContactService , ContactService>();
+				services.AddSingleton<IHotelService , HotelService>();
 				services.AddSingleton<IMeetingPlaceService , MeetingPlaceService>();
+				services.AddSingleton<IMenuService , MenuService>();
+				services.AddSingleton<INotificationService , NotificationService>();
+				services.AddSingleton<IParticipantService , ParticipantService>();
+				services.AddSingleton<IRollCallService , RollCallService>();
+				services.AddSingleton<IRoomService , RoomService>();
+				services.AddSingleton<IScheduleService , ScheduleService>();
+				services.AddSingleton<ITouristSpotService , TouristSpotService>();
+				services.AddSingleton<IUserService , UserService>();
 
 				// MessagingApis
 				services.AddSingleton<IGroupService , GroupService>();
