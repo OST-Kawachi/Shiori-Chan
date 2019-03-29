@@ -118,12 +118,12 @@ namespace ShioriChan.Services.Features.Users {
 
 				await this.messageService
 					.CreateMessageBuilder()
-					.AddMessage( "初めまして！\nあなたの旅のおともをさせていただきます！\nしおりと申します！\nよろしくお願いします！！" )
+					.AddMessage( "初めまして！\nしおりと申します！！\nあなたの旅のおともをさせていただきます！\nよろしくお願いします！！" )
 					.AddMessage( "まずはあなたのお名前を教えてください！" )
 					.AddTemplate("名前を教えてね！")
 						.UseButtonTemplate( "名前を教える" )
 						.SetAction()
-						.UseUriAction( "名前を教えます" , "" + waitingApprovalUserSeq )
+						.UseUriAction( "名前を教えます" , "https://shiorichanappservice.azurewebsites.net/shiori-chan/api/user/apply/" + waitingApprovalUserSeq )
 						.BuildTemplate()
 					.BuildMessage()
 					.Reply( replyToken );

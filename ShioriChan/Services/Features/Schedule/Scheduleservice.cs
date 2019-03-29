@@ -46,7 +46,7 @@ namespace ShioriChan.Services.Features.Schedule {
 		/// <summary>
 		/// 通知する
 		/// </summary>
-		public Task Notice() => throw new System.NotImplementedException();
+		public Task Notice() => null;
 
 		/// <summary>
 		/// 表示する日付を選択する

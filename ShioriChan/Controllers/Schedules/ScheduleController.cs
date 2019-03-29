@@ -39,10 +39,10 @@ namespace ShioriChan.Controllers.Schedules {
 		/// </summary>
 		[Route( "api/schedule" )]
 		[HttpPost]
-		public async Task<StatusCodeResult> Post()
+		public StatusCodeResult Post()
 		{
 			this.logger.LogTrace( "Start" );
-			await this.scheduleService.Notice();
+			this.scheduleService.Notice();
 			this.logger.LogTrace( "End" );
 			return this.Ok();
 		}

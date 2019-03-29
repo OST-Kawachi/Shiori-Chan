@@ -1,4 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
+using ShioriChan.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ShioriChan.Repositories.Users {
 
@@ -39,7 +43,10 @@ namespace ShioriChan.Repositories.Users {
 		{
 			this.logger.LogTrace( "Start" );
 			this.logger.LogTrace( $"User Id is {userId}." );
-			return false;
+			bool isRegistered = this.model.UserInfos.Any( user => userId.Equals( user.Id ) );
+			this.logger.LogTrace( $"Is Registered ... {isRegistered}." );
+			this.logger.LogTrace( "End" );
+			return isRegistered;
 		}
 
 		/// <summary>
@@ -51,6 +58,19 @@ namespace ShioriChan.Repositories.Users {
 		{
 			this.logger.LogTrace( "Start" );
 			this.logger.LogTrace( $"User Id is {userId}." );
+			int maxSeq = this.model.UserInfos.Select( user => user.Seq ).Max();
+			this.logger.LogTrace( $"Max User Seq is {maxSeq}" );
+			this.model.UserInfos.Add( new UserInfo() {
+				Seq = maxSeq + 1 ,
+				Id = userId ,
+				Name = "" ,
+				RegisterUserSeq = maxSeq + 1 ,
+				RegisterDatetime = DateTime.Now ,
+				UpdateUserSeq = maxSeq + 1 ,
+				UpdateDatetime = DateTime.Now ,
+				Version = 0
+			} );
+			this.model.SaveChanges();
 			return -1;
 		}
 

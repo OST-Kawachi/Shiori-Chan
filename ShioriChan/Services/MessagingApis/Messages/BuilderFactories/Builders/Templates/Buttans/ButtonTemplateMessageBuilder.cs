@@ -114,7 +114,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			public IBuildOnlyOfButtonTemplate UseUriAction( string label , string uri ) {
 				this.parameter.Messages.Last[ "template" ][ "actions" ].Last[ "type" ] = "uri";
 				this.parameter.Messages.Last[ "template" ][ "actions" ].Last[ "label" ] = label;
-				this.parameter.Messages.Last[ "template" ][ "actions" ].Last[ "uir" ] = uri;
+				this.parameter.Messages.Last[ "template" ][ "actions" ].Last[ "uri" ] = uri;
 				return this;
 			}
 
