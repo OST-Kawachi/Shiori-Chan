@@ -123,7 +123,7 @@ namespace ShioriChan.Services.Features.Users {
 					.AddTemplate("名前を教えてね！")
 						.UseButtonTemplate( "名前を教える" )
 						.SetAction()
-						.UseUriAction( "名前を教えます" , "https://shiorichanappservice.azurewebsites.net/shiori-chan/api/user/apply/" + waitingApprovalUserSeq )
+						.UseUriAction( "名前を教えます" , "https://shiorichanappservice.azurewebsites.net/shiori-chan/user/apply/" + waitingApprovalUserSeq )
 						.BuildTemplate()
 					.BuildMessage()
 					.Reply( replyToken );
@@ -135,8 +135,12 @@ namespace ShioriChan.Services.Features.Users {
 		/// <summary>
 		/// 申請する
 		/// </summary>
-		public Task Apply() => throw new System.NotImplementedException();
+		public async Task Apply() {
 
+
+			return;
+		}
+			
 		/// <summary>
 		/// 承認待ちユーザ一覧取得
 		/// </summary>

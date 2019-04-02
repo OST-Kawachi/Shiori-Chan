@@ -72,42 +72,43 @@ namespace ShioriChan {
 			services.AddMvc().SetCompatibilityVersion( CompatibilityVersion.Version_2_1 );
 
 			// Serviceクラス、Repositoryクラスに関して依存関係をシングルトンとして挿入
+			// TODO AddTransientにしないとViewが表示されない・・・？
 			{
 
 				// 共通部
 				services.AddSingleton<IFeatureFacade , FeatureFacade>();
 
 				// Repositories
-				services.AddSingleton<IMeetingPlaceRepository , MeetingPlaceRepository>();
-				services.AddSingleton<INotificationRepository , NotificationRepository>();
-				services.AddSingleton<IOAuthRepository , OAuthRepository>();
-				services.AddSingleton<IParticipantRepository , ParticipantRepository>();
-				services.AddSingleton<IRollCallRepository , RollCallRepository>();
-				services.AddSingleton<IRoomRepository , RoomRepository>();
-				services.AddSingleton<IScheduleRepository , ScheduleRepository>();
-				services.AddSingleton<IUserRepository , UserRepository>();
+				services.AddTransient<IMeetingPlaceRepository , MeetingPlaceRepository>();
+				services.AddTransient<INotificationRepository , NotificationRepository>();
+				services.AddTransient<IOAuthRepository , OAuthRepository>();
+				services.AddTransient<IParticipantRepository , ParticipantRepository>();
+				services.AddTransient<IRollCallRepository , RollCallRepository>();
+				services.AddTransient<IRoomRepository , RoomRepository>();
+				services.AddTransient<IScheduleRepository , ScheduleRepository>();
+				services.AddTransient<IUserRepository , UserRepository>();
 
 				// Features
-				services.AddSingleton<IContactService , ContactService>();
-				services.AddSingleton<IHotelService , HotelService>();
-				services.AddSingleton<IMeetingPlaceService , MeetingPlaceService>();
-				services.AddSingleton<IMenuService , MenuService>();
-				services.AddSingleton<INotificationService , NotificationService>();
-				services.AddSingleton<IParticipantService , ParticipantService>();
-				services.AddSingleton<IRollCallService , RollCallService>();
-				services.AddSingleton<IRoomService , RoomService>();
-				services.AddSingleton<IScheduleService , ScheduleService>();
-				services.AddSingleton<ITouristSpotService , TouristSpotService>();
-				services.AddSingleton<IUserService , UserService>();
+				services.AddTransient<IContactService , ContactService>();
+				services.AddTransient<IHotelService , HotelService>();
+				services.AddTransient<IMeetingPlaceService , MeetingPlaceService>();
+				services.AddTransient<IMenuService , MenuService>();
+				services.AddTransient<INotificationService , NotificationService>();
+				services.AddTransient<IParticipantService , ParticipantService>();
+				services.AddTransient<IRollCallService , RollCallService>();
+				services.AddTransient<IRoomService , RoomService>();
+				services.AddTransient<IScheduleService , ScheduleService>();
+				services.AddTransient<ITouristSpotService , TouristSpotService>();
+				services.AddTransient<IUserService , UserService>();
 
 				// MessagingApis
-				services.AddSingleton<IGroupService , GroupService>();
-				services.AddSingleton<IMessageService , MessageService>();
-				services.AddSingleton<IChannelAccessTokenService , ChannelAccessTokenService>();
-				services.AddSingleton<ILinkTokenService , LinkTokenService>();
-				services.AddSingleton<IProfileService , ProfileService>();
-				services.AddSingleton<IRichMenuService , RichMenuService>();
-				services.AddSingleton<ITalkRoomService , TalkRoomService>();
+				services.AddTransient<IGroupService , GroupService>();
+				services.AddTransient<IMessageService , MessageService>();
+				services.AddTransient<IChannelAccessTokenService , ChannelAccessTokenService>();
+				services.AddTransient<ILinkTokenService , LinkTokenService>();
+				services.AddTransient<IProfileService , ProfileService>();
+				services.AddTransient<IRichMenuService , RichMenuService>();
+				services.AddTransient<ITalkRoomService , TalkRoomService>();
 
 			}
 

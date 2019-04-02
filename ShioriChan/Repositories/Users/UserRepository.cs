@@ -71,7 +71,7 @@ namespace ShioriChan.Repositories.Users {
 				Version = 0
 			} );
 			this.model.SaveChanges();
-			return -1;
+			return maxSeq + 1;
 		}
 
 	}
