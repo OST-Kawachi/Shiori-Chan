@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using ShioriChan.Entities;
 using ShioriChan.Repositories.Users;
 using ShioriChan.Services.Features.Menus;
 using ShioriChan.Services.MessagingApis.Messages;
@@ -135,17 +137,43 @@ namespace ShioriChan.Services.Features.Users {
 		/// <summary>
 		/// 申請する
 		/// </summary>
-		public async Task Apply() {
+		/// <param name="seq">管理番号</param>
+		/// <param name="name">ユーザ名</param>
+		public async void Apply( int seq , string name )
+		{
+			this.logger.LogTrace( "Start" );
+			this.logger.LogTrace( $"Seq is {seq}." );
+			this.logger.LogTrace( $"User Name is {name}." );
 
+			this.userRepository.RegisterWaitingApproval( seq , name );
+			List<string> userIds = this.userRepository.GetPushedAdminMembers();
 
+			await this.messageService.CreateMessageBuilder()
+				.AddTemplate( "ユーザが登録されました" )
+				.UseButtonTemplate( "ユーザが登録されました。\n下記URLからユーザを承認してください" )
+				.SetAction()
+				.UseUriAction( "確認する" , "https://shiorichanappservice.azurewebsites.net/shiori-chan/user/approval/" )
+				.BuildTemplate()
+				.BuildMessage()
+				.Multicast( userIds );
+
+			this.logger.LogTrace( "End" );
 			return;
 		}
-			
+
+		/// <summary>
+		/// 未登録ユーザ一覧取得
+		/// </summary>
+		/// <returns>未登録ユーザ一覧</returns>
+		public List<UserInfo> GetUnregisteredUsers()
+			=> this.userRepository.GetUnregisteredUsers();
+
 		/// <summary>
 		/// 承認待ちユーザ一覧取得
 		/// </summary>
-		public Task GetAwaitingApprovalUsers() => throw new System.NotImplementedException();
-
+		/// <returns>承認待ちユーザ一覧</returns>
+		public List<WaitedApprovalUser> GetWaitingApprovalUsers()
+			=> this.userRepository.GetWaitingApprovalUsers();
 		/// <summary>
 		/// 承認する
 		/// </summary>

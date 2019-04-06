@@ -1,2 +1,30 @@
-﻿<h2>Approval</h2>
+﻿<html>
+<head>
+	<title>ユーザ承認</title>
+	<meta name="viewport" content="width=device-width">
+</head>
+<body>
+	<table>
+		<tr>
+			<td colspan="2">
+				<h2>ユーザ承認</h2>
+				<div>未登録ユーザがいる場合、承認待ちユーザ一覧から同じ人を選んで選択してください</div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<h3>未登録ユーザ一覧</h3>
+				<div id="unRegisteredUser">aaa</div>
+			</td>
+			<td>
+				<h3>承認待ちユーザ一覧</h3>
+				<div id="waitingApprovalUser">bbb</div>
+			</td>
+		</tr>
+		<tr><td colspan="2"><button id="setting">設定</button></td></tr>
+	</table>
 
+	<script type="text/javascript" src="~/js/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="~/js/users/approval.js"></script>
+</body>
+</html>

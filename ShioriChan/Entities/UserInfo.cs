@@ -54,17 +54,7 @@ namespace ShioriChan.Entities {
 		/// バージョン
 		/// </summary>
 		public int Version { set; get; }
-
-		/// <summary>
-		/// プッシュ通知
-		/// </summary>
-		public ICollection<PushNotification> PushNotifications { set; get; }
-
-		/// <summary>
-		/// ユーザ権限
-		/// </summary>
-		public ICollection<UserPermission> UserPermissions { set; get; }
-
+		
 	}
 
 }

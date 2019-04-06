@@ -1,0 +1,56 @@
+﻿var updateList = function () {
+    $("#unRegisteredUser").empty();
+    $("#waitingApprovalUser").empty();
+    $.ajax({
+        url: "/shiori-chan/api/user/waiting-approval-users",
+        type: "GET",
+        dataType: "json"
+    })
+        .done(function (response) {
+            let unRegisteredUsers = response.unRegisteredUsers;
+            let waitingApprovalUsers = response.waitingApprovalUsers;
+
+            let unRegisteredHtml = "";
+            for (let i = 0; i < unRegisteredUsers.length ; i++) {
+                let seq = unRegisteredUsers[i].seq;
+                let name = unRegisteredUsers[i].name;
+                let html = '<div><input type="radio" name="unRegistered" value="' + seq + '" />' + name + '</div>';
+                unRegisteredHtml += html;
+            }
+            setTimeout(function () {
+                $("#unRegisteredUser").append(unRegisteredHtml);
+            }, 0);
+
+            let waitingApprovalHtml = "";
+            for (let i = 0; i < waitingApprovalUsers.length; i++) {
+                let seq = waitingApprovalUsers[i].seq;
+                let name = waitingApprovalUsers[i].userName;
+                let html = '<input type="radio" name="waitingApproval" value="' + seq + '" />' + name + '</div>';
+                waitingApprovalHtml += html;
+            }
+            setTimeout(function () {
+                $("#waitingApprovalUser").append(waitingApprovalHtml);
+            }, 0);
+
+        });
+};
+
+$(function () {
+    updateList();
+    $("#setting").on(
+        "click",
+        function () {
+            $.ajax({
+                url: "/shiori-chan/api/user/approval",
+                type: "GET",
+                dataType: "json"
+            })
+                .done(function (response) {
+                    updateList();
+                })
+                .catch(function (response) {
+                    updateList();
+                });
+        }
+    );
+});

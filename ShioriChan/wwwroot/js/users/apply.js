@@ -18,21 +18,13 @@ $(function () {
                 type: "POST",
                 data: JSON.stringify({
                     userSeq: userSeq,
-                    name : name
+                    name: name
                 }),
                 dataType: "json"
             })
-                .done(function (response) {
+                .done(function () {
                     $("#input").empty();
                     $("#complete").show();
-                })
-                .fail(function (xhr, errorStatus, temp, a, b, c) {
-                    console.log(xhr);
-                    console.log(errorStatus);
-                    console.log(temp);
-                    console.log(a);
-                    console.log(b);
-                    console.log(c);
                 });
         }
     );

@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using ShioriChan.Services.Features.Users;
 using System.IO;
+using ShioriChan.Entities;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ShioriChan.Controllers.Users {
@@ -58,7 +62,7 @@ namespace ShioriChan.Controllers.Users {
 		/// ユーザ申請API
 		/// </summary>
 		[Route( "api/user/apply" )]
-		public async Task<int> Apply() {
+		public int Apply() {
 			this.logger.LogTrace( "Start" );
 
 			// TODO リクエストボディをJTokenの形で受け取れれば必要ない変換処理
@@ -69,7 +73,10 @@ namespace ShioriChan.Controllers.Users {
 				}
 				this.logger.LogInformation( "Request is {request}." , request );
 			}
-			await this.userService.Apply();
+			JToken requestObj = JToken.Parse( request );
+
+			// TODO ユーザ管理番号が生データ
+			this.userService.Apply( int.Parse( requestObj[ "userSeq"].ToString() ) , requestObj["name"].ToString() );
 			this.logger.LogTrace( "End" );
 			return 200;
 		}
@@ -77,15 +84,26 @@ namespace ShioriChan.Controllers.Users {
 		/// 承認待ちユーザ一覧取得API
 		/// </summary>
 		[Route( "api/user/waiting-approval-users" )]
-		public void GetAwaitingApprovalUsers()
-			=> this.userService.GetAwaitingApprovalUsers();
+		public IActionResult GetAwaitingApprovalUsers()
+		{
+			this.logger.LogTrace( "Start" );
+
+			List<UserInfo> unRegisteredUsers = this.userService.GetUnregisteredUsers();
+			List<WaitedApprovalUser> waitingApprovalUsers = this.userService.GetWaitingApprovalUsers();
+
+			this.logger.LogTrace( "End" );
+			return this.Json( new {
+				   unRegisteredUsers = unRegisteredUsers.Select( u => new { u.Seq , u.Name } ).ToList() ,
+				   waitingApprovalUsers = waitingApprovalUsers.Select( u => new { u.Seq , u.UserName } ).ToList()
+			} );
+		}
 
 		/// <summary>
 		/// ユーザ登録承認API
 		/// </summary>
 		[Route( "api/user/approval" )]
 		public void Approval()
-			=> this.userService.Approval();
+			=> this.Json( this.userService.Approval() );
 
 	}
 

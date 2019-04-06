@@ -1,4 +1,7 @@
-﻿namespace ShioriChan.Repositories.Users {
+﻿using System.Collections.Generic;
+using ShioriChan.Entities;
+
+namespace ShioriChan.Repositories.Users {
 
 	/// <summary>
 	/// ユーザRepository
@@ -18,6 +21,32 @@
 		/// <param name="userId">ユーザID</param>
 		/// <returns>承認待ちテーブル管理番号</returns>
 		int RegisterOnlyUserIdInWaitingApproval( string userId );
+
+		/// <summary>
+		/// ユーザIDを元に名前を登録するのみ承認待ちテーブルに登録する
+		/// </summary>
+		/// <param name="seq">管理番号</param>
+		/// <param name="userName">ユーザ名</param>
+		/// <returns>承認待ちテーブル管理番号</returns>
+		void RegisterWaitingApproval( int seq , string userName );
+
+		/// <summary>
+		/// プッシュ通知が送られてくる管理者メンバーを取得
+		/// </summary>
+		/// <returns>ユーザID</returns>
+		List<string> GetPushedAdminMembers();
+
+		/// <summary>
+		/// 未登録ユーザ一覧取得
+		/// </summary>
+		/// <returns>未登録ユーザ一覧</returns>
+		List<UserInfo> GetUnregisteredUsers();
+
+		/// <summary>
+		/// 承認待ちユーザ一覧取得
+		/// </summary>
+		/// <returns>承認待ちユーザ一覧</returns>
+		List<WaitedApprovalUser> GetWaitingApprovalUsers();
 
 	}
 
