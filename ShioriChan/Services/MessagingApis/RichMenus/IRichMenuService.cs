@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ShioriChan.Services.MessagingApis.RichMenus {
 
@@ -11,64 +13,75 @@ namespace ShioriChan.Services.MessagingApis.RichMenus {
 		/// <summary>
 		/// リッチメニュー作成
 		/// </summary>
-		[Obsolete( "未完成です" , true )]
-		void Create();
+		/// <param name="parameter">パラメータ</param>
+		/// <returns>リッチメニューID</returns>
+		Task<int> Create( JToken parameter );
 
 		/// <summary>
 		/// リッチメニューのID一覧を取得する
 		/// </summary>
 		/// <returns></returns>
-		[Obsolete( "未完成です" , true )]
-		IEnumerable<string> GetIds();
+		Task<List<string>> GetIds();
 
 		/// <summary>
 		/// リッチメニューを取得する
 		/// </summary>
-		[Obsolete( "未完成です" , true )]
-		void Get();
+		Task<Responce> Get( string richMenuId );
 
 		/// <summary>
 		/// リッチメニューを削除する
 		/// </summary>
-		[Obsolete( "未完成です" , true )]
-		void Delete();
+		Task Delete( string richMenuId);
 
 		/// <summary>
 		/// デフォルトのリッチメニューを設定する
 		/// </summary>
-		[Obsolete( "未完成です" , true )]
-		void SetDefault();
+		Task SetDefault( string richMenuId );
 
 		/// <summary>
 		/// デフォルトのリッチメニューのIDを取得する
 		/// </summary>
-		[Obsolete( "未完成です" , true )]
-		void GetDefaultId();
+		Task<object> GetDefaultId();
 
 		/// <summary>
 		/// デフォルトのリッチメニューを解除する
 		/// </summary>
-		[Obsolete( "未完成です" , true )]
-		void ReleaseDefault();
+		Task ReleaseDefault();
 
 		/// <summary>
 		/// リッチメニューとユーザをリンクする
 		/// </summary>
-		[Obsolete( "未完成です" , true )]
-		void LinkToUser();
+		Task LinkToUser( string richMenuId , string userId );
 
 		/// <summary>
 		/// ユーザのリッチメニューのIDを取得する
 		/// </summary>
-		[Obsolete( "未完成です" , true )]
-		void GetId();
+		Task<object> GetId( string userId );
 
 		/// <summary>
 		/// リッチメニューとユーザのリンクを解除する
 		/// </summary>
-		[Obsolete( "未完成です" , true )]
-		void Release();
+		Task Release( string userId );
 
-	}
+        /// <summary>
+        /// リッチメニューと複数ユーザーをリンクする
+        /// </summary>
+        Task LinkToBulkUser( List<string> userIds, string richMenuId );
+
+        /// <summary>
+        /// リッチメニューと複数ユーザのリンクを解除する
+        /// </summary>
+        Task BulkUnlink( List<string> userIds );
+
+        /// <summary>
+        /// リッチメニューの画像をアップロードする
+        /// </summary>
+        void ContentUpload();
+
+        /// <summary>
+        /// リッチメニューの画像をダウンロードする
+        /// </summary>
+        Task<byte[]> ContentDownload( string richMenuId );
+    }
 
 }
