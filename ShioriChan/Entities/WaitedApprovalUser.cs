@@ -48,12 +48,7 @@ namespace ShioriChan.Entities {
 		/// バージョン
 		/// </summary>
 		public int Version { set; get; }
-
-		/// <summary>
-		/// ユーザ情報
-		/// </summary>
-		public UserInfo UserInfo { set; get; }
-
+		
 	}
 
 }
