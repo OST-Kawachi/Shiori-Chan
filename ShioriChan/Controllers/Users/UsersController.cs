@@ -8,14 +8,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ShioriChan.Controllers.Users {
+namespace ShioriChan.Controllers.Users
+{
 
 	/// <summary>
 	/// ユーザController
 	/// </summary>
 	/// TODO ApiController属性がつけられない
 	[Route( "shiori-chan/" )]
-	public class UsersController : Controller {
+	public class UsersController : Controller
+	{
 
 		/// <summary>
 		/// ログ
@@ -62,13 +64,15 @@ namespace ShioriChan.Controllers.Users {
 		/// ユーザ申請API
 		/// </summary>
 		[Route( "api/user/apply" )]
-		public int Apply() {
+		public int Apply()
+		{
 			this.logger.LogTrace( "Start" );
 
 			// TODO リクエストボディをJTokenの形で受け取れれば必要ない変換処理
 			string request = null;
 			{
-				using( StreamReader streamReader = new StreamReader( this.Request.Body ) ) {
+				using( StreamReader streamReader = new StreamReader( this.Request.Body ) )
+				{
 					request = streamReader.ReadToEnd();
 				}
 				this.logger.LogInformation( "Request is {request}." , request );
@@ -76,7 +80,7 @@ namespace ShioriChan.Controllers.Users {
 			JToken requestObj = JToken.Parse( request );
 
 			// TODO ユーザ管理番号が生データ
-			this.userService.Apply( int.Parse( requestObj[ "userSeq"].ToString() ) , requestObj["name"].ToString() );
+			this.userService.Apply( int.Parse( requestObj[ "userSeq" ].ToString() ) , requestObj[ "name" ].ToString() );
 			this.logger.LogTrace( "End" );
 			return 200;
 		}
@@ -92,18 +96,27 @@ namespace ShioriChan.Controllers.Users {
 			List<WaitedApprovalUser> waitingApprovalUsers = this.userService.GetWaitingApprovalUsers();
 
 			this.logger.LogTrace( "End" );
-			return this.Json( new {
-				   unRegisteredUsers = unRegisteredUsers.Select( u => new { u.Seq , u.Name } ).ToList() ,
-				   waitingApprovalUsers = waitingApprovalUsers.Select( u => new { u.Seq , u.UserName } ).ToList()
+			return this.Json( new
+			{
+				unRegisteredUsers = unRegisteredUsers.Select( u => new { u.Seq , u.Name } ).ToList() ,
+				waitingApprovalUsers = waitingApprovalUsers.Select( u => new { u.Seq , u.UserName } ).ToList()
 			} );
 		}
 
 		/// <summary>
 		/// ユーザ登録承認API
 		/// </summary>
-		[Route( "api/user/approval" )]
-		public void Approval()
-			=> this.Json( this.userService.Approval() );
+		[Route( "api/user/approval/{unRegisteredUserSeq}/{waitingApprovalUserSeq}" )]
+		public async Task Approval( int unRegisteredUserSeq , int waitingApprovalUserSeq )
+		{
+			this.logger.LogTrace( "Start" );
+			this.logger.LogTrace( $"Un Registered User Seq is {unRegisteredUserSeq}." );
+			this.logger.LogTrace( $"Waiting Approval User Seq is {waitingApprovalUserSeq}." );
+
+			await this.userService.Approval( unRegisteredUserSeq , waitingApprovalUserSeq );
+
+			this.logger.LogTrace( "End" );
+		}
 
 	}
 

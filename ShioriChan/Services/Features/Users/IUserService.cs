@@ -3,12 +3,14 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using ShioriChan.Entities;
 
-namespace ShioriChan.Services.Features.Users {
+namespace ShioriChan.Services.Features.Users
+{
 
 	/// <summary>
 	/// ユーザService
 	/// </summary>
-	public interface IUserService {
+	public interface IUserService
+	{
 
 		/// <summary>
 		/// メニューを表示する
@@ -39,7 +41,7 @@ namespace ShioriChan.Services.Features.Users {
 		/// <summary>
 		/// 承認する
 		/// </summary>
-		Task Approval();
+		Task Approval( int unRegisteredUserSeq , int waitingApprovalUserSeq );
 
 		/// <summary>
 		/// ランダムに名前を表示する

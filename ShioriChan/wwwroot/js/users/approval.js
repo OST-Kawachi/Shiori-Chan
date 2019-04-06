@@ -11,7 +11,7 @@
             let waitingApprovalUsers = response.waitingApprovalUsers;
 
             let unRegisteredHtml = "";
-            for (let i = 0; i < unRegisteredUsers.length ; i++) {
+            for (let i = 0; i < unRegisteredUsers.length; i++) {
                 let seq = unRegisteredUsers[i].seq;
                 let name = unRegisteredUsers[i].name;
                 let html = '<div><input type="radio" name="unRegistered" value="' + seq + '" />' + name + '</div>';
@@ -40,15 +40,23 @@ $(function () {
     $("#setting").on(
         "click",
         function () {
+            let unRegisteredUserSeq = $('input[name=unRegistered]:checked').val();
+            let waitingApprovalUserSeq = $('input[name=waitingApproval]:checked').val();
+            if (unRegisteredUserSeq === null || unRegisteredUserSeq === undefined) {
+                return;
+            }
+            if (waitingApprovalUserSeq === null || waitingApprovalUserSeq === undefined) {
+                return;
+            }
             $.ajax({
-                url: "/shiori-chan/api/user/approval",
-                type: "GET",
+                url: "/shiori-chan/api/user/approval/" + unRegisteredUserSeq + "/" + waitingApprovalUserSeq,
+                type: "POST",
                 dataType: "json"
             })
-                .done(function (response) {
+                .done(function () {
                     updateList();
                 })
-                .catch(function (response) {
+                .catch(function () {
                     updateList();
                 });
         }

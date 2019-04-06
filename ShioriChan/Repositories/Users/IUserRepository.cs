@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using ShioriChan.Entities;
 
-namespace ShioriChan.Repositories.Users {
+namespace ShioriChan.Repositories.Users
+{
 
 	/// <summary>
 	/// ユーザRepository
 	/// </summary>
-	public interface IUserRepository {
+	public interface IUserRepository
+	{
 
 		/// <summary>
 		/// 登録済みかどうか
@@ -47,6 +49,20 @@ namespace ShioriChan.Repositories.Users {
 		/// </summary>
 		/// <returns>承認待ちユーザ一覧</returns>
 		List<WaitedApprovalUser> GetWaitingApprovalUsers();
+
+		/// <summary>
+		/// 承認
+		/// </summary>
+		/// <param name="unRegisteredUserSeq">ユーザ管理番号</param>
+		/// <param name="waitingApprovalUserSeq">承認待ちユーザ管理番号</param>
+		void Approval( int unRegisteredUserSeq , int waitingApprovalUserSeq );
+
+		/// <summary>
+		/// ユーザ情報取得
+		/// </summary>
+		/// <param name="seq">管理番号</param>
+		/// <returns>ユーザ情報</returns>
+		UserInfo GetUser( int seq );
 
 	}
 

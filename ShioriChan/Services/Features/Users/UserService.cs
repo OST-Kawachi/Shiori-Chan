@@ -7,12 +7,14 @@ using ShioriChan.Repositories.Users;
 using ShioriChan.Services.Features.Menus;
 using ShioriChan.Services.MessagingApis.Messages;
 
-namespace ShioriChan.Services.Features.Users {
+namespace ShioriChan.Services.Features.Users
+{
 
 	/// <summary>
 	/// ユーザService
 	/// </summary>
-	public class UserService : IUserService {
+	public class UserService : IUserService
+	{
 
 		/// <summary>
 		/// ログ
@@ -105,7 +107,8 @@ namespace ShioriChan.Services.Features.Users {
 			string replyToken = this.GetReplyToken( parameter );
 			this.logger.LogTrace( $"Reply Token is {replyToken}." );
 
-			if( isRegistered ) {
+			if( isRegistered )
+			{
 				await this.menuService.ChangeMenu( userId , "" );
 				await this.messageService
 					.CreateMessageBuilder()
@@ -113,7 +116,8 @@ namespace ShioriChan.Services.Features.Users {
 					.BuildMessage()
 					.Reply( replyToken );
 			}
-			else {
+			else
+			{
 
 				int waitingApprovalUserSeq = this.userRepository.RegisterOnlyUserIdInWaitingApproval( userId );
 				this.logger.LogTrace( $"Waiting Approval User Seq is {waitingApprovalUserSeq}." );
@@ -122,7 +126,7 @@ namespace ShioriChan.Services.Features.Users {
 					.CreateMessageBuilder()
 					.AddMessage( "初めまして！\nしおりと申します！！\nあなたの旅のおともをさせていただきます！\nよろしくお願いします！！" )
 					.AddMessage( "まずはあなたのお名前を教えてください！" )
-					.AddTemplate("名前を教えてね！")
+					.AddTemplate( "名前を教えてね！" )
 						.UseButtonTemplate( "名前を教える" )
 						.SetAction()
 						.UseUriAction( "名前を教えます" , "https://shiorichanappservice.azurewebsites.net/shiori-chan/user/apply/" + waitingApprovalUserSeq )
@@ -174,10 +178,34 @@ namespace ShioriChan.Services.Features.Users {
 		/// <returns>承認待ちユーザ一覧</returns>
 		public List<WaitedApprovalUser> GetWaitingApprovalUsers()
 			=> this.userRepository.GetWaitingApprovalUsers();
+
 		/// <summary>
 		/// 承認する
 		/// </summary>
-		public Task Approval() => throw new System.NotImplementedException();
+		public async Task Approval( int unRegisteredUserSeq , int waitingApprovalUserSeq )
+		{
+			this.logger.LogTrace( "Start" );
+			this.logger.LogTrace( $"Un Registered User Seq is {unRegisteredUserSeq}." );
+			this.logger.LogTrace( $"Waiting Approval User Seq is {waitingApprovalUserSeq}." );
+
+			this.userRepository.Approval( unRegisteredUserSeq , waitingApprovalUserSeq );
+
+			UserInfo registeredUser = this.userRepository.GetUser( unRegisteredUserSeq );
+			this.logger.LogTrace( $"Registered User Name is {registeredUser.Name}." );
+			await this.messageService.CreateMessageBuilder()
+				.AddMessage( "幹事さん達に承認されました！\nよろしくお願いしますね！\n下にメニューを表示しました！！" )
+				.BuildMessage()
+				.Push( registeredUser.Id );
+
+			List<string> userIds = this.userRepository.GetPushedAdminMembers();
+
+			await this.messageService.CreateMessageBuilder()
+				.AddMessage( $"{registeredUser.Name}さんが承認されました" )
+				.BuildMessage()
+				.Multicast( userIds );
+
+			this.logger.LogTrace( "End" );
+		}
 
 		/// <summary>
 		/// ランダムに名前を表示する

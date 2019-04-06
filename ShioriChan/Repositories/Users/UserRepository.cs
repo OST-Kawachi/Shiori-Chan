@@ -4,12 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ShioriChan.Repositories.Users {
+namespace ShioriChan.Repositories.Users
+{
 
 	/// <summary>
 	/// ユーザRepository
 	/// </summary>
-	public class UserRepository : IUserRepository {
+	public class UserRepository : IUserRepository
+	{
 
 		/// <summary>
 		/// ログ
@@ -60,7 +62,8 @@ namespace ShioriChan.Repositories.Users {
 			this.logger.LogTrace( $"User Id is {userId}." );
 			List<int> seqs = this.model.WaitedApprovalUsers.Select( user => user.Seq ).ToList();
 			this.logger.LogTrace( $"Max User Seq is {seqs.Count}" );
-			this.model.WaitedApprovalUsers.Add( new WaitedApprovalUser() {
+			this.model.WaitedApprovalUsers.Add( new WaitedApprovalUser()
+			{
 				Seq = seqs.Count + 1 ,
 				UserId = userId ,
 				UserName = "" ,
@@ -116,7 +119,7 @@ namespace ShioriChan.Repositories.Users {
 					pushablePermissionSeqs.Any( p => p == pu.PermissionSeq )
 				)
 				.Select( up => up.UserSeq );
-			
+
 			IQueryable<int> adminPermissionSeqs = this.model.Permissions
 				.Where( p => "Admin".Equals( p.Name ) )
 				.Select( p => p.Seq );
@@ -154,12 +157,52 @@ namespace ShioriChan.Repositories.Users {
 		/// <returns>承認待ちユーザ一覧</returns>
 		public List<WaitedApprovalUser> GetWaitingApprovalUsers()
 			=> this.model.WaitedApprovalUsers
-				.Where( wau => 
-					!string.IsNullOrEmpty( wau.UserName ) 
-					&& 
-					!string.IsNullOrEmpty( wau.UserId ) 
+				.Where( wau =>
+					!string.IsNullOrEmpty( wau.UserName )
+					&&
+					!string.IsNullOrEmpty( wau.UserId )
 				)
 				.ToList();
+
+		/// <summary>
+		/// 承認
+		/// </summary>
+		/// <param name="unRegisteredUserSeq">ユーザ管理番号</param>
+		/// <param name="waitingApprovalUserSeq">承認待ちユーザ管理番号</param>
+		public void Approval( int unRegisteredUserSeq , int waitingApprovalUserSeq )
+		{
+			this.logger.LogTrace( "Start" );
+			this.logger.LogTrace( $"Un Registered User Seq is {unRegisteredUserSeq}." );
+			this.logger.LogTrace( $"Waiting Approval User Seq is {waitingApprovalUserSeq}." );
+
+			UserInfo userInfo = this.model.UserInfos.SingleOrDefault( u => u.Seq == unRegisteredUserSeq );
+			if( userInfo is null )
+			{
+				this.logger.LogWarning( "Un Registered User is NULL" );
+				return;
+			}
+
+			WaitedApprovalUser waitedApprovalUser = this.model.WaitedApprovalUsers
+				.SingleOrDefault( wau => wau.Seq == waitingApprovalUserSeq );
+			if( waitedApprovalUser is null )
+			{
+				this.logger.LogWarning( "Waited Approval User is NULL." );
+				return;
+			}
+
+			userInfo.Id = waitedApprovalUser.UserId;
+			this.model.SaveChanges();
+
+			this.logger.LogTrace( "End" );
+		}
+
+		/// <summary>
+		/// ユーザ情報取得
+		/// </summary>
+		/// <param name="seq">管理番号</param>
+		/// <returns>ユーザ情報</returns>
+		public UserInfo GetUser( int seq )
+			=> this.model.UserInfos.SingleOrDefault( u => u.Seq == seq );
 
 	}
 
