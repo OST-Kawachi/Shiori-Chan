@@ -35,12 +35,50 @@ namespace ShioriChan.Services.Features.TouristSpots {
 			this.messageService = messageService;
 		}
 
-		/// <summary>
-		/// 観光地情報を表示する
-		/// </summary>
-		/// <param name="parameter">パラメータ</param>
-		public Task Show( JToken parameter ) => throw new NotImplementedException();
+        /// <summary>
+        /// 観光地情報を表示する
+        /// </summary>
+        /// <param name="parameter">パラメータ</param>
+        public async Task Show(JToken parameter) {
+            string replyToken = this.GetReplyToken(parameter);
 
-	}
+            await this.messageService.CreateMessageBuilder()
+            .AddTemplate("観光地情報の表示")
+            .UseCarouselTemplateMessageBuilder()
+            .AddColumn("丁子屋では、自然薯を筆頭に、こだわりの原材料で名物「とろろ汁」を堪能できます！")
+            .SetTitle("丁子屋")
+            .AddAction()
+            .UseMessageColumnAction("すごい！", "すごい！")
+            .BuildColumnAction()
+            .AddColumn("江戸時代から受け継がれた「絞染」、「型染」の手法を用いて染め物づくりを体験できます！")
+            .SetTitle("駿府匠宿　藍染　白ハンカチ")
+            .AddAction()
+            .UseMessageColumnAction("すごい！", "すごい！")
+            .BuildColumnAction()
+            .AddColumn("丸めた生地を回転台の上で回したり引きのばしたりして作ります！受取は2か月後になります！")
+            .SetTitle("駿府匠宿　陶芸　手ひねり")
+            .AddAction()
+            .UseMessageColumnAction("すごい！", "すごい！")
+            .BuildColumnAction()
+            .BuildTemplate()
+            .BuildMessage()
+            .Reply(replyToken);
+        }
 
+        /// <summary>
+        /// リプライトークンを取得
+        /// </summary>
+        /// <param name="parameter">パラメータ</param>
+        /// <returns>リプライトークン</returns>
+        private string GetReplyToken(JToken parameter)
+        {
+            JArray events = (JArray)parameter["events"];
+            JObject firstEvent = (JObject)events[0];
+
+            string replyToken = firstEvent["replyToken"].ToString();
+            this.logger.LogTrace($"Reply Token is {replyToken}.");
+
+            return replyToken;
+        }
+    }
 }

@@ -40,10 +40,10 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			}
 
 			public ISettableColumnOfCarouselTemplate AddColumn( string text ) {
-				this.parameter.Messages.Last[ "template" ][ "text" ] = text;
 				JArray columns = (JArray)this.parameter.Messages.Last[ "template" ][ "columns" ];
 				columns.Add( new JObject(){
-					{ "actions" , new JArray() }
+					{ "actions" , new JArray() },
+                    { "text" , text }
 				} );
 				this.parameter.Messages.Last[ "template" ][ "columns" ] = columns;
 				return this;

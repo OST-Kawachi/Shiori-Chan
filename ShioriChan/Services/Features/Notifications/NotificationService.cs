@@ -43,11 +43,15 @@ namespace ShioriChan.Services.Features.Notifications {
 			this.notificationRepository = notificationRepository;
 		}
 
-		/// <summary>
-		/// 登録する
-		/// </summary>
-		/// <param name="parameter">パラメータ</param>
-		public Task Register( JToken parameter ) => throw new System.NotImplementedException();
+        /// <summary>
+        /// 登録する
+        /// </summary>
+        /// <param name="parameter">パラメータ</param>
+        public async Task Register(JToken parameter)
+        {
+            this.logger.LogTrace("temp");
+            this.logger.LogTrace("temp");
+        }
 
 		/// <summary>
 		/// 確認する

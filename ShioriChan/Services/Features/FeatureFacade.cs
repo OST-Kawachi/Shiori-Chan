@@ -370,9 +370,9 @@ namespace ShioriChan.Services.Features {
 
 							}
 							// TODO 仮
-							else if( message.Contains( "メンバー" ) ) {
+							else if( message.Contains( "れ" ) ) {
 								this.logger.LogInformation( "Temp" );
-								await this.ShowRoomMember( parameter );
+								await this.ShowTouristShop( parameter );
 							}
 
 							break;
