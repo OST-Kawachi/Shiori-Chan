@@ -374,6 +374,10 @@ namespace ShioriChan.Services.Features {
 								this.logger.LogInformation( "Temp" );
 								await this.ShowTouristShop( parameter );
 							}
+                            else if( message.Contains( "す" ) ) {
+								this.logger.LogInformation( "Temp" );
+								await this.ChooseSchedule( parameter );
+							}
 
 							break;
 
