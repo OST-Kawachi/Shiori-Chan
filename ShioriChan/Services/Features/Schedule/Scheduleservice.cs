@@ -36,8 +36,7 @@ namespace ShioriChan.Services.Features.Schedule {
 			ILogger<ScheduleService> logger ,
 			IMessageService messageService ,
 			IScheduleRepository scheduleRepository
-		)
-		{
+		) {
 			this.logger = logger;
 			this.messageService = messageService;
 			this.scheduleRepository = scheduleRepository;
@@ -52,19 +51,22 @@ namespace ShioriChan.Services.Features.Schedule {
 		/// 表示する日付を選択する
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public async Task ChooseDate( JToken parameter){
-            string replyToken = this.GetReplyToken(parameter);
-            await this.messageService.CreateMessageBuilder()
-           .AddTemplate("全体スケジュール")
-           .UseConfirmTemplate("下から日付を選んでください\n一日のスケジュールを表示します")
-           .UsePostbackPositiveAction("1日目", "firstSchedule")
-           .BuildPositiveAction()
-           .UsePostbackNegativeAction("2日目", "secondSchedule")
-           .BuildNegativeAction()
-           .BuildMessage()
-           .Reply(replyToken);
+		public async Task ChooseDate( JToken parameter ) {
+			this.logger.LogTrace( "Start" );
+			string replyToken = this.GetReplyToken( parameter );
 
-        }
+			await this.messageService.CreateMessageBuilder()
+		   .AddTemplate( "全体スケジュール" )
+		   .UseConfirmTemplate( "下から日付を選んでください\n一日のスケジュールを表示します" )
+		   .UsePostbackPositiveAction( "1日目" , "firstSchedule" )
+		   .BuildPositiveAction()
+		   .UsePostbackNegativeAction( "2日目" , "secondSchedule" )
+		   .BuildNegativeAction()
+		   .BuildMessage()
+		   .Reply( replyToken );
+
+			this.logger.LogTrace( "End" );
+		}
 
 		/// <summary>
 		/// 表示する
@@ -84,22 +86,21 @@ namespace ShioriChan.Services.Features.Schedule {
 		/// <param name="parameter">パラメータ</param>
 		public Task Update( JToken parameter ) => throw new System.NotImplementedException();
 
-        /// <summary>
-        /// リプライトークンを取得
-        /// </summary>
-        /// <param name="parameter">パラメータ</param>
-        /// <returns>リプライトークン</returns>
-        private string GetReplyToken(JToken parameter)
-        {
-            JArray events = (JArray)parameter["events"];
-            JObject firstEvent = (JObject)events[0];
+		/// <summary>
+		/// リプライトークンを取得
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		/// <returns>リプライトークン</returns>
+		private string GetReplyToken( JToken parameter ) {
+			JArray events = (JArray)parameter[ "events" ];
+			JObject firstEvent = (JObject)events[ 0 ];
 
-            string replyToken = firstEvent["replyToken"].ToString();
-            this.logger.LogTrace($"Reply Token is {replyToken}.");
+			string replyToken = firstEvent[ "replyToken" ].ToString();
+			this.logger.LogTrace( $"Reply Token is {replyToken}." );
 
-            return replyToken;
-        }
+			return replyToken;
+		}
 
-    }
+	}
 
 }

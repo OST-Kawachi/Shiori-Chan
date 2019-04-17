@@ -358,7 +358,7 @@ namespace ShioriChan.Services.Features {
 
 							string message = firstEvent[ "message" ][ "text" ].ToString();
 							this.logger.LogInformation( "Message is {message}." , message );
-							
+
 							if(
 								message.Contains( ExistMessage1 ) ||
 								message.Contains( ExistMessage2 ) ||
@@ -374,7 +374,7 @@ namespace ShioriChan.Services.Features {
 								this.logger.LogInformation( "Temp" );
 								await this.ShowTouristShop( parameter );
 							}
-                            else if( message.Contains( "す" ) ) {
+							else if( message.Contains( "す" ) ) {
 								this.logger.LogInformation( "Temp" );
 								await this.ChooseSchedule( parameter );
 							}

@@ -39,7 +39,7 @@ namespace ShioriChan.Controllers.Menus {
 		/// メニュー画像を更新する
 		/// </summary>
 		[Route( "api/menu" )]
-		[HttpPost]
+		[HttpGet]
 		public async Task<StatusCodeResult> Post()
 		{
 			this.logger.LogTrace( "Start" );

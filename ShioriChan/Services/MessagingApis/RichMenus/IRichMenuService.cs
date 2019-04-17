@@ -15,7 +15,7 @@ namespace ShioriChan.Services.MessagingApis.RichMenus {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		/// <returns>リッチメニューID</returns>
-		Task<int> Create( JToken parameter );
+		Task<string> Create( JToken parameter );
 
 		/// <summary>
 		/// リッチメニューのID一覧を取得する
