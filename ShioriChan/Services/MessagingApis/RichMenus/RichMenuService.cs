@@ -49,7 +49,7 @@ namespace ShioriChan.Services.MessagingApis.RichMenus
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		/// <returns>リッチメニューID</returns>
-		public async Task<int> Create( JToken parameter )
+		public async Task<string> Create( JToken parameter )
 		{
 			this.logger.LogTrace( $"Parameter is {parameter}" );
 
@@ -70,7 +70,7 @@ namespace ShioriChan.Services.MessagingApis.RichMenus
 			client.DefaultRequestHeaders.Accept.Add( new MediaTypeWithQualityHeaderValue( "application/json" ) );
 			client.DefaultRequestHeaders.Add( "Authorization" , "Bearer " + channelAccessToken );
 
-			int richMenuId = -1;
+			string richMenuId = null;
 			try
 			{
 				this.logger.LogTrace( "Start Post Async" );
@@ -78,7 +78,8 @@ namespace ShioriChan.Services.MessagingApis.RichMenus
 				this.logger.LogTrace( "End Post Async" );
 				string result = await response?.Content.ReadAsStringAsync();
 				this.logger.LogTrace( "Post Async Result is {result}" , result );
-				richMenuId = int.Parse( result );
+				JToken resultObject = JToken.Parse( result );
+				richMenuId = resultObject[ "richMenuId" ].ToString();
 				response.Dispose();
 				client.Dispose();
 			}
@@ -86,19 +87,16 @@ namespace ShioriChan.Services.MessagingApis.RichMenus
 			{
 				this.logger.LogError( "Argument Null Exception" );
 				client.Dispose();
-				return -1;
 			}
 			catch( HttpRequestException )
 			{
 				this.logger.LogError( "Http Request Exception" );
 				client.Dispose();
-				return -1;
 			}
 			catch( Exception )
 			{
 				this.logger.LogError( "Exception" );
 				client.Dispose();
-				return -1;
 			}
 
 			return richMenuId;
@@ -331,14 +329,19 @@ namespace ShioriChan.Services.MessagingApis.RichMenus
 			client.DefaultRequestHeaders.Accept.Add( new MediaTypeWithQualityHeaderValue( "application/json" ) );
 			client.DefaultRequestHeaders.Add( "Authorization" , "Bearer " + channelAccessToken );
 
-			List<string> RichMenus = null;
+			List<string> richMenus = new List<string>();
 			try
 			{
-				this.logger.LogTrace( "Start Post Async" );
+				this.logger.LogTrace( "Start Get Async" );
 				HttpResponseMessage response = await client.GetAsync( "https://api.line.me/v2/bot/richmenu/list" ).ConfigureAwait( false );
 				this.logger.LogTrace( "End Get Async" );
 				string result = await response?.Content.ReadAsStringAsync();
 				this.logger.LogTrace( "Get Async Result is {result}" , result );
+				JToken resultToken = JToken.Parse(result);
+				JArray richMenuIds = resultToken[ "richmenus" ] as JArray;
+				foreach( JToken id in richMenuIds ) {
+					richMenus.Add( id.ToString() );
+				}
 				//RichMenus = result; //TODO:Listに直す
 				response.Dispose();
 				client.Dispose();
@@ -362,7 +365,7 @@ namespace ShioriChan.Services.MessagingApis.RichMenus
 				return null;
 			}
 
-			return RichMenus;
+			return richMenus;
 		}
 
 		/// <summary>

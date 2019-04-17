@@ -48,7 +48,7 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 				this.parameter.Messages.Last[ "template" ] = new JObject(){
 					{ "type" , "confirm" } ,
 					{ "text" , text } ,
-					{ "actions" , new JArray() }
+					{ "actions" , new JArray(){ new JObject() } }
 				};
 				return new ConfirmTemplateMessageBuilder( this.parameter );
 			}
