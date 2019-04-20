@@ -378,6 +378,10 @@ namespace ShioriChan.Services.Features {
 								this.logger.LogInformation( "Temp" );
 								await this.ChooseSchedule( parameter );
 							}
+							else if( message.Contains( "め" ) ) {
+								this.logger.LogInformation( "Temp" );
+								await this.menuService.ChangeMenu( userId , MenuService.MainMenuName );
+							}
 
 							break;
 

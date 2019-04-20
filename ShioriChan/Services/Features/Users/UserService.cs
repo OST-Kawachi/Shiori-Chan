@@ -109,7 +109,7 @@ namespace ShioriChan.Services.Features.Users
 
 			if( isRegistered )
 			{
-				await this.menuService.ChangeMenu( userId , "" );
+				await this.menuService.ChangeMenu( userId , MenuService.MainMenuName );
 				await this.messageService
 					.CreateMessageBuilder()
 					.AddMessage( "また友達追加してくれたんですね！\nありがとうございます！！\nまたよろしくお願いします！" )

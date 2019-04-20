@@ -21,12 +21,12 @@ namespace ShioriChan.Services.MessagingApis.RichMenus {
 		/// リッチメニューのID一覧を取得する
 		/// </summary>
 		/// <returns></returns>
-		Task<List<string>> GetIds();
+		Task<Dictionary<string,string>> GetIds();
 
 		/// <summary>
 		/// リッチメニューを取得する
 		/// </summary>
-		Task<Responce> Get( string richMenuId );
+		Task<JToken> Get( string richMenuId );
 
 		/// <summary>
 		/// リッチメニューを削除する

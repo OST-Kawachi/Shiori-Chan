@@ -12,6 +12,14 @@ namespace ShioriChan.Services.Features.Menus {
 	/// </summary>
 	public class MenuService : IMenuService {
 
+		public static readonly string MainMenuName = "Main Menu";
+
+		public static readonly string MapMenuName = "Map Menu";
+
+		public static readonly string ScheduleMenuName = "Schedule Menu";
+
+		public static readonly string AdminMenuName = "Admin Menu";
+
 		/// <summary>
 		/// ログ
 		/// </summary>
@@ -44,18 +52,81 @@ namespace ShioriChan.Services.Features.Menus {
 		}
 
 		/// <summary>
+		/// ユーザIDを取得
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		/// <returns>ユーザID</returns>
+		private string GetUserId( JToken parameter ) {
+			JArray events = (JArray)parameter[ "events" ];
+			JObject firstEvent = (JObject)events[ 0 ];
+
+			JToken source = firstEvent[ "source" ];
+			string userId = source[ "userId" ].ToString();
+			this.logger.LogTrace( $"User Id is {userId}." );
+
+			return userId;
+		}
+
+		/// <summary>
+		/// ポストバックデータを取得
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		/// <returns>ポストバックデータ</returns>
+		private string GetPostBackData( JToken parameter ) {
+			JArray events = (JArray)parameter[ "events" ];
+			JObject firstEvent = (JObject)events[ 0 ];
+
+			JToken postback = firstEvent[ "postback" ];
+			string data = postback[ "data" ].ToString();
+			this.logger.LogTrace( $"Postback Data is {data}." );
+
+			return data;
+		}
+
+		/// <summary>
 		/// メニューを変更する
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public Task ChangeMenu( JToken parameter )
-			=> throw new System.NotImplementedException();
+		public async Task ChangeMenu( JToken parameter ) {
+			string userId = this.GetUserId( parameter );
+			string postBackData = this.GetPostBackData( parameter );
+
+			switch( postBackData ) {
+				case "main-map":
+					await this.ChangeMenu( userId , MapMenuName );
+					break;
+				case "main-admin":
+					await this.ChangeMenu( userId , AdminMenuName );
+					break;
+				case "main-schedule":
+					await this.ChangeMenu( userId , ScheduleMenuName );
+					break;
+				case "map-back":
+					await this.ChangeMenu( userId , MainMenuName );
+					break;
+				case "schedule-back":
+					await this.ChangeMenu( userId , MainMenuName );
+					break;
+				case "admin-back":
+					await this.ChangeMenu( userId , MainMenuName );
+					break;
+				default:
+					this.logger.LogWarning( "Postback Data Is Not Match" );
+					break;
+			}
+
+		}
 
 		/// <summary>
 		/// メニューを変更する
 		/// </summary>
 		/// <param name="userId">ユーザID</param>
-		/// <param name="menuId">メニューID</param>
-		public Task ChangeMenu( string userId , string menuId ) => throw new System.NotImplementedException();
+		/// <param name="menuName">メニュー名</param>
+		public async Task ChangeMenu( string userId , string menuName ) {
+			Dictionary<string,string> Ids = await this.richMenuService.GetIds();
+			string menuId = Ids[ menuName ];
+			await this.richMenuService.LinkToUser( menuId , userId );
+		}
 
 		/// <summary>
 		/// メインメニュー作成
@@ -68,7 +139,7 @@ namespace ShioriChan.Services.Features.Menus {
 						{  "width" , 2500 } ,
 						{ "height" , 1686 }
 					} } ,
-					{ "name" , "Main Menu" } ,
+					{ "name" , MainMenuName } ,
 					{ "areas" , new JArray(){
 						new JObject(){
 							{ "bounds" , new JObject() {
@@ -149,7 +220,7 @@ namespace ShioriChan.Services.Features.Menus {
 						{  "width" , 2500 } ,
 						{ "height" , 1686 }
 					} } ,
-					{ "name" , "Schedule Menu" } ,
+					{ "name" , ScheduleMenuName } ,
 					{ "areas" , new JArray(){
 						new JObject(){
 							{ "bounds" , new JObject() {
@@ -214,7 +285,7 @@ namespace ShioriChan.Services.Features.Menus {
 						{  "width" , 2500 } ,
 						{ "height" , 1686 }
 					} } ,
-					{ "name" , "Map Menu" } ,
+					{ "name" , MapMenuName } ,
 					{ "areas" , new JArray(){
 						new JObject(){
 							{ "bounds" , new JObject() {
@@ -266,7 +337,7 @@ namespace ShioriChan.Services.Features.Menus {
 						{  "width" , 2500 } ,
 						{ "height" , 1686 }
 					} } ,
-					{ "name" , "Admin Menu" } ,
+					{ "name" , AdminMenuName } ,
 					{ "areas" , new JArray(){
 						new JObject(){
 							{ "bounds" , new JObject() {
@@ -329,8 +400,10 @@ namespace ShioriChan.Services.Features.Menus {
 		public async Task UpdateImage() {
 			this.logger.LogTrace( "Start" );
 
-			List<string> richMenuIds = await this.richMenuService.GetIds();
-			richMenuIds.ForEach( richMenuId => this.richMenuService.Delete( richMenuId ) );
+			Dictionary<string,string> richMenuIds = await this.richMenuService.GetIds();
+			foreach( KeyValuePair<string , string> richMenuId in richMenuIds ) {
+				await this.richMenuService.Delete( richMenuId.Value );
+			}
 
 			string mainMenuId = await this.CreateMainMenu();
 			string scheduleMenuId = await this.CreateScheduleMenu();
