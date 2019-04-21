@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using ShioriChan.Repositories.RollCalls;
 using ShioriChan.Services.MessagingApis.Messages;
+using static ShioriChan.Controllers.RollCalls.RollCallsController;
 
 namespace ShioriChan.Services.Features.RollCalls {
 
@@ -36,8 +38,7 @@ namespace ShioriChan.Services.Features.RollCalls {
 			ILogger<RollCallService> logger ,
 			IMessageService messageService ,
 			IRollCallRepository rollCallRepository
-		)
-		{
+		) {
 			this.logger = logger;
 			this.messageService = messageService;
 			this.rollCallRepository = rollCallRepository;
@@ -57,7 +58,8 @@ namespace ShioriChan.Services.Features.RollCalls {
 		/// <summary>
 		/// 点呼の状況を取得する
 		/// </summary>
-		public Task GetStatuses() => throw new System.NotImplementedException();
+		public Task<List<Status>> GetStatuses()
+			=> this.rollCallRepository.GetStatuses();
 
 	}
 

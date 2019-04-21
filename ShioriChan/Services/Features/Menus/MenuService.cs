@@ -373,9 +373,8 @@ namespace ShioriChan.Services.Features.Menus {
 								{ "height" , 610 }
 							} } ,
 							{ "action" , new JObject() {
-								{ "type" , "postback" } ,
-								{ "data" , "change-position" } ,
-								{ "displayText" , "集合場所変更について" }
+								{ "type" , "uri" } ,
+								{ "uri" , "https://shiorichanappservice.azurewebsites.net/shiori-chan/roll-call/list" }
 							} }
 						} ,
 						new JObject(){

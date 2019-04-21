@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ShioriChan.Services.Features.RollCalls;
 
@@ -9,6 +10,12 @@ namespace ShioriChan.Controllers.RollCalls {
 	/// </summary>
 	[Route( "shiori-chan" )]
 	public class RollCallsController : Controller {
+
+		public class Status {
+			public int UserSeq { set; get; }
+			public string Name { set; get; }
+			public string RollCall { set; get; }
+		}
 
 		/// <summary>
 		/// ログ
@@ -46,13 +53,13 @@ namespace ShioriChan.Controllers.RollCalls {
 		/// 点呼一覧取得API
 		/// </summary>
 		[Route( "api/roll-call/list" )]
-		public void GetList()
-			=> this.rollCallService.GetStatuses();
+		public IActionResult GetList()
+			=> this.Json( this.rollCallService.GetStatuses() );
 
 		/// <summary>
 		/// 点呼受付開始API
 		/// </summary>
-		[Route( "api/roll-call/start-accepting" )]
+		[Route( "api/roll-call/notify" )]
 		public void StartAccepting()
 			=> this.rollCallService.StartAcception();
 

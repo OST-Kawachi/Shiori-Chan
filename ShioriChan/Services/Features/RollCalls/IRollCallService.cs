@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using static ShioriChan.Controllers.RollCalls.RollCallsController;
 
 namespace ShioriChan.Services.Features.RollCalls {
 
@@ -22,7 +24,7 @@ namespace ShioriChan.Services.Features.RollCalls {
 		/// <summary>
 		/// 点呼の状況を取得する
 		/// </summary>
-		Task GetStatuses();
+		Task<List<Status>> GetStatuses();
 
 	}
 
