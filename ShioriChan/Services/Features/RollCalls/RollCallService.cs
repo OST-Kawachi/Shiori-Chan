@@ -45,15 +45,46 @@ namespace ShioriChan.Services.Features.RollCalls {
 		}
 
 		/// <summary>
+		/// ユーザIDを取得
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		/// <returns>ユーザID</returns>
+		private string GetUserId( JToken parameter ) {
+			JArray events = (JArray)parameter[ "events" ];
+			JObject firstEvent = (JObject)events[ 0 ];
+
+			JToken source = firstEvent[ "source" ];
+			string userId = source[ "userId" ].ToString();
+			this.logger.LogTrace( $"User Id is {userId}." );
+
+			return userId;
+		}
+
+		/// <summary>
 		/// 返事をする
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public Task Reply( JToken parameter ) => throw new System.NotImplementedException();
+		public async Task Reply( JToken parameter ) {
+			string userId = this.GetUserId( parameter );
+			await this.rollCallRepository.TellIAmThere( userId );
+		}
 
 		/// <summary>
 		/// 受付を開始する
 		/// </summary>
-		public Task StartAcception() => throw new System.NotImplementedException();
+		public async Task Notify() {
+			await this.rollCallRepository.Reset();
+			List<string> toList = this.rollCallRepository.GetParticipantIds();
+			await this.messageService.CreateMessageBuilder()
+				.AddTemplate( "点呼" )
+				.UseButtonTemplate( "点呼を受け付けます！\n集合場所に来たら下のボタンを押してください！" )
+				.SetAction()
+				.UsePostbackAction( "いるよ！" , "roll-call-reply" )
+				.SetDisplayText( "いるよ！")
+				.BuildTemplate()
+				.BuildMessage()
+				.Multicast( toList );
+		}
 
 		/// <summary>
 		/// 点呼の状況を取得する

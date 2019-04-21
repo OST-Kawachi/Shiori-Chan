@@ -19,7 +19,7 @@ namespace ShioriChan.Services.Features.RollCalls {
 		/// <summary>
 		/// 受付を開始する
 		/// </summary>
-		Task StartAcception();
+		Task Notify();
 
 		/// <summary>
 		/// 点呼の状況を取得する

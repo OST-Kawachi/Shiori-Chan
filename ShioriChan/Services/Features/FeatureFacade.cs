@@ -200,6 +200,11 @@ namespace ShioriChan.Services.Features {
 		/// </summary>
 		private const string PostbackUpdateScheduleConditions = "updateSchedule";
 
+		/// <summary>
+		/// ポストバックデータ - 点呼返信
+		/// </summary>
+		private const string PostbackRollCallReply = "roll-call-reply";
+
 		#endregion
 
 		/// <summary>
@@ -359,18 +364,8 @@ namespace ShioriChan.Services.Features {
 							string message = firstEvent[ "message" ][ "text" ].ToString();
 							this.logger.LogInformation( "Message is {message}." , message );
 
-							if(
-								message.Contains( ExistMessage1 ) ||
-								message.Contains( ExistMessage2 ) ||
-								message.Contains( ExistMessage3 )
-							) {
-								this.logger.LogInformation( "Start Exist User" );
-
-								await this.Reply( parameter );
-
-							}
 							// TODO 仮
-							else if( message.Contains( "れ" ) ) {
+							if( message.Contains( "れ" ) ) {
 								this.logger.LogInformation( "Temp" );
 								await this.ShowTouristShop( parameter );
 							}
@@ -610,6 +605,11 @@ namespace ShioriChan.Services.Features {
 
 							await this.ShowRandomName( parameter );
 
+							break;
+
+						case PostbackRollCallReply:
+							this.logger.LogInformation( "Start Exist User" );
+							await this.Reply( parameter );
 							break;
 
 						default:

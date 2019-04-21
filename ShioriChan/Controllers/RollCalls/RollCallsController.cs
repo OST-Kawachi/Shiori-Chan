@@ -60,8 +60,8 @@ namespace ShioriChan.Controllers.RollCalls {
 		/// 点呼受付開始API
 		/// </summary>
 		[Route( "api/roll-call/notify" )]
-		public void StartAccepting()
-			=> this.rollCallService.StartAcception();
+		public void Notify()
+			=> this.rollCallService.Notify();
 
 	}
 
