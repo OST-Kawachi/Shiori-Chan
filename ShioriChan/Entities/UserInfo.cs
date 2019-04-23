@@ -54,7 +54,16 @@ namespace ShioriChan.Entities {
 		/// バージョン
 		/// </summary>
 		public int Version { set; get; }
-		
+
+		/// <summary>
+		/// 1日目スケジュール
+		/// </summary>
+		public string FirstScheduleName { set; get; }
+
+		/// <summary>
+		/// 2日目スケジュール
+		/// </summary>
+		public string SecondScheduleName { set; get; }
 	}
 
 }
