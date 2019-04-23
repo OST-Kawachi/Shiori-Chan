@@ -64,6 +64,17 @@ namespace ShioriChan.Repositories.Users
 		/// <returns>ユーザ情報</returns>
 		UserInfo GetUser( int seq );
 
-	}
+        /// <summary>
+        /// ランダム名前を取得
+        /// </summary>
+        /// <returns>ユーザ名</returns>
+        string GetRandomUserName();
+
+        /// <summary>
+        /// 全員のユーザIDを取得
+        /// </summary>
+        /// <returns>ユーザID</returns>
+        List<string> GetAllUserId();
+    }
 
 }

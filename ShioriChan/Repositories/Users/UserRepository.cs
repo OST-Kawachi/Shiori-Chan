@@ -204,6 +204,42 @@ namespace ShioriChan.Repositories.Users
 		public UserInfo GetUser( int seq )
 			=> this.model.UserInfos.SingleOrDefault( u => u.Seq == seq );
 
-	}
+        /// <summary>
+		/// ランダム名前を取得
+		/// </summary>
+		/// <returns>ユーザ名</returns>
+		public string GetRandomUserName()
+        {
+            string name = null;
+
+            this.logger.LogTrace("Start");
+            Random rand = new Random();
+            UserInfo userInfo = this.model.UserInfos
+                 .ElementAt(rand.Next(this.model.UserInfos.Count()));
+            
+                name = userInfo?.Name;
+            
+
+            this.logger.LogTrace("End");
+
+            return name;
+        }
+
+        /// <summary>
+		/// 全員のユーザIDを取得
+		/// </summary>
+		/// <returns>ユーザID</returns>
+		public List<string> GetAllUserId()
+        {
+            this.logger.LogTrace("Start");
+            List<string> userIds = this.model.UserInfos
+               .Where(u => !string.IsNullOrEmpty(u.Id))
+               .Select(u => u.Id)
+               .ToList();
+
+            this.logger.LogTrace("End");
+            return userIds;
+        }
+    }
 
 }
