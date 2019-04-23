@@ -214,12 +214,13 @@ namespace ShioriChan.Repositories.Users
 
             this.logger.LogTrace("Start");
             Random rand = new Random();
-            UserInfo userInfo = this.model.UserInfos
-                 .ElementAt(rand.Next(this.model.UserInfos.Count()));
+			UserInfo userInfo = this.model.UserInfos
+				.OrderBy( _ => Guid.NewGuid() )
+				.FirstOrDefault();
+			this.logger.LogTrace( $"User Info is Null ... { userInfo is null}." );
+			name = userInfo?.Name;
+			this.logger.LogTrace( $"User Name is {name}" );
             
-                name = userInfo?.Name;
-            
-
             this.logger.LogTrace("End");
 
             return name;
