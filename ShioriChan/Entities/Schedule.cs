@@ -69,7 +69,15 @@ namespace ShioriChan.Entities {
 		/// </summary>
 		public int Version { set; get; }
 
+		/// <summary>
+		/// 終了時間
+		/// </summary>
 		public DateTime? EndDatetime { set; get; }
+
+		/// <summary>
+		/// 通知済みかどうか
+		/// </summary>
+		public bool IsNotified { set; get; }
 
 	}
 
