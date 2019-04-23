@@ -72,13 +72,37 @@ namespace ShioriChan.Services.Features.Schedule {
 		/// 表示する
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public Task Show( JToken parameter ) => throw new System.NotImplementedException();
+		public async Task Show( JToken parameter ) => throw new System.NotImplementedException();
 
 		/// <summary>
 		/// 変更するスケジュールを選択する
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public Task SelectToChange( JToken parameter ) => throw new System.NotImplementedException();
+		public async Task SelectToChange( JToken parameter ) {
+			this.logger.LogTrace( "Start" );
+
+			string replyToken = this.GetReplyToken( parameter );
+			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+
+			await this.messageService.CreateMessageBuilder()
+				.AddMessage( "スケジュールを変更します\n下のボタンより変更するスケジュールを選択してください" )
+				.AddQuickReply()
+				.AddItem( "" ).UsePostbackAction( "aaa1" , "bbb" , "ccc1" )
+				.AddItem( "" ).UsePostbackAction( "aaa2" , "bbb" , "ccc2" )
+				.AddItem( "" ).UsePostbackAction( "aaa3" , "bbb" , "ccc3" )
+				.AddItem( "" ).UsePostbackAction( "aaa4" , "bbb" , "ccc4" )
+				.AddItem( "" ).UsePostbackAction( "aaa5" , "bbb" , "ccc5" )
+				.AddItem( "" ).UsePostbackAction( "aaa6" , "bbb" , "ccc6" )
+				.AddItem( "" ).UsePostbackAction( "aaa7" , "bbb" , "ccc7" )
+				.AddItem( "" ).UsePostbackAction( "aaa8" , "bbb" , "ccc8" )
+				.AddItem( "" ).UsePostbackAction( "aaa9" , "bbb" , "ccc9" )
+				.AddItem( "" ).UsePostbackAction( "aaa0" , "bbb" , "ccc0" )
+				.BuildQuickReply()
+				.BuildMessage()
+				.Reply( replyToken );
+
+			this.logger.LogTrace( "End" );
+		}
 
 		/// <summary>
 		/// スケジュールを変更する
