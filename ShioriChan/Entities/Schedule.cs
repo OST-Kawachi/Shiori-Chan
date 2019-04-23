@@ -34,13 +34,15 @@ namespace ShioriChan.Entities {
 
 		/// <summary>
 		/// 集合場所緯度
+		/// 元の値×1兆倍
 		/// </summary>
-		public double? Latitude { set; get; }
+		public long? Latitude { set; get; }
 
 		/// <summary>
 		/// 集合場所経度
+		/// 元の値×1兆倍
 		/// </summary>
-		public double? Longitude { set; get; }
+		public long? Longitude { set; get; }
 
 		/// <summary>
 		/// 登録者管理番号
@@ -66,6 +68,8 @@ namespace ShioriChan.Entities {
 		/// バージョン
 		/// </summary>
 		public int Version { set; get; }
+
+		public DateTime? EndDatetime { set; get; }
 
 	}
 

@@ -15,6 +15,12 @@
 		/// <param name="longitude">経度</param>
 		void Register( string userId , string title , string address , double latitude , double longitude );
 
+		/// <summary>
+		/// 集合場所の表示
+		/// </summary>
+		/// <param name="seq"></param>
+		/// <returns></returns>
+		(string title, string address, double? latitude, double? longitude) GetLocation();
 	}
 
 }

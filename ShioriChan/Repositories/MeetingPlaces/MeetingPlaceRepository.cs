@@ -10,6 +10,8 @@ namespace ShioriChan.Repositories.MeetingPlaces {
 	/// </summary>
 	public class MeetingPlaceRepository : IMeetingPlaceRepository {
 
+		private readonly long trillion = 1000000000000;
+
 		/// <summary>
 		/// ログ
 		/// </summary>
@@ -63,13 +65,50 @@ namespace ShioriChan.Repositories.MeetingPlaces {
 				if( !( address is null ) ) {
 					schedule.Address = address;
 				}
-				schedule.Latitude = latitude;
-				schedule.Longitude = longitude;
+				schedule.Latitude = (long)(latitude * this.trillion);
+				schedule.Longitude = (long)(longitude * this.trillion);
 			}
 
 			this.model.SaveChanges();
 
 			this.logger.LogTrace( "End" );
+		}
+		/// <summary>
+		/// 集合場所の取得
+		/// </summary>
+		/// <param name="seq"></param>
+		/// <returns></returns>
+		public (string title, string address, double? latitude, double? longitude) GetLocation() {
+
+			this.logger.LogTrace( "Repository Start" );
+			int maxNum = this.model.Schedules
+				.Where( s => s.EventSeq == 0)
+				.Max( sc => sc.Seq );
+			this.logger.LogTrace($"maxNum is {maxNum}");
+
+			List<Schedule> schedule = this.model.Schedules
+				.Where( s => s.Seq == maxNum)
+				.ToList();
+			this.logger.LogTrace( "There is a Schedule Data" );
+
+			if( schedule.Count == 0 ) {
+				this.logger.LogWarning("No Record");
+				return (null,null,null,null);
+			}
+
+			string title = "ここです！！！";
+			this.logger.LogTrace( $"title is {title}" );
+
+			string address = schedule[ 0 ].Address;
+			this.logger.LogTrace( $"address is {address}" );
+			
+			double? latitude = (double?)schedule[0].Latitude / this.trillion;
+			this.logger.LogTrace( $"latitude is {latitude}" );
+
+			double? longitude = (double?)schedule[0].Longitude / this.trillion;
+			this.logger.LogTrace( $"longitude is {longitude}" );
+			
+			return (title, address, latitude, longitude);
 		}
 
 	}

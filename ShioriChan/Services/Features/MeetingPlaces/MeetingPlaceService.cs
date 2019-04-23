@@ -140,10 +140,39 @@ namespace ShioriChan.Services.Features.MeetingPlaces {
 		/// 集合場所の表示
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public async Task Show( JToken parameter )
-		{
+		public async Task Show( JToken parameter ) {
+			this.logger.LogTrace( "Start" );
 
+			string replyToken = this.GetReplyToken( parameter );
+			this.logger.LogTrace( $"Reply Token is {replyToken}." );
 
+			(string title, string address, double? latitude, double? longitude) = this.meetingPlaceRepository.GetLocation();
+
+			if( string.IsNullOrEmpty( title ) ||
+				string.IsNullOrEmpty( address ) ||
+				!latitude.HasValue ||
+				!longitude.HasValue ) {
+
+				this.logger.LogWarning( "Title, Adress, Latitude or Longitude is Null or Empty" );
+				return;
+			}
+
+			this.logger.LogTrace( $"message Title is { title}" );
+			this.logger.LogTrace( $"message Adress is {address}" );
+			this.logger.LogTrace( $"message Latitude is {latitude.Value}" );
+			this.logger.LogTrace( $"message Longitude is {longitude.Value}" );
+
+			if( latitude.HasValue && longitude.HasValue ) {
+				string message = "次の集合場所は↓↓↓です！\n";
+				await this.messageService
+						.CreateMessageBuilder()
+						.AddMessage( message )
+						.AddLocation( title , address , latitude.Value , longitude.Value )
+						.BuildMessage()
+						.Reply( replyToken );
+			}
+			
+			this.logger.LogTrace( "End" );
 			return;
 		}
 
