@@ -43,11 +43,11 @@ namespace ShioriChan.Services.Features.Users
 		/// </summary>
 		Task Approval( int unRegisteredUserSeq , int waitingApprovalUserSeq );
 
-		/// <summary>
-		/// ランダムに名前を表示する
-		/// </summary>
-		/// <param name="parameter">パラメータ</param>
-		Task ShowRandomly( JToken parameter );
+        /// <summary>
+        /// ランダムに名前を表示する
+        /// </summary>
+        /// <param name="parameter">パラメータ</param>
+        Task ShowRandomly(JToken parameter);
 
 	}
 

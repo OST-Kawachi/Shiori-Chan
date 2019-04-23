@@ -207,11 +207,29 @@ namespace ShioriChan.Services.Features.Users
 			this.logger.LogTrace( "End" );
 		}
 
-		/// <summary>
-		/// ランダムに名前を表示する
-		/// </summary>
-		/// <param name="parameter">パラメータ</param>
-		public Task ShowRandomly( JToken parameter ) => throw new System.NotImplementedException();
+        /// <summary>
+        /// ランダムに名前を表示する
+        /// </summary>
+        /// <param name="parameter">パラメータ</param>
+        public async Task ShowRandomly(JToken parameter)
+        {
+            this.logger.LogTrace("Start");
+            this.logger.LogTrace("Show Random Name");
+
+            string name = this.userRepository.GetRandomUserName();
+
+            this.logger.LogTrace("Name is " + name);
+
+            List<string> userIds = this.userRepository.GetAllUserId();
+            
+            await this.messageService
+                    .CreateMessageBuilder()
+                    .AddMessage("おめでとうございます！\n" + name + "さんが選ばれました！！")
+                    .BuildMessage()
+                    .Multicast(userIds);
+
+            this.logger.LogTrace("End");
+        }
 
 	}
 
