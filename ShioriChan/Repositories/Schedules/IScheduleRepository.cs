@@ -22,7 +22,7 @@ namespace ShioriChan.Repositories.Schedules {
         /// <summary>
         /// 通知済みであることを更新する
         /// </summary>
-        /// <param name="eventSeq">通知したスケジュールのイベント管理番号</param>
-        void UpdateNotified(int eventSeq);
+        /// <param name="eventSeq">通知したスケジュールの管理番号</param>
+        void UpdateNotified(int scheduleSeq);
     }
 }

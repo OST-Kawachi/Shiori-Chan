@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace ShioriChan.Services.Features.Schedule {
+namespace ShioriChan.Services.Features.Schedules {
 
 	/// <summary>
 	/// 部屋情報

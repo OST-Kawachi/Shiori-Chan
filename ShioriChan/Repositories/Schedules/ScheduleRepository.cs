@@ -28,67 +28,59 @@ namespace ShioriChan.Repositories.Schedules {
 		public ScheduleRepository(
 			ILogger<ScheduleRepository> logger ,
 			ModelCreator model
-		)
-		{
+		) {
 			this.logger = logger;
 			this.model = model;
 		}
 
-        /// <summary>
-        /// 通知する予定の名称を取得
-        /// </summary>
-        /// <return>メッセージ</return>
-        public Schedule GetSchedule()
-        {
-            Schedule schedule = null;
+		/// <summary>
+		/// 通知する予定の名称を取得
+		/// </summary>
+		/// <return>メッセージ</return>
+		public Schedule GetSchedule() {
+			this.logger.LogTrace( "Start" );
+			DateTime now = DateTime.Now;
+			Schedule schedule = this.model.Schedules
+				 .Where( s => now + TimeSpan.FromMinutes( 5 ) > s.StartDatetime )
+				 .Where( s => s.IsNotified == false )
+				 .FirstOrDefault();
 
-            this.logger.LogTrace("Start");
-            DateTime now = DateTime.Now;
-            schedule = this.model.Schedules
-                 .Where(s => now + TimeSpan.FromMinutes(5) > s.StartDatetime)
-                 .Where(s => s.IsNotified == false)
-                 .FirstOrDefault();
+			this.logger.LogTrace( "End" );
 
-            this.logger.LogTrace("End");
+			return schedule;
+		}
 
-            return schedule;
-        }
-        
-        /// <summary>
-        /// 全員のユーザIDを取得
-        /// </summary>
-        /// <returns>ユーザID</returns>
-        public List<string> GetAllUserId()
-        {
-            this.logger.LogTrace("Start");
-            List<string> userIds = this.model.UserInfos
-               .Where(u => !string.IsNullOrEmpty(u.Id))
-               .Select(u => u.Id)
-               .ToList();
+		/// <summary>
+		/// 全員のユーザIDを取得
+		/// </summary>
+		/// <returns>ユーザID</returns>
+		public List<string> GetAllUserId() {
+			this.logger.LogTrace( "Start" );
+			List<string> userIds = this.model.UserInfos
+			   .Where( u => !string.IsNullOrEmpty( u.Id ) )
+			   .Select( u => u.Id )
+			   .ToList();
 
-            this.logger.LogTrace("End");
-            return userIds;
-        }
+			this.logger.LogTrace( "End" );
+			return userIds;
+		}
 
-        /// <summary>
-        /// 通知済みであることを更新する
-        /// </summary>
-        /// <param name="eventSeq">通知したスケジュールのイベント管理番号</param>
-        /// <return>メッセージ</return>
-        public void UpdateNotified(int eventSeq)
-        {
-            Schedule updateSchedule = null;
+		/// <summary>
+		/// 通知済みであることを更新する
+		/// </summary>
+		/// <param name="scheduleSeq">通知したスケジュールの管理番号</param>
+		/// <return>メッセージ</return>
+		public void UpdateNotified( int scheduleSeq ) {
+			this.logger.LogTrace( "Start" );
+			Schedule updateSchedule = this.model.Schedules
+				 .Where( s => s.Seq == scheduleSeq )
+				 .FirstOrDefault();
 
-            this.logger.LogTrace("Start");
-            updateSchedule = this.model.Schedules
-                 .Where(s => s.EventSeq == eventSeq)
-                 .FirstOrDefault();
+			updateSchedule.IsNotified = true;
+			this.model.SaveChanges();
 
-            updateSchedule.IsNotified = true;
-            this.model.SaveChanges();
-
-            this.logger.LogTrace("End");
-        }
-    }
+			this.logger.LogTrace( "End" );
+		}
+	}
 
 }

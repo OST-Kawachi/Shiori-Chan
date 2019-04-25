@@ -8,7 +8,7 @@ using ShioriChan.Services.Features.Notifications;
 using ShioriChan.Services.Features.Participants;
 using ShioriChan.Services.Features.RollCalls;
 using ShioriChan.Services.Features.Rooms;
-using ShioriChan.Services.Features.Schedule;
+using ShioriChan.Services.Features.Schedules;
 using ShioriChan.Services.Features.TouristSpots;
 using ShioriChan.Services.Features.Users;
 using System.Threading.Tasks;
