@@ -41,7 +41,7 @@ namespace ShioriChan.Repositories.Schedules {
 			this.logger.LogTrace( "Start" );
 			DateTime now = DateTime.Now;
 			Schedule schedule = this.model.Schedules
-				 .Where( s => now + TimeSpan.FromMinutes( 5 ) > s.StartDatetime )
+				 .Where( s => now.AddMinutes( 5 ) > s.StartDatetime )
 				 .Where( s => s.IsNotified == false )
 				 .FirstOrDefault();
 

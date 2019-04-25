@@ -49,7 +49,6 @@ namespace ShioriChan.Services.Features.Schedules {
 		/// </summary>
 		public async Task Notice() {
 			this.logger.LogTrace( "Start" );
-			this.logger.LogTrace( "Show Random Name" );
 
 			Schedule schedule = this.scheduleRepository.GetSchedule();
 
@@ -62,13 +61,13 @@ namespace ShioriChan.Services.Features.Schedules {
 
 				List<string> userIds = this.scheduleRepository.GetAllUserId();
 
+				this.scheduleRepository.UpdateNotified( schedule.Seq );
+
 				await this.messageService
 						.CreateMessageBuilder()
 						.AddMessage( "5分前です！！\nそろそろ次の予定が始まりますよ！\n" + date + "～ " + name )
 						.BuildMessage()
 						.Multicast( userIds );
-
-				this.scheduleRepository.UpdateNotified( schedule.Seq );
 
 			}
 
