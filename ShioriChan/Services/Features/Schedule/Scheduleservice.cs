@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using ShioriChan.Repositories.Schedules;
@@ -42,10 +43,39 @@ namespace ShioriChan.Services.Features.Schedule {
 			this.scheduleRepository = scheduleRepository;
 		}
 
-		/// <summary>
-		/// 通知する
-		/// </summary>
-		public Task Notice() => null;
+        /// <summary>
+        /// 通知する
+        /// </summary>
+        public async Task Notice()
+        {
+            this.logger.LogTrace("Start");
+            this.logger.LogTrace("Show Random Name");
+
+            ShioriChan.Entities.Schedule schedule = this.scheduleRepository.GetSchedule();
+
+            if (schedule == null)
+            {
+                this.logger.LogTrace("Notification Target Does Not Exist");
+            }
+            else
+            {
+                string name = schedule.Name;
+                string date = schedule.StartDatetime.ToString();
+
+                List<string> userIds = this.scheduleRepository.GetAllUserId();
+
+                await this.messageService
+                        .CreateMessageBuilder()
+                        .AddMessage("5分前です！！\nそろそろ次の予定が始まりますよ！\n" + date + "～ " + name)
+                        .BuildMessage()
+                        .Multicast(userIds);
+
+                this.scheduleRepository.UpdateNotified(schedule.EventSeq);
+
+            }
+            
+            this.logger.LogTrace("End");
+        }
 
 		/// <summary>
 		/// 表示する日付を選択する
