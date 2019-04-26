@@ -37,7 +37,7 @@ namespace ShioriChan.Repositories.Schedules {
 
 			DateTime dNow = DateTime.Now;
 
-			List<(int, string, string)> result = this.model.Schedules
+			List<(int, string, string )> result = this.model.Schedules
 				.Select(
 					s => new {
 						s.Seq
@@ -49,11 +49,11 @@ namespace ShioriChan.Repositories.Schedules {
 						s.Name
 						,
 						MinutesAbs = Math.Abs(
-							int.Parse( s.StartDatetime.Date.ToString() ) * 60 * 24
+							s.StartDatetime.Day * 60 * 24
 								+ s.StartDatetime.Hour * 60
 								+ s.StartDatetime.Minute
 								- (
-									  int.Parse( dNow.Date.ToString() ) * 60 * 24
+									  dNow.Day * 60 * 24
 									+ dNow.Hour * 60
 									+ dNow.Minute
 								)
