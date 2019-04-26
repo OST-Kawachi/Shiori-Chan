@@ -47,7 +47,7 @@ namespace ShioriChan.Repositories.Notifications {
 			{
 					Seq = this.model.PushNotifications.Max( at => at.Seq ) + 1 ,
 					UserSeq = ,
-					Status = ,
+					Status = 0,
 					Text = text,
 					RegisterUserSeq = 0,
 					RegisterDatetime =  DateTime.Now,
