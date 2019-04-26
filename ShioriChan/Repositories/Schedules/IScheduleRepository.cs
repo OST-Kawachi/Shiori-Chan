@@ -12,7 +12,7 @@ namespace ShioriChan.Repositories.Schedules {
 		/// スケジュール一覧を取得する
 		/// </summary>
 		/// <returns>スケジュール情報</returns>
-		dynamic GetScheduleList();
+		List<(int, string, string)> GetScheduleList();
 	}
 
 }

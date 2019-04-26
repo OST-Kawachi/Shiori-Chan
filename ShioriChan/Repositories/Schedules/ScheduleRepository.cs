@@ -33,22 +33,22 @@ namespace ShioriChan.Repositories.Schedules {
 			this.model = model;
 		}
 
-		public dynamic GetScheduleList() {
+		public List<(int, string, string)> GetScheduleList() {
 
-			DateTime dNow = System.DateTime.Now;
+			DateTime dNow = DateTime.Now;
 
-			var result = this.model.Schedules
+			List<(int, string, string)> result = this.model.Schedules
 				.Select(
 					s => new {
-						SEQ = s.Seq
+						s.Seq
 						,
-						START_TIME = s.StartDatetime
+						StartDateTime = s.StartDatetime
 						,
-						MAIN_TIME = s.StartDatetime
+						MainTime = s.StartDatetime
 						,
-						NAME = s.Name
+						s.Name
 						,
-						MINUTES_ABS = Math.Abs(
+						MinutesAbs = Math.Abs(
 							int.Parse( s.StartDatetime.Date.ToString() ) * 60 * 24
 								+ s.StartDatetime.Hour * 60
 								+ s.StartDatetime.Minute
@@ -60,37 +60,37 @@ namespace ShioriChan.Repositories.Schedules {
 						)
 					}
 				)
-				.OrderBy( s => s.MINUTES_ABS )
+				.OrderBy( s => s.MinutesAbs )
 				.Select(
 					( s , index ) => new {
-						s.SEQ
+						s.Seq
 						,
-						LABEL = s.START_TIME.ToString( "M/d HH:mm" ) + "~ " + s.NAME
+						Label = s.StartDateTime.ToString( "M/d HH:mm" ) + "~ " + s.Name
 						,
-						START_TIME = s.START_TIME.ToString( "HH:mm" )
+						StartDateTime = s.StartDateTime.ToString( "HH:mm" )
 						,
-						s.MAIN_TIME
+						s.MainTime
 						,
-						s.MINUTES_ABS
+						s.MinutesAbs
 						,
-						ABS_RANK = index
+						AbsRank = index
 					}
 				)
-				.OrderBy( s => s.MAIN_TIME )
+				.Where( s => s.AbsRank >= 13 )
+				.OrderBy( s => s.MainTime )
 				.Select(
-					s => new {
-						s.SEQ
+					s => new{
+						 s.Seq
 						,
-						s.LABEL
+						s.Label
 						,
-						s.START_TIME
-						,
-						s.MINUTES_ABS
-						,
-						s.ABS_RANK
+						s.StartDateTime
+
 					}
 				)
-				.Where( s => s.ABS_RANK >= 30 );
+				.Cast<(int, string, string)>()
+				.ToList();
+				
 				
 			return result;
 		}

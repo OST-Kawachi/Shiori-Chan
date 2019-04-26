@@ -6,6 +6,8 @@ using Newtonsoft.Json.Linq;
 using ShioriChan.Entities;
 using ShioriChan.Repositories.Schedules;
 using ShioriChan.Services.MessagingApis.Messages;
+using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders;
+using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.QuickReplies;
 
 namespace ShioriChan.Services.Features.Schedules {
 
@@ -88,30 +90,33 @@ namespace ShioriChan.Services.Features.Schedules {
 			this.logger.LogTrace( $"Reply Token is {replyToken}." );
 
 			//スケジュール一覧を取得する
-			List<Schedule> schedules = this.scheduleRepository.GetScheduleList();
+			List<(int, string , string)> schedules = this.scheduleRepository.GetScheduleList();
 
-			int actionNumber = schedules.Count % 3 == 0 ? 3 : schedules.Count % 2 == 0 ? 2 : 1;
-			for( int templateNum = 0 ; templateNum < schedules.Count / actionNumber + ( schedules.Count % actionNumber == 0 ? 0 : 1 ) ; templateNum++ ) {
-				
-				for( int actionNum = templateNum * actionNumber, count = 0 ; actionNum < schedules.Count && count < actionNumber ; actionNum++, count++ ) {
-					
-				}
-				
+			
+
+			IAddOnlyItemOfQuickReply quickReplyBuilder = this.messageService.CreateMessageBuilder()
+				.AddMessage( "スケジュールを変更します\n下のボタンより変更するスケジュールを選択してください" )
+				.AddQuickReply();
+			IBuildOrAddItemOfQuickReply buildableQuickReplyBuilder = null;
+
+
+			foreach( (int seq, string label, string initialdate) in schedules) {
+				buildableQuickReplyBuilder = buildableQuickReplyBuilder is null
+					? quickReplyBuilder.AddItem( "" ).UseDatepickerAction(
+						( label.Length > 20 ) ? label.Substring( 0 , 20 ) : label ,
+						"updateSchedule?seq=" + seq ,
+						"time"
+					).SetInitial( initialdate )
+					: buildableQuickReplyBuilder.AddItem( "" ).UseDatepickerAction(
+						( label.Length > 20 ) ? label.Substring( 0 , 20 ) : label ,
+						"updateSchedule?seq=" + seq ,
+						"time"
+					).SetInitial( initialdate );
 			}
 
-			await this.messageService.CreateMessageBuilder()
-				.AddMessage( "スケジュールを変更します\n下のボタンより変更するスケジュールを選択してください" )
-				.AddQuickReply()
-				.AddItem( "" ).UsePostbackAction( "aaa1" , "bbb" , "ccc1" )
-				.AddItem( "" ).UsePostbackAction( "aaa2" , "bbb" , "ccc2" )
-				.AddItem( "" ).UsePostbackAction( "aaa3" , "bbb" , "ccc3" )
-				.AddItem( "" ).UsePostbackAction( "aaa4" , "bbb" , "ccc4" )
-				.AddItem( "" ).UsePostbackAction( "aaa5" , "bbb" , "ccc5" )
-				.AddItem( "" ).UsePostbackAction( "aaa6" , "bbb" , "ccc6" )
-				.AddItem( "" ).UsePostbackAction( "aaa7" , "bbb" , "ccc7" )
-				.AddItem( "" ).UsePostbackAction( "aaa8" , "bbb" , "ccc8" )
-				.AddItem( "" ).UsePostbackAction( "aaa9" , "bbb" , "ccc9" )
-				.AddItem( "" ).UsePostbackAction( "aaa0" , "bbb" , "ccc0" )
+			
+
+			await buildableQuickReplyBuilder
 				.BuildQuickReply()
 				.BuildMessage()
 				.Reply( replyToken );
