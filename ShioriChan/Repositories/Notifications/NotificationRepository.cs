@@ -36,16 +36,13 @@ namespace ShioriChan.Repositories.Notifications {
 		/// </summary>
 		/// <param name="userId">ユーザID</param>
 		/// <param name="Text">リプライメッセージ</param>
-		void Register( string userId , string text ){
-			
+		void Register(string userId, string text){
 				this.logger.LogTrace( "Start" );
 				this.logger.LogTrace( $"userId is {userId}. " );
 			    this.logger.LogTrace( $"text is {text}." );
 
-
-			this.model.PushNotifications.Add(new PushNotification()
-			{
-				//DB登録
+			　　this.model.PushNotifications.Add(new PushNotification(){
+		            //ｄｓ
 					Seq = this.model.PushNotifications.Max( at => at.Seq ) + 1 ,
 					UserSeq = ,
 					Status = 0,
