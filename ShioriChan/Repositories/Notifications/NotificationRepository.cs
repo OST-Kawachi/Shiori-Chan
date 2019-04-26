@@ -45,6 +45,7 @@ namespace ShioriChan.Repositories.Notifications {
 
 			this.model.PushNotifications.Add(new PushNotification()
 			{
+				//DB登録
 					Seq = this.model.PushNotifications.Max( at => at.Seq ) + 1 ,
 					UserSeq = ,
 					Status = 0,
