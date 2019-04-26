@@ -1,10 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using ShioriChan.Entities;
 using ShioriChan.Repositories.Schedules;
 using ShioriChan.Services.MessagingApis.Messages;
 
-namespace ShioriChan.Services.Features.Schedule {
+namespace ShioriChan.Services.Features.Schedules {
 
 	/// <summary>
 	/// スケジュールService
@@ -83,6 +86,18 @@ namespace ShioriChan.Services.Features.Schedule {
 
 			string replyToken = this.GetReplyToken( parameter );
 			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+
+			//スケジュール一覧を取得する
+			List<Schedule> schedules = this.scheduleRepository.GetScheduleList();
+
+			int actionNumber = schedules.Count % 3 == 0 ? 3 : schedules.Count % 2 == 0 ? 2 : 1;
+			for( int templateNum = 0 ; templateNum < schedules.Count / actionNumber + ( schedules.Count % actionNumber == 0 ? 0 : 1 ) ; templateNum++ ) {
+				
+				for( int actionNum = templateNum * actionNumber, count = 0 ; actionNum < schedules.Count && count < actionNumber ; actionNum++, count++ ) {
+					
+				}
+				
+			}
 
 			await this.messageService.CreateMessageBuilder()
 				.AddMessage( "スケジュールを変更します\n下のボタンより変更するスケジュールを選択してください" )
