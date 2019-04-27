@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using ShioriChan.Repositories.Notifications;
@@ -43,14 +44,72 @@ namespace ShioriChan.Services.Features.Notifications {
 			this.notificationRepository = notificationRepository;
 		}
 
+		/// <summary>
+		/// ユーザIDを取得
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		/// <returns>ユーザID</returns>
+		private string GetUserId( JToken parameter )
+		{
+			JArray events = (JArray)parameter[ "events" ];
+			JObject firstEvent = (JObject)events[ 0 ];
+
+			JToken source = firstEvent[ "source" ];
+			string userId = source[ "userId" ].ToString();
+			this.logger.LogTrace( $"User Id is {userId}." );
+
+			return userId;
+		}
+
+		/// <summary>
+		/// メッセージを取得
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		/// <returns>通知内容</returns>
+		private string Getmessage( JToken parameter )
+		{
+			JArray events = (JArray)parameter[ "events" ];
+			JObject firstEvent = (JObject)events[ 0 ];
+
+			JToken message = firstEvent[ "message" ];
+			string text = message[ "text" ].ToString();
+			this.logger.LogTrace( $"text Id is {text}." );
+
+			return text;
+		}
+
+
+		/// <summary>
+		/// リプライトークンを取得
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		/// <returns>リプライトークン</returns>
+		private string GetReplyToken( JToken parameter )
+		{
+			JArray events = (JArray)parameter[ "events" ];
+			JObject firstEvent = (JObject)events[ 0 ];
+
+			string replyToken = firstEvent[ "replyToken" ].ToString();
+			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+
+			return replyToken;
+		}
+
+		
+
+
         /// <summary>
         /// 登録する
         /// </summary>
         /// <param name="parameter">パラメータ</param>
-        public async Task Register(JToken parameter)
-        {
-            this.logger.LogTrace("temp");
-            this.logger.LogTrace("temp");
+        public async Task Register(JToken parameter){
+			string userId = this.GetUserId( parameter );
+			string text = this.Getmessage( parameter );
+
+			this.notificationRepository.Register( userId , text);
+			return;
+
+
         }
 
 		/// <summary>
