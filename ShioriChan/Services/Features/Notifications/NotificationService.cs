@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
@@ -107,13 +108,44 @@ namespace ShioriChan.Services.Features.Notifications {
 		/// 確認する
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public Task Confirm( JToken parameter ) => throw new System.NotImplementedException();
+		public async Task Confirm( JToken parameter ) {
+			this.logger.LogTrace( "Start" );
+			string userId = this.GetUserId( parameter );
+			string message = this.notificationRepository.GetMessage( userId );
+			string replyToken = this.GetReplyToken( parameter );
+
+			await this.messageService.CreateMessageBuilder()
+				.AddMessage( message )
+				.AddTemplate( "通知確認" )
+				.UseButtonTemplate( "上の文面で参加者全員に通知を送ります\nよろしければ下のボタンを押してください" )
+				.SetAction()
+				.UsePostbackAction( "通知する" , "decisionPush" )
+				.BuildTemplate()
+				.BuildMessage()
+				.Reply( replyToken );
+				
+			this.logger.LogTrace( "End" );
+		}
 
 		/// <summary>
 		/// プッシュ通知を送る
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public Task Push( JToken parameter ) => throw new System.NotImplementedException();
+		public async Task Push( JToken parameter ) {
+			this.logger.LogTrace( "Start" );
+			string userId = this.GetUserId( parameter );
+			string message = this.notificationRepository.GetMessage( userId );
+			List<string> toList = this.notificationRepository.GetUserIds();
+
+			this.notificationRepository.UpdateUserStatus( userId );
+
+			await this.messageService.CreateMessageBuilder()
+				.AddMessage( message )
+				.BuildMessage()
+				.Multicast( toList );
+
+			this.logger.LogTrace( "End" );
+		}
 
 	}
 

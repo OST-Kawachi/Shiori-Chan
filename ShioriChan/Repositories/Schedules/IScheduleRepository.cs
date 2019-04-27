@@ -7,6 +7,7 @@ namespace ShioriChan.Repositories.Schedules {
 	/// スケジュールRepository
 	/// </summary>
 	public interface IScheduleRepository {
+
 		/// <summary>
 		/// 通知する予定の名称を取得
 		/// </summary>
