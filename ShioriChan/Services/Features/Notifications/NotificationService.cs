@@ -37,11 +37,25 @@ namespace ShioriChan.Services.Features.Notifications {
 			ILogger<NotificationService> logger ,
 			IMessageService messageService ,
 			INotificationRepository notificationRepository
-		)
-		{
+		) {
 			this.logger = logger;
 			this.messageService = messageService;
 			this.notificationRepository = notificationRepository;
+		}
+
+		/// <summary>
+		/// リプライトークンを取得
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		/// <returns>リプライトークン</returns>
+		private string GetReplyToken( JToken parameter ) {
+			JArray events = (JArray)parameter[ "events" ];
+			JObject firstEvent = (JObject)events[ 0 ];
+
+			string replyToken = firstEvent[ "replyToken" ].ToString();
+			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+
+			return replyToken;
 		}
 
 		/// <summary>
@@ -49,8 +63,7 @@ namespace ShioriChan.Services.Features.Notifications {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		/// <returns>ユーザID</returns>
-		private string GetUserId( JToken parameter )
-		{
+		private string GetUserId( JToken parameter ) {
 			JArray events = (JArray)parameter[ "events" ];
 			JObject firstEvent = (JObject)events[ 0 ];
 
@@ -66,51 +79,29 @@ namespace ShioriChan.Services.Features.Notifications {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		/// <returns>通知内容</returns>
-		private string Getmessage( JToken parameter )
-		{
+		private string GetMessage( JToken parameter ) {
 			JArray events = (JArray)parameter[ "events" ];
 			JObject firstEvent = (JObject)events[ 0 ];
 
 			JToken message = firstEvent[ "message" ];
 			string text = message[ "text" ].ToString();
-			this.logger.LogTrace( $"text Id is {text}." );
+			this.logger.LogTrace( $"Text is {text}." );
 
 			return text;
 		}
 
-
 		/// <summary>
-		/// リプライトークンを取得
+		/// 登録する
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		/// <returns>リプライトークン</returns>
-		private string GetReplyToken( JToken parameter )
-		{
-			JArray events = (JArray)parameter[ "events" ];
-			JObject firstEvent = (JObject)events[ 0 ];
-
-			string replyToken = firstEvent[ "replyToken" ].ToString();
-			this.logger.LogTrace( $"Reply Token is {replyToken}." );
-
-			return replyToken;
-		}
-
-		
-
-
-        /// <summary>
-        /// 登録する
-        /// </summary>
-        /// <param name="parameter">パラメータ</param>
-        public async Task Register(JToken parameter){
+		public async Task Register( JToken parameter ) {
+			this.logger.LogTrace( "Start" );
 			string userId = this.GetUserId( parameter );
-			string text = this.Getmessage( parameter );
+			string text = this.GetMessage( parameter );
 
-			this.notificationRepository.Register( userId , text);
-			return;
-
-
-        }
+			this.notificationRepository.Register( userId , text );
+			this.logger.LogTrace( "End" );
+		}
 
 		/// <summary>
 		/// 確認する
