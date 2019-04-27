@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using ShioriChan.Entities;
 using ShioriChan.Repositories.Schedules;
 using ShioriChan.Services.MessagingApis.Messages;
+using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders.QuickReplies;
 
 namespace ShioriChan.Services.Features.Schedules {
 
@@ -57,7 +58,7 @@ namespace ShioriChan.Services.Features.Schedules {
 			}
 			else {
 				string name = schedule.Name;
-				string date = schedule.StartDatetime.ToString();
+				string date = schedule.StartDatetime.ToString( "HH:mm" );
 
 				List<string> userIds = this.scheduleRepository.GetAllUserId();
 
@@ -105,7 +106,41 @@ namespace ShioriChan.Services.Features.Schedules {
 		/// 変更するスケジュールを選択する
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public Task SelectToChange( JToken parameter ) => throw new System.NotImplementedException();
+		public async Task SelectToChange( JToken parameter ) {
+			this.logger.LogTrace( "Start" );
+
+			string replyToken = this.GetReplyToken( parameter );
+			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+
+			//スケジュール一覧を取得する
+			List<(int, string, string)> schedules = this.scheduleRepository.GetSchedulesForSelectToChange();
+
+			IAddOnlyItemOfQuickReply quickReplyBuilder = this.messageService.CreateMessageBuilder()
+				.AddMessage( "スケジュールを変更します\n下のボタンより変更するスケジュールを選択してください" )
+				.AddQuickReply();
+
+			ISettableDatepickerActionOfQuickReply settableDatepickerActionOfQuickReply = null;
+			foreach( (int seq, string label, string initialdate) in schedules ) {
+				settableDatepickerActionOfQuickReply = settableDatepickerActionOfQuickReply is null ? 
+				quickReplyBuilder.AddItem( "" ).UseDatepickerAction(
+					( label.Length > 20 ) ? label.Substring( 0 , 20 ) : label ,
+					"updateSchedule?seq=" + seq ,
+					"time"
+				).SetInitial( initialdate ) : 
+				settableDatepickerActionOfQuickReply.AddItem( "" ).UseDatepickerAction(
+					( label.Length > 20 ) ? label.Substring( 0 , 20 ) : label ,
+					"updateSchedule?seq=" + seq ,
+					"time"
+				).SetInitial( initialdate );
+			}
+
+			await settableDatepickerActionOfQuickReply
+				.BuildQuickReply()
+				.BuildMessage()
+				.Reply( replyToken );
+
+			this.logger.LogTrace( "End" );
+		}
 
 		/// <summary>
 		/// スケジュールを変更する

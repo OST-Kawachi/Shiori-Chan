@@ -7,22 +7,30 @@ namespace ShioriChan.Repositories.Schedules {
 	/// スケジュールRepository
 	/// </summary>
 	public interface IScheduleRepository {
-        /// <summary>
-        /// 通知する予定の名称を取得
-        /// </summary>
-        /// <return>メッセージ</return>
-        Schedule GetSchedule();
+		/// <summary>
+		/// 通知する予定の名称を取得
+		/// </summary>
+		/// <return>メッセージ</return>
+		Schedule GetSchedule();
 
-        /// <summary>
-        /// 全員のユーザIDを取得
-        /// </summary>
-        /// <returns>ユーザID</returns>
-        List<string> GetAllUserId();
+		/// <summary>
+		/// 全員のユーザIDを取得
+		/// </summary>
+		/// <returns>ユーザID</returns>
+		List<string> GetAllUserId();
 
-        /// <summary>
-        /// 通知済みであることを更新する
-        /// </summary>
-        /// <param name="eventSeq">通知したスケジュールの管理番号</param>
-        void UpdateNotified(int scheduleSeq);
-    }
+		/// <summary>
+		/// 通知済みであることを更新する
+		/// </summary>
+		/// <param name="eventSeq">通知したスケジュールの管理番号</param>
+		void UpdateNotified( int scheduleSeq );
+
+		/// <summary>
+		/// スケジュール一覧を取得する
+		/// </summary>
+		/// <returns>スケジュール情報</returns>
+		List<(int, string, string)> GetSchedulesForSelectToChange();
+
+	}
+
 }

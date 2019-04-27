@@ -41,7 +41,7 @@ namespace ShioriChan.Repositories.Schedules {
 			this.logger.LogTrace( "Start" );
 			DateTime now = DateTime.Now;
 			Schedule schedule = this.model.Schedules
-				 .Where( s => now.AddMinutes( 5 ) > s.StartDatetime )
+				 .Where( s => now.AddMinutes( 5 ).AddHours( 9 ) > s.StartDatetime )
 				 .Where( s => s.IsNotified == false )
 				 .FirstOrDefault();
 
@@ -78,9 +78,47 @@ namespace ShioriChan.Repositories.Schedules {
 
 			updateSchedule.IsNotified = true;
 			this.model.SaveChanges();
-
 			this.logger.LogTrace( "End" );
 		}
-	}
 
+		/// <summary>
+		/// スケジュール一覧を取得する
+		/// </summary>
+		/// <returns>スケジュール情報</returns>
+		public List<(int, string, string)> GetSchedulesForSelectToChange() {
+			this.logger.LogTrace( "Start" );
+			DateTime now = DateTime.Now;
+
+			List<Schedule> schedules = this.model.Schedules
+				.Where( s => s.EventSeq == 0 )
+				.ToList();
+
+			List<(int, string, string)> result = schedules
+				// 現在日時からの差を算出する
+				.Select( s => new {
+					Data = s ,
+					MinutesAbs = Math.Abs(
+						s.StartDatetime.Month * 60 * 24 * 30 + s.StartDatetime.Day * 60 * 24 + s.StartDatetime.Hour * 60 + s.StartDatetime.Minute
+						- ( now.Month * 60 * 24 * 30 + now.Day * 60 * 24 + now.Hour * 60 + now.Minute )
+					)
+				} )
+				// QuickReplyには13項目しか表示できないので現在日時に近い項目に制限して取得する
+				.OrderBy( s => s.MinutesAbs )
+				.Where( ( s , index ) => index <= 13 )
+				// 表示順にソート
+				.OrderBy( s => s.Data.StartDatetime )
+				.Select( s => (
+					s.Data.Seq ,
+					s.Data.StartDatetime.ToString( "MM/dd HH:mm" ) + "～ " + s.Data.Name ,
+					s.Data.StartDatetime.ToString( "HH:mm" )
+				) )
+				.ToList();
+
+			this.logger.LogTrace( "End" );
+			return result;
+
+		}
+
+	}
+		
 }
