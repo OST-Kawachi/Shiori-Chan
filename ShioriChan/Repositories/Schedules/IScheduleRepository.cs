@@ -32,6 +32,13 @@ namespace ShioriChan.Repositories.Schedules {
 		/// <returns>スケジュール情報</returns>
 		List<(int, string, string)> GetSchedulesForSelectToChange();
 
+		/// <summary>
+		/// スケジュール一覧を表示する
+		/// </summary>
+		/// <param name="isFirst">初日かどうか</param>
+		/// <returns>スケジュール情報</returns>
+		List<(string name, string startTime)> GetSchedules( bool isFirst );
+
 	}
 
 }

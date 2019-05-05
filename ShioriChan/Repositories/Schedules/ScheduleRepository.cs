@@ -119,6 +119,44 @@ namespace ShioriChan.Repositories.Schedules {
 
 		}
 
+		/// <summary>
+		/// スケジュール一覧を表示する
+		/// </summary>
+		/// <param name="isFirst">初日かどうか</param>
+		/// <returns>スケジュール情報</returns>
+		public List<(string name, string startTime)> GetSchedules( bool isFirst ) {
+			this.logger.LogTrace( "Start" );
+			this.logger.LogTrace( $"Is First ... {isFirst}" );
+
+			DateTime secondDay = new DateTime( 2019 , 6 , 30 , 0 , 0 , 0 );
+
+			List<Schedule> schedules = this.model.Schedules
+				.Where( s => 
+					// s.StartDatetime < secondDayの比較でErrorが出たので分解して比較
+					isFirst ?
+					s.StartDatetime.Month * 60 * 24 * 30 + s.StartDatetime.Day * 60 * 24 + s.StartDatetime.Hour * 60 + s.StartDatetime.Minute
+						- ( secondDay.Month * 60 * 24 * 30 + secondDay.Day * 60 * 24 + secondDay.Hour * 60 + secondDay.Minute )
+						< 0 :
+					0 <= 
+						s.StartDatetime.Month * 60 * 24 * 30 + s.StartDatetime.Day * 60 * 24 + s.StartDatetime.Hour * 60 + s.StartDatetime.Minute
+						- ( secondDay.Month * 60 * 24 * 30 + secondDay.Day * 60 * 24 + secondDay.Hour * 60 + secondDay.Minute )
+				)
+				.OrderBy( s => s.StartDatetime )
+				// Select句にタプルが入れられないようなので絞り込んだ後いったんListに直す
+				.ToList();
+
+			List<(string name , string startTime )> result = schedules
+				.Select( s => (
+					s.Name,
+					s.StartDatetime.ToString( "HH:mm" )
+				) )
+				.ToList();
+
+			this.logger.LogTrace( "End" );
+			return result;
+
+		}
+
 	}
 		
 }

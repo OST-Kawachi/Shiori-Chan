@@ -46,6 +46,36 @@ namespace ShioriChan.Services.Features.Schedules {
 		}
 
 		/// <summary>
+		/// リプライトークンを取得
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		/// <returns>リプライトークン</returns>
+		private string GetReplyToken( JToken parameter ) {
+			JArray events = (JArray)parameter[ "events" ];
+			JObject firstEvent = (JObject)events[ 0 ];
+
+			string replyToken = firstEvent[ "replyToken" ].ToString();
+			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+
+			return replyToken;
+		}
+
+		/// <summary>
+		/// ポストバックデータを取得
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		/// <returns>ポストバックデータ</returns>
+		private string GetPostbackData( JToken parameter ) {
+			JArray events = (JArray)parameter[ "events" ];
+			JObject firstEvent = (JObject)events[ 0 ];
+
+			JToken postback = firstEvent[ "postback" ];
+			string data = postback[ "data" ].ToString();
+			this.logger.LogTrace( $"Postback Data is {data}." );
+			return data;
+		}
+
+		/// <summary>
 		/// 通知する
 		/// </summary>
 		public async Task Notice() {
@@ -100,7 +130,29 @@ namespace ShioriChan.Services.Features.Schedules {
 		/// 表示する
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public Task Show( JToken parameter ) => throw new System.NotImplementedException();
+		public async Task Show( JToken parameter ) {
+			this.logger.LogTrace( "Start" );
+			string replyToken = this.GetReplyToken( parameter );
+			string postbackData = this.GetPostbackData( parameter );
+
+			bool isFirst = "firstSchedule".Equals( postbackData );
+			this.logger.LogTrace( $"Is First Schedule ... {isFirst}" );
+
+			List<(string name, string startTime)> schedules = this.scheduleRepository.GetSchedules( isFirst );
+			string message = "";
+			foreach( (string name, string startTime) in schedules ) {
+				message += $"{startTime}～ {name}\n";
+			}
+
+			await this.messageService.CreateMessageBuilder()
+				.AddMessage( message )
+				.BuildMessage()
+				.Reply( replyToken );
+
+			this.logger.LogTrace( "End" );
+		}
+
+
 
 		/// <summary>
 		/// 変更するスケジュールを選択する
@@ -147,21 +199,6 @@ namespace ShioriChan.Services.Features.Schedules {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		public Task Update( JToken parameter ) => throw new System.NotImplementedException();
-
-		/// <summary>
-		/// リプライトークンを取得
-		/// </summary>
-		/// <param name="parameter">パラメータ</param>
-		/// <returns>リプライトークン</returns>
-		private string GetReplyToken( JToken parameter ) {
-			JArray events = (JArray)parameter[ "events" ];
-			JObject firstEvent = (JObject)events[ 0 ];
-
-			string replyToken = firstEvent[ "replyToken" ].ToString();
-			this.logger.LogTrace( $"Reply Token is {replyToken}." );
-
-			return replyToken;
-		}
 
 	}
 
