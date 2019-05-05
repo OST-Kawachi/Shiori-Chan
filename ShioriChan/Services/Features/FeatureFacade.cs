@@ -88,7 +88,7 @@ namespace ShioriChan.Services.Features {
 		/// <summary>
 		/// ポストバックデータ - メイン - 連絡
 		/// </summary>
-		private const string PostbackMainContent = "main-content";
+		private const string PostbackMainContact = "main-contact";
 
 		/// <summary>
 		/// ポストバックデータ - メイン - 地図
@@ -402,7 +402,7 @@ namespace ShioriChan.Services.Features {
 					this.logger.LogInformation( "Postback Data is {postbackData}." , postbackData );
 					switch( postbackData ) {
 
-						case PostbackMainContent:
+						case PostbackMainContact:
 							this.logger.LogInformation( "Start Main Content" );
 
 							if( this.IsUnknownUser( userId ) ) {

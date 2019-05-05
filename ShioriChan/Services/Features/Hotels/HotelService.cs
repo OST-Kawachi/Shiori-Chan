@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using ShioriChan.Services.MessagingApis.Messages;
@@ -29,11 +28,11 @@ namespace ShioriChan.Services.Features.Hotels {
 		public HotelService(
 			ILogger<HotelService> logger ,
 			IMessageService messageService
-		)
-		{
+		) {
 			this.logger = logger;
 			this.messageService = messageService;
 		}
+
 		/// <summary>
 		/// リプライトークンを取得
 		/// </summary>
@@ -48,6 +47,7 @@ namespace ShioriChan.Services.Features.Hotels {
 
 			return replyToken;
 		}
+
 		/// <summary>
 		/// 宿泊施設を表示する
 		/// </summary>
@@ -59,20 +59,20 @@ namespace ShioriChan.Services.Features.Hotels {
 			this.logger.LogTrace( $"Reply Token is {replyToken}." );
 			string url = "https://www.sn-hotels.com/ygh/common/plan/images/banner/banner_official.jpg";
 			await this.messageService
-						.CreateMessageBuilder()
-						.AddMessage( "今回宿泊するホテルはこちら！" )
-						.AddTemplate( "ホテル情報" )
-						.UseButtonTemplate( "オシャレです～＞＜" )
-						.SetImageAspectRatio( "rectangle" )
-						.SetImageBackgroundColor( "#FFFFFF" )
-						.SetImageSize( "cover" )
-						.SetThumbnailImageUrl(url)
-						.SetTitle( "焼津グランドホテル ")
-						.SetAction()
-						.UseUriAction( "ホテルのサイトはこちら♪" , "https://www.sn-hotels.com/ygh/" )
-						.BuildTemplate()
-						.BuildMessage()
-						.Reply( replyToken );
+				.CreateMessageBuilder()
+				.AddMessage( "今回宿泊するホテルはこちら！" )
+				.AddTemplate( "ホテル情報" )
+				.UseButtonTemplate( "オシャレです～＞＜" )
+				.SetImageAspectRatio( "rectangle" )
+				.SetImageBackgroundColor( "#FFFFFF" )
+				.SetImageSize( "cover" )
+				.SetThumbnailImageUrl( url )
+				.SetTitle( "焼津グランドホテル " )
+				.SetAction()
+				.UseUriAction( "ホテルのサイトはこちら♪" , "https://www.sn-hotels.com/ygh/" )
+				.BuildTemplate()
+				.BuildMessage()
+				.Reply( replyToken );
 
 			this.logger.LogTrace( "End" );
 			return;
