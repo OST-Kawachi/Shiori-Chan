@@ -76,6 +76,21 @@ namespace ShioriChan.Services.Features.Schedules {
 		}
 
 		/// <summary>
+		/// 日付データを取得
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		/// <returns>ポストバックデータ</returns>
+		private string GetTime( JToken parameter ) {
+			JArray events = (JArray)parameter[ "events" ];
+			JObject firstEvent = (JObject)events[ 0 ];
+
+			JToken postback = firstEvent[ "postback" ];
+			string time = postback[ "params" ]["time"].ToString();
+			this.logger.LogTrace( $"Time is {time}." );
+			return time;
+		}
+
+		/// <summary>
 		/// 通知する
 		/// </summary>
 		public async Task Notice() {
@@ -198,7 +213,27 @@ namespace ShioriChan.Services.Features.Schedules {
 		/// スケジュールを変更する
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public Task Update( JToken parameter ) => throw new System.NotImplementedException();
+		public async Task Update( JToken parameter ) {
+			this.logger.LogTrace( "Start" );
+
+			string postbackData = this.GetPostbackData( parameter );
+			int seq = int.Parse( postbackData.Split( "updateSchedule?seq=" )[1] );
+			this.logger.LogTrace( $"Schedule Seq is {seq}" );
+
+			string dateTime = this.GetTime( parameter );
+
+			Schedule schedule = this.scheduleRepository.UpdateSchedule( seq , dateTime );
+			string name = schedule.Name;
+
+			List<string> toList = this.scheduleRepository.GetAllUserId();
+
+			await this.messageService.CreateMessageBuilder()
+				.AddMessage( $"{name}の時間が{dateTime}～ に変更されました！" )
+				.BuildMessage()
+				.Multicast( toList );
+
+			this.logger.LogTrace( "End" );
+		}
 
 	}
 

@@ -39,6 +39,14 @@ namespace ShioriChan.Repositories.Schedules {
 		/// <returns>スケジュール情報</returns>
 		List<(string name, string startTime)> GetSchedules( bool isFirst );
 
+		/// <summary>
+		/// スケジュールを更新する
+		/// </summary>
+		/// <param name="seq">スケジュール管理番号</param>
+		/// <param name="dateTime">日時</param>
+		/// <returns>更新されたスケジュール</returns>
+		Schedule UpdateSchedule( int seq , string dateTime );
+
 	}
 
 }

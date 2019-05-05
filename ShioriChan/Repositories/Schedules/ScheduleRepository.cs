@@ -108,8 +108,8 @@ namespace ShioriChan.Repositories.Schedules {
 				// 表示順にソート
 				.OrderBy( s => s.Data.StartDatetime )
 				.Select( s => (
-					s.Data.Seq ,
-					s.Data.StartDatetime.ToString( "MM/dd HH:mm" ) + "～ " + s.Data.Name ,
+					s.Data.Seq,
+					s.Data.StartDatetime.ToString( "MM/dd HH:mm" ) + "～ " + s.Data.Name,
 					s.Data.StartDatetime.ToString( "HH:mm" )
 				) )
 				.ToList();
@@ -131,13 +131,13 @@ namespace ShioriChan.Repositories.Schedules {
 			DateTime secondDay = new DateTime( 2019 , 6 , 30 , 0 , 0 , 0 );
 
 			List<Schedule> schedules = this.model.Schedules
-				.Where( s => 
+				.Where( s =>
 					// s.StartDatetime < secondDayの比較でErrorが出たので分解して比較
 					isFirst ?
 					s.StartDatetime.Month * 60 * 24 * 30 + s.StartDatetime.Day * 60 * 24 + s.StartDatetime.Hour * 60 + s.StartDatetime.Minute
 						- ( secondDay.Month * 60 * 24 * 30 + secondDay.Day * 60 * 24 + secondDay.Hour * 60 + secondDay.Minute )
 						< 0 :
-					0 <= 
+					0 <=
 						s.StartDatetime.Month * 60 * 24 * 30 + s.StartDatetime.Day * 60 * 24 + s.StartDatetime.Hour * 60 + s.StartDatetime.Minute
 						- ( secondDay.Month * 60 * 24 * 30 + secondDay.Day * 60 * 24 + secondDay.Hour * 60 + secondDay.Minute )
 				)
@@ -145,7 +145,7 @@ namespace ShioriChan.Repositories.Schedules {
 				// Select句にタプルが入れられないようなので絞り込んだ後いったんListに直す
 				.ToList();
 
-			List<(string name , string startTime )> result = schedules
+			List<(string name, string startTime)> result = schedules
 				.Select( s => (
 					s.Name,
 					s.StartDatetime.ToString( "HH:mm" )
@@ -157,6 +157,35 @@ namespace ShioriChan.Repositories.Schedules {
 
 		}
 
+		/// <summary>
+		/// スケジュールを更新する
+		/// </summary>
+		/// <param name="seq">スケジュール管理番号</param>
+		/// <param name="dateTime">日付</param>
+		/// <returns>更新されたスケジュール</returns>
+		public Schedule UpdateSchedule( int seq , string dateTime ) {
+			this.logger.LogTrace( "Start" );
+
+			Schedule schedule = this.model.Schedules
+				.SingleOrDefault( s => s.Seq == seq );
+
+			string[] splitedDateTime = dateTime.Split( ":" );
+			schedule.StartDatetime = new DateTime(
+				schedule.StartDatetime.Year ,
+				schedule.StartDatetime.Month ,
+				schedule.StartDatetime.Day ,
+				int.Parse( splitedDateTime[ 0 ] ) ,
+				int.Parse( splitedDateTime[ 1 ] ) ,
+				0
+			);
+
+			this.model.SaveChanges();
+
+			this.logger.LogTrace( "End" );
+			return schedule;
+
+		}
+
 	}
-		
+
 }
