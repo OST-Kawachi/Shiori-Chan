@@ -1,19 +1,20 @@
-﻿<html>
+<html>
 <head>
 	<title>ユーザ登録</title>
-	<meta name="viewport" content="width=device-width">
+	<meta name="viewport" content="width=device-width, height=device-height">
+<link rel="stylesheet" type="text/css" href="base.css">
 </head>
+
 <body>
-	<h2>ユーザ登録</h2>
+  <div id="frame">
+
 	<div id="input">
-		<div>ユーザ登録します。名前を入力して登録ボタンを押してください</div>
-		<div><input id="userName" type="text" /></div>
-		<div><button id="registerButton">登録</button></div>
+		<div	img id="touroku">ユーザ登録</div>
+		<div><input id="userName" type="text"  placeholder="氏　　名"></div>
+		<div><button id="registerButton">決　　定</button></div>
 		<div id="errorMessage"></div>
 	</div>
-	<div id="complete">
-		登録が完了しました。<br />
-		ブラウザを閉じてださい
+
 	</div>
 	<script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="/js/users/apply.js"></script>
