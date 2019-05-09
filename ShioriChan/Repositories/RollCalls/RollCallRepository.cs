@@ -5,12 +5,14 @@ using Microsoft.Extensions.Logging;
 using ShioriChan.Entities;
 using static ShioriChan.Controllers.RollCalls.RollCallsController;
 
-namespace ShioriChan.Repositories.RollCalls {
+namespace ShioriChan.Repositories.RollCalls
+{
 
 	/// <summary>
 	/// 点呼Repository
 	/// </summary>
-	public class RollCallRepository : IRollCallRepository {
+	public class RollCallRepository : IRollCallRepository
+	{
 
 		private const string None = "－";
 		private const string Ng = "×";
@@ -31,9 +33,10 @@ namespace ShioriChan.Repositories.RollCalls {
 		/// </summary>
 		/// <param name="logger">ログ</param>
 		public RollCallRepository(
-			ILogger<RollCallRepository> logger ,
+			ILogger<RollCallRepository> logger,
 			ModelCreator model
-		) {
+		)
+		{
 			this.logger = logger;
 			this.model = model;
 		}
@@ -42,11 +45,12 @@ namespace ShioriChan.Repositories.RollCalls {
 		/// 点呼に返事をする
 		/// </summary>
 		/// <param name="userId">ユーザID</param>
-		public async Task TellIAmThere( string userId ) {
+		public async Task TellIAmThere(string userId)
+		{
 			Participant participant = this.model.Participants
-				.Single( p => this.model.UserInfos
-					.Single( u => u.Id == userId )
-					.Seq == p.UserSeq
+				.Single(p => this.model.UserInfos
+				   .Single(u => u.Id == userId)
+				   .Seq == p.UserSeq
 				);
 			participant.RollCall = true;
 			this.model.SaveChanges();
@@ -57,28 +61,31 @@ namespace ShioriChan.Repositories.RollCalls {
 		/// </summary>
 		public async Task<List<Status>> GetStatuses()
 			=> this.model.Participants
-				.Where( p => p.EventSeq == 0 )
-				.Select( p => new Status {
-					UserSeq = p.UserSeq ,
-					RollCall = p.RollCall.HasValue ? p.RollCall.Value ? Ok : Ng : None ,
+				.Where(p => p.EventSeq == 0)
+				.Select(p => new Status
+				{
+					UserSeq = p.UserSeq,
+					RollCall = p.RollCall.HasValue ? p.RollCall.Value ? Ok : Ng : None,
 					Name = this.model.UserInfos
-						.Single( u => u.Seq == p.UserSeq )
-						.Name
-				} )
+					   .Single(u => u.Seq == p.UserSeq)
+					   .Name
+				})
 			.ToList();
 
 		/// <summary>
 		/// 点呼リセット
 		/// </summary>
-		public async Task Reset() {
+		public async Task Reset()
+		{
 			this.model.Participants
-				.Where( p => p.EventSeq == 0 )
+				.Where(p => p.EventSeq == 0)
 				.ToList()
-				.ForEach( p => {
-					if( p.RollCall.HasValue ) {
+				.ForEach(p => {
+					if (p.RollCall.HasValue)
+					{
 						p.RollCall = false;
 					}
-				} );
+				});
 			this.model.SaveChanges();
 		}
 
@@ -88,13 +95,14 @@ namespace ShioriChan.Repositories.RollCalls {
 		/// <returns>参加者Id一覧</returns>
 		public List<string> GetParticipantIds()
 			=> this.model.Participants
-				.Where( p => p.EventSeq == 0 )
-				.Select( p => this.model.UserInfos
-					.Single( u => u.Seq == p.UserSeq )
-					.Id
+				.Where(p => p.EventSeq == 0)
+				.Select(p => this.model.UserInfos
+				   .Where(u => !string.IsNullOrEmpty(u.Id))
+				   .Single(u => u.Seq == p.UserSeq)
+				   .Id
 				)
 				.ToList();
-		
+
 
 	}
 
