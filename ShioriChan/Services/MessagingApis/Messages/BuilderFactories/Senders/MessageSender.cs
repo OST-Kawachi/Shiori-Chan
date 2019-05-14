@@ -184,6 +184,51 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 				return;
 			}
 
+            public async Task Broadcast(){
+				JObject parameter = new JObject{
+					{ "messages" , this.parameter.Messages }
+				};
+				this.logger.LogTrace( $"Parameter is {parameter}" );
+
+				StringContent content = new StringContent( parameter.ToString() );
+				content.Headers.ContentType = new MediaTypeHeaderValue( "application/json" );
+				this.logger.LogTrace( "Content is {content}" , content );
+
+				HttpClient client = new HttpClient();
+				client.DefaultRequestHeaders.Accept.Add( new MediaTypeWithQualityHeaderValue( "application/json" ) );
+				client.DefaultRequestHeaders.Add( "Authorization" , "Bearer " + this.parameter.ChannelAccessToken );
+                
+				try
+				{
+					this.logger.LogTrace( "Start Post Async" );
+					HttpResponseMessage response = await client.PostAsync( "https://api.line.me/v2/bot/message/broadcast" , content ).ConfigureAwait( false );
+					this.logger.LogTrace( "End Post Async" );
+					string result = await response?.Content.ReadAsStringAsync();
+					this.logger.LogTrace( "Post Async Result is {result}" , result );
+					response.Dispose();
+					client.Dispose();
+				}
+				catch( ArgumentNullException )
+				{
+					this.logger.LogError( "Argument Null Exception" );
+					client.Dispose();
+					return;
+				}
+				catch( HttpRequestException )
+				{
+					this.logger.LogError( "Http Request Exception" );
+					client.Dispose();
+					return;
+				}
+				catch( Exception )
+				{
+					this.logger.LogError( "Exception" );
+					client.Dispose();
+					return;
+				}
+
+				return;
+            }
 		}
 
 	}

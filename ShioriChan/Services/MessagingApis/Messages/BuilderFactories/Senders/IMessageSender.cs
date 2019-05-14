@@ -26,6 +26,11 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Senders {
 		/// <param name="toList">対象者ID一覧</param>
 		Task Multicast( List<string> toList );
 
+        /// <summary>
+        /// ブロードキャスト通知
+        /// </aummary>
+        /// <param name="messages">送信するメッセージ</param>
+        Task Broadcast();
 	}
 
 }
