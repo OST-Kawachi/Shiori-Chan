@@ -192,6 +192,7 @@ namespace ShioriChan.Services.Features.Users
 
 			UserInfo registeredUser = this.userRepository.GetUser( unRegisteredUserSeq );
 			this.logger.LogTrace( $"Registered User Name is {registeredUser.Name}." );
+			await this.menuService.ChangeMenu(registeredUser.Id, MenuService.MainMenuName);
 			await this.messageService.CreateMessageBuilder()
 				.AddMessage( "幹事さん達に承認されました！\nよろしくお願いしますね！\n下にメニューを表示しました！！" )
 				.BuildMessage()
