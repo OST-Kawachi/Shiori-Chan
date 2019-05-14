@@ -60,21 +60,21 @@ namespace ShioriChan.Repositories.Users
 		{
 			this.logger.LogTrace( "Start" );
 			this.logger.LogTrace( $"User Id is {userId}." );
-			List<int> seqs = this.model.WaitedApprovalUsers.Select( user => user.Seq ).ToList();
-			this.logger.LogTrace( $"Max User Seq is {seqs.Count}" );
+			int seq = this.model.WaitedApprovalUsers.OrderByDescending(user => user.Seq).Select( user => user.Seq ).First();
+			this.logger.LogTrace( $"Max User Seq is {seq}" );
 			this.model.WaitedApprovalUsers.Add( new WaitedApprovalUser()
 			{
-				Seq = seqs.Count + 1 ,
+				Seq = seq + 1 ,
 				UserId = userId ,
 				UserName = "" ,
-				RegisterUserSeq = seqs.Count + 1 ,
+				RegisterUserSeq = seq + 1 ,
 				RegisterDatetime = DateTime.Now ,
-				UpdateUserSeq = seqs.Count + 1 ,
+				UpdateUserSeq = seq + 1 ,
 				UpdateDatetime = DateTime.Now ,
 				Version = 0
 			} );
 			this.model.SaveChanges();
-			return seqs.Count + 1;
+			return seq + 1;
 		}
 
 		/// <summary>
