@@ -133,6 +133,7 @@ namespace ShioriChan.Repositories.Users
 			List<string> userIds = this.model.UserInfos
 				.Where( ui => pushableUserSeq.Any( seq => ui.Seq == seq ) )
 				.Where( ui => adminUserSeq.Any( seq => ui.Seq == seq ) )
+				.Where( ui => !string.IsNullOrEmpty( ui.Id ) )
 				.Select( ui => ui.Id )
 				.ToList();
 
