@@ -379,6 +379,19 @@ namespace ShioriChan.Services.Features.Menus {
 						} ,
 						new JObject(){
 							{ "bounds" , new JObject() {
+								{ "x" , 950 } ,
+								{ "y" , 900 } ,
+								{ "width" , 610 } ,
+								{ "height" , 610 }
+							} } ,
+							{ "action" , new JObject() {
+								{ "type" , "postback" } ,
+								{ "data" , "admin-random" } ,
+								{ "displayText" , "ランダムにユーザ名表示して" }
+							} }
+						} ,
+						new JObject(){
+							{ "bounds" , new JObject() {
 								{ "x" , 1680 } ,
 								{ "y" , 900 } ,
 								{ "width" , 610 } ,

@@ -166,6 +166,11 @@ namespace ShioriChan.Services.Features {
 		private const string PostbackAdminReSchedule = "reSchedule";
 
 		/// <summary>
+		/// ポストバックデータ - 管理 - ランダム表示
+		/// </summary>
+		private const string PostbackAdminRandom = "admin-random";
+
+		/// <summary>
 		/// ポストバックデータ - 管理 - 戻る
 		/// </summary>
 		private const string PostbackAdminBack = "admin-back";
@@ -599,8 +604,8 @@ namespace ShioriChan.Services.Features {
 
 							break;
 
-						case PostbackAdminChangePosition:
-							this.logger.LogInformation( "Start Change Position" );
+						case PostbackAdminRandom:
+							this.logger.LogInformation("Start Random");
 
 							if( this.IsUnknownUser( userId ) ) {
 								this.logger.LogWarning( "User is Unknown." );
