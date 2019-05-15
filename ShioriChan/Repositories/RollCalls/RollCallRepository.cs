@@ -94,15 +94,13 @@ namespace ShioriChan.Repositories.RollCalls
 		/// </summary>
 		/// <returns>参加者Id一覧</returns>
 		public List<string> GetParticipantIds()
-			=> this.model.Participants
-				.Where(p => p.EventSeq == 0)
-				.Select(p => this.model.UserInfos
-				   .Where(u => !string.IsNullOrEmpty(u.Id))
-				   .Single(u => u.Seq == p.UserSeq)
-				   .Id
+			=> this.model.UserInfos
+				.Where(ui => !string.IsNullOrEmpty(ui.Id))
+				.Where( ui => this.model.Participants
+					.Any( p => p.EventSeq == 0 && p.UserSeq == ui.Seq )
 				)
+				.Select(ui => ui.Id)
 				.ToList();
-
 
 	}
 
