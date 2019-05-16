@@ -22,6 +22,11 @@ namespace ShioriChan.Services.MessagingApis.Messages {
 		/// <param name="messageId">メッセージID</param>
 		Task<byte[]> GetContent( string messageId );
 
+        /// <summary>
+        /// 追加メッセージの上限数取得
+        /// </summary>
+        /// <returns></returns>
+        Task<object> GetMessageLimit();
 	}
 
 }

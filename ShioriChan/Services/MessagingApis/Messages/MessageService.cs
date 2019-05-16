@@ -125,6 +125,57 @@ namespace ShioriChan.Services.MessagingApis.Messages {
             return result;
         }
 
+        /// <summary>
+        /// 追加メッセージの上限数取得
+        /// </summary>
+        /// <returns></returns>
+        public async Task<object> GetMessageLimit(){
+            string channelAccessToken = this.oAuthRepository.GetNewlyChannelAccessToken();
+            this.logger.LogTrace($"Channel Access Token is {channelAccessToken}");
+            if (string.IsNullOrEmpty(channelAccessToken))
+            {
+                ChannelAccessToken cat = this.channelAccessTokenService.Issue();
+                channelAccessToken = cat.AccessToken;
+                this.oAuthRepository.RegisterChannelAccessToken(channelAccessToken);
+            }
+
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            object MessageLimit = null;
+
+            try
+            {
+                this.logger.LogTrace("Start Post Async");
+                HttpResponseMessage response = await client.GetAsync("https://api.line.me/v2/bot/message/quota").ConfigureAwait(false);
+                this.logger.LogTrace("End Post Async");
+                MessageLimit = response;
+                string result = await response?.Content.ReadAsStringAsync();
+                this.logger.LogTrace("Post Async Result is {result}", result.Length);
+                response.Dispose();
+                client.Dispose();
+            }
+            catch (ArgumentNullException)
+            {
+                this.logger.LogError("Argument Null Exception");
+                client.Dispose();
+                return null;
+            }
+            catch (HttpRequestException)
+            {
+                this.logger.LogError("Http Request Exception");
+                client.Dispose();
+                return null;
+            }
+            catch (Exception)
+            {
+                this.logger.LogError("Exception");
+                client.Dispose();
+                return null;
+            }
+
+            return MessageLimit;
+        }
 	}
 	
 }
