@@ -32,13 +32,6 @@ $(function () {
         }
     );
 
-    $("#update").on(
-        "click",
-        function () {
-            update();
-        }
-    );
-
     update();
 
 });
