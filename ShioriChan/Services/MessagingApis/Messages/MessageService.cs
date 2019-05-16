@@ -93,7 +93,7 @@ namespace ShioriChan.Services.MessagingApis.Messages {
                 HttpResponseMessage response = await client.GetAsync("https://api.line.me/v2/bot/message/" + messageId + "/content").ConfigureAwait(false);
                 this.logger.LogTrace("End Post Async");
                 result = await response?.Content.ReadAsByteArrayAsync();
-                this.logger.LogTrace("Post Async Result is {result}", result);
+                this.logger.LogTrace("Post Async Result is {result}", result.Length);
                 response.Dispose();
                 client.Dispose();
             }
