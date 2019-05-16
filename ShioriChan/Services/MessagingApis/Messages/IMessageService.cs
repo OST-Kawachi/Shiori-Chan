@@ -27,6 +27,12 @@ namespace ShioriChan.Services.MessagingApis.Messages {
         /// </summary>
         /// <returns></returns>
         Task<object> GetMessageLimit();
+
+        /// <summary>
+        /// 当月のメッセージ利用状況を取得する
+        /// </summary>
+        /// <returns></returns>
+        Task<object> GetMessageStatus();
 	}
 
 }
