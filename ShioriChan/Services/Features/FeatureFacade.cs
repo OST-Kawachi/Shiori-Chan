@@ -369,24 +369,6 @@ namespace ShioriChan.Services.Features {
 							string message = firstEvent[ "message" ][ "text" ].ToString();
 							this.logger.LogInformation( "Message is {message}." , message );
 
-							// TODO 仮
-							if( message.Contains( "れ" ) ) {
-								this.logger.LogInformation( "Temp" );
-								await this.ShowTouristShop( parameter );
-							}
-							else if( message.Contains( "す" ) ) {
-								this.logger.LogInformation( "Temp" );
-								await this.ChooseSchedule( parameter );
-							}
-							else if( message.Contains( "め" ) ) {
-								this.logger.LogInformation( "Temp" );
-								await this.menuService.ChangeMenu("", userId , MenuService.MainMenuName );
-							}
-							else if( message.Contains( "ら" ) ) {
-								this.logger.LogInformation( "Temp" );
-								await this.userService.ShowRandomly( parameter );
-							}
-
 							break;
 
 						case MessageTypeLocation:
