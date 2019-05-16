@@ -20,7 +20,7 @@ namespace ShioriChan.Services.MessagingApis.Messages {
 		/// </summary>
 		/// <param name="channelAccessToken">チャンネルアクセストークン</param>
 		/// <param name="messageId">メッセージID</param>
-		Task<byte[]> GetContent( string channelAccessToken , string messageId );
+		Task<byte[]> GetContent( string messageId );
 
 	}
 

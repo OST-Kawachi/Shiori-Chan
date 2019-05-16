@@ -69,9 +69,8 @@ namespace ShioriChan.Services.MessagingApis.Messages {
 		/// <summary>
 		/// コンテンツの取得
 		/// </summary>
-		/// <param name="channelAccessToken">チャンネルアクセストークン</param>
 		/// <param name="messageId">メッセージID</param>
-		public async Task<byte[]> GetContent( string channelAccessToken , string messageId ) {
+		public async Task<byte[]> GetContent( string messageId ) {
 
             JObject parameter = new JObject{
                     { "messageId" , messageId }
