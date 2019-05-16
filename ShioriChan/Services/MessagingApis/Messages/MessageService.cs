@@ -71,7 +71,14 @@ namespace ShioriChan.Services.MessagingApis.Messages {
 		/// </summary>
 		/// <param name="messageId">メッセージID</param>
 		public async Task<byte[]> GetContent( string messageId ) {
-
+            string channelAccessToken = this.oAuthRepository.GetNewlyChannelAccessToken();
+            this.logger.LogTrace($"Channel Access Token is {channelAccessToken}");
+            if (string.IsNullOrEmpty(channelAccessToken))
+            {
+                ChannelAccessToken cat = this.channelAccessTokenService.Issue();
+                channelAccessToken = cat.AccessToken;
+                this.oAuthRepository.RegisterChannelAccessToken(channelAccessToken);
+            }
             JObject parameter = new JObject{
                     { "messageId" , messageId }
                 };
