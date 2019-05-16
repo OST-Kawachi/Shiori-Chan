@@ -380,7 +380,7 @@ namespace ShioriChan.Services.Features {
 							}
 							else if( message.Contains( "め" ) ) {
 								this.logger.LogInformation( "Temp" );
-								await this.menuService.ChangeMenu( userId , MenuService.MainMenuName );
+								await this.menuService.ChangeMenu("", userId , MenuService.MainMenuName );
 							}
 							else if( message.Contains( "ら" ) ) {
 								this.logger.LogInformation( "Temp" );

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using ShioriChan.Repositories.Menus;
 using ShioriChan.Services.MessagingApis.Messages;
 using ShioriChan.Services.MessagingApis.RichMenus;
 
@@ -26,6 +27,11 @@ namespace ShioriChan.Services.Features.Menus {
 		private readonly ILogger logger;
 
 		/// <summary>
+		/// メニューRepository
+		/// </summary>
+		private readonly IMenuRepository menuRepository;
+
+		/// <summary>
 		/// メッセージService
 		/// </summary>
 		private readonly IMessageService messageService;
@@ -39,16 +45,35 @@ namespace ShioriChan.Services.Features.Menus {
 		/// コンストラクタ
 		/// </summary>
 		/// <param name="logger">ログ</param>
+		/// <param name="menuRepository">メニューRepository</param>
 		/// <param name="messageService">メッセージService</param>
 		/// <param name="richMenuService">リッチメニューService</param>
 		public MenuService(
-			ILogger<MenuService> logger ,
-			IMessageService messageService ,
+			ILogger<MenuService> logger,
+			IMenuRepository menuRepository,
+			IMessageService messageService,
 			IRichMenuService richMenuService
 		) {
 			this.logger = logger;
+			this.menuRepository = menuRepository;
 			this.messageService = messageService;
 			this.richMenuService = richMenuService;
+		}
+
+		/// <summary>
+		/// リプライトークンを取得
+		/// </summary>
+		/// <param name="parameter">パラメータ</param>
+		/// <returns>リプライトークン</returns>
+		private string GetReplyToken(JToken parameter)
+		{
+			JArray events = (JArray)parameter["events"];
+			JObject firstEvent = (JObject)events[0];
+
+			string replyToken = firstEvent["replyToken"].ToString();
+			this.logger.LogTrace($"Reply Token is {replyToken}.");
+
+			return replyToken;
 		}
 
 		/// <summary>
@@ -87,31 +112,34 @@ namespace ShioriChan.Services.Features.Menus {
 		/// メニューを変更する
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public async Task ChangeMenu( JToken parameter ) {
-			string userId = this.GetUserId( parameter );
-			string postBackData = this.GetPostBackData( parameter );
+		public async Task ChangeMenu(JToken parameter)
+		{
+			string replyToken = this.GetReplyToken(parameter);
+			string userId = this.GetUserId(parameter);
+			string postBackData = this.GetPostBackData(parameter);
 
-			switch( postBackData ) {
+			switch (postBackData)
+			{
 				case "main-map":
-					await this.ChangeMenu( userId , MapMenuName );
+					await this.ChangeMenu(replyToken, userId, MapMenuName);
 					break;
 				case "main-admin":
-					await this.ChangeMenu( userId , AdminMenuName );
+					await this.ChangeMenu(replyToken, userId, AdminMenuName);
 					break;
 				case "main-schedule":
-					await this.ChangeMenu( userId , ScheduleMenuName );
+					await this.ChangeMenu(replyToken, userId, ScheduleMenuName);
 					break;
 				case "map-back":
-					await this.ChangeMenu( userId , MainMenuName );
+					await this.ChangeMenu(replyToken, userId, MainMenuName);
 					break;
 				case "schedule-back":
-					await this.ChangeMenu( userId , MainMenuName );
+					await this.ChangeMenu(replyToken, userId, MainMenuName);
 					break;
 				case "admin-back":
-					await this.ChangeMenu( userId , MainMenuName );
+					await this.ChangeMenu(replyToken, userId, MainMenuName);
 					break;
 				default:
-					this.logger.LogWarning( "Postback Data Is Not Match" );
+					this.logger.LogWarning("Postback Data Is Not Match");
 					break;
 			}
 
@@ -120,12 +148,26 @@ namespace ShioriChan.Services.Features.Menus {
 		/// <summary>
 		/// メニューを変更する
 		/// </summary>
+		/// <param name="replyToken">リプライトークン</param>
 		/// <param name="userId">ユーザID</param>
 		/// <param name="menuName">メニュー名</param>
-		public async Task ChangeMenu( string userId , string menuName ) {
-			Dictionary<string,string> Ids = await this.richMenuService.GetIds();
-			string menuId = Ids[ menuName ];
-			await this.richMenuService.LinkToUser( menuId , userId );
+		public async Task ChangeMenu(string replyToken, string userId, string menuName)
+		{
+
+			if (AdminMenuName.Equals(menuName) && !this.menuRepository.IsOpenAdminMenu(userId))
+			{
+
+				await this.messageService.CreateMessageBuilder()
+					.AddMessage("申し訳ありませんが、管理メニューは管理者でないと開けません＞＜")
+					.BuildMessage()
+					.Reply(replyToken);
+
+				return;
+			}
+
+			Dictionary<string, string> Ids = await this.richMenuService.GetIds();
+			string menuId = Ids[menuName];
+			await this.richMenuService.LinkToUser(menuId, userId);
 		}
 
 		/// <summary>
@@ -275,10 +317,14 @@ namespace ShioriChan.Services.Features.Menus {
 							} }
 						}
 					}
-				} } );
-		
+				} });
+
+		/// <summary>
+		/// 地図メニューの作成
+		/// </summary>
+		/// <returns></returns>
 		private async Task<string> CreateMapMenu()
-			=> await this.richMenuService.Create( new JObject {
+			=> await this.richMenuService.Create(new JObject {
 					{ "selected" , false } ,
 					{ "chatBarText" , "メニューを開く" },
 					{ "size" , new JObject {
@@ -327,10 +373,14 @@ namespace ShioriChan.Services.Features.Menus {
 							} }
 						}
 					}
-				} } );
+				} });
 
+		/// <summary>
+		/// 管理メニューの作成
+		/// </summary>
+		/// <returns></returns>
 		private async Task<string> CreateAdminMenu()
-			=> await this.richMenuService.Create( new JObject {
+			=> await this.richMenuService.Create(new JObject {
 					{ "selected" , false } ,
 					{ "chatBarText" , "メニューを開く" },
 					{ "size" , new JObject {

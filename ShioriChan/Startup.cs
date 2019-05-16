@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShioriChan.Repositories;
 using ShioriChan.Repositories.MeetingPlaces;
+using ShioriChan.Repositories.Menus;
 using ShioriChan.Repositories.Notifications;
 using ShioriChan.Repositories.OAuthes;
 using ShioriChan.Repositories.Participants;
@@ -80,7 +81,8 @@ namespace ShioriChan {
 
 				// Repositories
 				services.AddTransient<IMeetingPlaceRepository , MeetingPlaceRepository>();
-				services.AddTransient<INotificationRepository , NotificationRepository>();
+				services.AddTransient<IMenuRepository, MenuRepository>();
+				services.AddTransient<INotificationRepository, NotificationRepository>();
 				services.AddTransient<IOAuthRepository , OAuthRepository>();
 				services.AddTransient<IParticipantRepository , ParticipantRepository>();
 				services.AddTransient<IRollCallRepository , RollCallRepository>();
