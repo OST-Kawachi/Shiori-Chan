@@ -177,6 +177,10 @@ namespace ShioriChan.Services.MessagingApis.Messages {
             return MessageLimit;
         }
 
+        /// <summary>
+        /// 当月のメッセージ利用状況を取得する
+        /// </summary>
+        /// <returns></returns>
         public async Task<object> GetMessageStatus(){
             string channelAccessToken = this.oAuthRepository.GetNewlyChannelAccessToken();
             this.logger.LogTrace($"Channel Access Token is {channelAccessToken}");
@@ -195,7 +199,7 @@ namespace ShioriChan.Services.MessagingApis.Messages {
             try
             {
                 this.logger.LogTrace("Start Post Async");
-                HttpResponseMessage response = await client.GetAsync("https://api.line.me/v2/bot/message/quota").ConfigureAwait(false);
+                HttpResponseMessage response = await client.GetAsync("https://api.line.me/v2/bot/message/quota/consumption").ConfigureAwait(false);
                 this.logger.LogTrace("End Post Async");
                 MessageStatus = response;
                 string result = await response?.Content.ReadAsStringAsync();
