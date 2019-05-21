@@ -519,6 +519,23 @@ namespace ShioriChan.Services.Features.Menus {
 
 		}
 
+		/// <summary>
+		/// メニューとユーザをリンクさせる
+		/// </summary>
+		public async Task Link()
+		{
+			this.logger.LogTrace("Start");
+
+			Dictionary<string, string> Ids = await this.richMenuService.GetIds();
+			string menuId = Ids[MenuService.MainMenuName];
+
+			List<string> ids = this.menuRepository.GetUserIds();
+
+			await this.richMenuService.LinkToBulkUser( ids , menuId );
+
+			this.logger.LogTrace("End");
+		}
+
 	}
 
 }

@@ -28,6 +28,11 @@ namespace ShioriChan.Services.Features.Menus {
 		/// <returns></returns>
 		Task UpdateImage();
 
+		/// <summary>
+		/// メニューとユーザをリンクさせる
+		/// </summary>
+		Task Link();
+
 	}
 
 }
