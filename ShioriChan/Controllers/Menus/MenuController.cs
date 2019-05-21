@@ -48,5 +48,18 @@ namespace ShioriChan.Controllers.Menus {
 			return this.Ok();
 		}
 
+		/// <summary>
+		/// メニュー画像更新後、ユーザとメニューのリンクが外れるので、付け直す
+		/// </summary>
+		[Route("api/menu/link")]
+		[HttpGet]
+		public async Task<StatusCodeResult> Link()
+		{
+			this.logger.LogTrace("Start");
+			await this.menuService.Link();
+			this.logger.LogTrace("End");
+			return this.Ok();
+		}
+
 	}
 }

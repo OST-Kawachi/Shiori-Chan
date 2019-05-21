@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using ShioriChan.Entities;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ShioriChan.Repositories.Menus
@@ -54,5 +55,18 @@ namespace ShioriChan.Repositories.Menus
 
 			return !(userPermission is null);
 		}
+
+
+		/// <summary>
+		/// ユーザID一覧を取得する
+		/// </summary>
+		/// <returns>ユーザID一覧取得</returns>
+		public List<string> GetUserIds()
+			=> this.model.UserInfos
+				.Where(ui => !string.IsNullOrEmpty(ui.Id))
+				.Where(ui => ui.ParticipatingEventSeq == 0)
+				.Select(ui => ui.Id)
+				.ToList();
+
 	}
 }
