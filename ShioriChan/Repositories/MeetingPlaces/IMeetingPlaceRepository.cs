@@ -6,6 +6,13 @@
 	public interface IMeetingPlaceRepository {
 
 		/// <summary>
+		/// 管理者かどうか
+		/// </summary>
+		/// <param name="userId">ユーザID</param>
+		/// <returns>管理者かどうか</returns>
+		bool IsAdmin(string userId);
+
+		/// <summary>
 		/// 集合場所を登録する
 		/// </summary>
 		/// <param name="userId">ユーザID</param>
@@ -21,6 +28,7 @@
 		/// <param name="seq"></param>
 		/// <returns></returns>
 		(string title, string address, double? latitude, double? longitude) GetLocation();
+
 	}
 
 }
