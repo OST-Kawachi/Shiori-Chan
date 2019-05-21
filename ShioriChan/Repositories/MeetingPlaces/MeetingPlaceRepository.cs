@@ -37,6 +37,30 @@ namespace ShioriChan.Repositories.MeetingPlaces {
 		}
 
 		/// <summary>
+		/// 管理者かどうか
+		/// </summary>
+		/// <param name="userId">ユーザID</param>
+		/// <returns>管理者かどうか</returns>
+		public bool IsAdmin(string userId)
+		{
+			this.logger.LogTrace("Start");
+
+			Permission permission = this.model.Permissions
+				.FirstOrDefault(p => "Admin".Equals(p.Name));
+
+			UserInfo userInfo = this.model.UserInfos
+				.FirstOrDefault(u => userId.Equals(u.Id));
+
+			UserPermission userPermission = this.model.UserPermissions
+				.FirstOrDefault(up => permission.Seq == up.PermissionSeq && userInfo.Seq == up.UserSeq);
+
+			this.logger.LogTrace("End");
+
+			return !(userPermission is null);
+
+		}
+
+		/// <summary>
 		/// 集合場所を登録する
 		/// </summary>
 		/// <param name="userId">ユーザID</param>

@@ -129,6 +129,13 @@ namespace ShioriChan.Services.Features.MeetingPlaces {
 		{
 
 			string userId = this.GetUserId( parameter );
+
+			if( !this.meetingPlaceRepository.IsAdmin( userId ))
+			{
+				this.logger.LogWarning("User is not Admin.");
+				return;
+			}
+
 			(string title, string address, double latitude, double longitude)
 				= this.GetLocation( parameter );
 
