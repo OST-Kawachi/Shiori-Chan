@@ -1,5 +1,6 @@
 ﻿using ShioriChan.Services.MessagingApis.Messages.BuilderFactories;
 using ShioriChan.Services.MessagingApis.Messages.BuilderFactories.Builders;
+using System;
 using System.Threading.Tasks;
 
 namespace ShioriChan.Services.MessagingApis.Messages {
@@ -33,6 +34,12 @@ namespace ShioriChan.Services.MessagingApis.Messages {
         /// </summary>
         /// <returns></returns>
         Task<object> GetMessageStatus();
+
+        /// <summary>
+        /// 送信済み応答メッセージ数を取得
+        /// </summary>
+        /// <returns></returns>
+        Task<object> GetSentReplyMessageCount( DateTime replyDate );
 	}
 
 }
