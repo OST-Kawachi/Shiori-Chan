@@ -40,6 +40,13 @@ namespace ShioriChan.Services.MessagingApis.Messages {
         /// </summary>
         /// <returns></returns>
         Task<object> GetSentReplyMessageCount( DateTime replyDate );
+
+        /// <summary>
+        /// 送信済み応答メッセージ数を取得
+        /// </summary>
+        /// <param name="replyDate"></param>
+        /// <returns></returns>
+        Task<object> GetSentPushMessageCount(DateTime replyDate );
 	}
 
 }
