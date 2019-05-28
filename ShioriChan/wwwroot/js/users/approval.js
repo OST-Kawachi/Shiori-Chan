@@ -25,7 +25,7 @@
             for (let i = 0; i < waitingApprovalUsers.length; i++) {
                 let seq = waitingApprovalUsers[i].seq;
                 let name = waitingApprovalUsers[i].userName;
-                let html = '<input type="radio" name="waitingApproval" value="' + seq + '" />' + name + '</div>';
+                let html = '<div><input type="radio" name="waitingApproval" value="' + seq + '" />' + name + '</div>';
                 waitingApprovalHtml += html;
             }
             setTimeout(function () {
