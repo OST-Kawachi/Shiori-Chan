@@ -180,6 +180,13 @@ namespace ShioriChan.Services.Features.Users
 			=> this.userRepository.GetWaitingApprovalUsers();
 
 		/// <summary>
+		/// 承認済みユーザ一覧取得
+		/// </summary>
+		/// <returns>承認済みユーザ一覧取得</returns>
+		public List<UserInfo> GetApprovedUsers()
+			=> this.userRepository.GetApprovedUsers();
+
+		/// <summary>
 		/// 承認する
 		/// </summary>
 		public async Task Approval( int unRegisteredUserSeq , int waitingApprovalUserSeq )

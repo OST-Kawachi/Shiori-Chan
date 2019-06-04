@@ -2,6 +2,8 @@
 <head>
 	<title>ユーザ承認</title>
 	<meta name="viewport" content="width=device-width">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Cache-Control" content="no-cache">
 	<link rel="stylesheet" type="text/css" href="~/css/users/approval.css" />
 </head>
 <body>
@@ -15,11 +17,13 @@
 		<tr>
 			<td class="left">
 				<h3>未登録ユーザ一覧</h3>
-				<div id="unRegisteredUser">aaa</div>
+				<div id="unRegisteredUser"></div>
+				<h3>登録済ユーザ一覧</h3>
+				<div id="approvedUser"></div>
 			</td>
 			<td>
 				<h3>承認待ちユーザ一覧</h3>
-				<div id="waitingApprovalUser">bbb</div>
+				<div id="waitingApprovalUser"></div>
 			</td>
 		</tr>
 		<tr><td colspan="2"><button id="setting">設定</button></td></tr>

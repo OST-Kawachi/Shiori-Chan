@@ -84,23 +84,26 @@ namespace ShioriChan.Controllers.Users
 			this.logger.LogTrace( "End" );
 			return 200;
 		}
+
 		/// <summary>
 		/// 承認待ちユーザ一覧取得API
 		/// </summary>
-		[Route( "api/user/waiting-approval-users" )]
+		[Route("api/user/waiting-approval-users")]
 		public IActionResult GetAwaitingApprovalUsers()
 		{
-			this.logger.LogTrace( "Start" );
+			this.logger.LogTrace("Start");
 
 			List<UserInfo> unRegisteredUsers = this.userService.GetUnregisteredUsers();
 			List<WaitedApprovalUser> waitingApprovalUsers = this.userService.GetWaitingApprovalUsers();
+			List<UserInfo> approvedUsers = this.userService.GetApprovedUsers();
 
-			this.logger.LogTrace( "End" );
-			return this.Json( new
+			this.logger.LogTrace("End");
+			return this.Json(new
 			{
-				unRegisteredUsers = unRegisteredUsers.Select( u => new { u.Seq , u.Name } ).ToList() ,
-				waitingApprovalUsers = waitingApprovalUsers.Select( u => new { u.Seq , u.UserName } ).ToList()
-			} );
+				unRegisteredUsers = unRegisteredUsers.Select(u => new { u.Seq, u.Name }).ToList(),
+				waitingApprovalUsers = waitingApprovalUsers.Select(u => new { u.Seq, u.UserName }).ToList(),
+				approvedUsers = approvedUsers.Select(u => new { u.Seq, u.Name }).ToList()
+			});
 		}
 
 		/// <summary>
