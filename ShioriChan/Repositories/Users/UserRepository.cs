@@ -14,6 +14,16 @@ namespace ShioriChan.Repositories.Users
 	{
 
 		/// <summary>
+		/// ユーザ名で重複削除するためのEqualiy
+		/// </summary>
+		private class UserInfoComparer : IEqualityComparer<UserInfo>
+		{
+			public bool Equals(UserInfo x, UserInfo y) => !string.IsNullOrEmpty(x.Id) && x.Id.Equals(y.Id);
+
+			public int GetHashCode(UserInfo obj) => throw new NotImplementedException();
+		}
+
+		/// <summary>
 		/// ログ
 		/// </summary>
 		private readonly ILogger logger;
@@ -157,13 +167,45 @@ namespace ShioriChan.Repositories.Users
 		/// </summary>
 		/// <returns>承認待ちユーザ一覧</returns>
 		public List<WaitedApprovalUser> GetWaitingApprovalUsers()
-			=> this.model.WaitedApprovalUsers
-				.Where( wau =>
-					!string.IsNullOrEmpty( wau.UserName )
-					&&
-					!string.IsNullOrEmpty( wau.UserId )
+		{
+			List<WaitedApprovalUser> waitedApprovalUsers = this.model.WaitedApprovalUsers
+				.Where(wau =>
+				   !string.IsNullOrEmpty(wau.UserName)
+				   &&
+				   !string.IsNullOrEmpty(wau.UserId)
 				)
+				.OrderByDescending( wau => wau.Seq )
 				.ToList();
+
+			List<WaitedApprovalUser> ans = new List<WaitedApprovalUser>();
+			waitedApprovalUsers.ForEach(wau =>
+			{
+				bool exist = false;
+				ans.ForEach(a =>
+				{
+					if (a.UserId.Equals(wau.UserId))
+					{
+						exist = true;
+					}
+				});
+				if (!exist)
+				{
+					ans.Add(wau);
+				}
+			}
+			);
+			return ans;
+		}
+
+		/// <summary>
+		/// 承認済みユーザ一覧取得
+		/// </summary>
+		/// <returns>承認済みユーザ一覧</returns>
+		public List<UserInfo> GetApprovedUsers() => this.model.UserInfos
+			.Where(ui =>
+				!string.IsNullOrEmpty(ui.Id)
+			)
+			.ToList();
 
 		/// <summary>
 		/// 承認

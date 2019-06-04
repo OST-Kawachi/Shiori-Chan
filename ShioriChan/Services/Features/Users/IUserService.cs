@@ -39,6 +39,12 @@ namespace ShioriChan.Services.Features.Users
 		List<WaitedApprovalUser> GetWaitingApprovalUsers();
 
 		/// <summary>
+		/// 承認済みユーザ一覧取得
+		/// </summary>
+		/// <returns>承認済みユーザ一覧</returns>
+		List<UserInfo> GetApprovedUsers();
+
+		/// <summary>
 		/// 承認する
 		/// </summary>
 		Task Approval( int unRegisteredUserSeq , int waitingApprovalUserSeq );
