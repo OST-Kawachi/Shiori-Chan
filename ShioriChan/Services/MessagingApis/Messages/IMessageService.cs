@@ -54,6 +54,13 @@ namespace ShioriChan.Services.MessagingApis.Messages {
         /// <param name="replyDate"></param>
         /// <returns></returns>
         Task<object> GetSentMulticastMessageCount(DateTime replyDate);
+
+        /// <summary>
+        /// 送信済みブロードキャストメッセージ数を取得
+        /// </summary>
+        /// <param name="replyDate"></param>
+        /// <returns></returns>
+        Task<object> GetSentBroadcastMessageCount(DateTime replyDate);
 	}
 
 }
