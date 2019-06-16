@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ShioriChan.Services.Features.Schedules;
 
@@ -41,9 +40,9 @@ namespace ShioriChan.Controllers.Schedules {
 		[HttpPost]
 		public StatusCodeResult Post()
 		{
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 			this.scheduleService.Notice();
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 			return this.Ok();
 		}
 

@@ -38,14 +38,14 @@ namespace ShioriChan.Repositories.Schedules {
 		/// </summary>
 		/// <return>メッセージ</return>
 		public Schedule GetSchedule() {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 			DateTime now = DateTime.Now;
 			Schedule schedule = this.model.Schedules
 				 .Where( s => now.AddMinutes( 5 ).AddHours( 9 ) > s.StartDatetime )
 				 .Where( s => s.IsNotified == false )
 				 .FirstOrDefault();
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 
 			return schedule;
 		}
@@ -55,13 +55,13 @@ namespace ShioriChan.Repositories.Schedules {
 		/// </summary>
 		/// <returns>ユーザID</returns>
 		public List<string> GetAllUserId() {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 			List<string> userIds = this.model.UserInfos
 			   .Where( u => !string.IsNullOrEmpty( u.Id ) )
 			   .Select( u => u.Id )
 			   .ToList();
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 			return userIds;
 		}
 
@@ -71,14 +71,18 @@ namespace ShioriChan.Repositories.Schedules {
 		/// <param name="scheduleSeq">通知したスケジュールの管理番号</param>
 		/// <return>メッセージ</return>
 		public void UpdateNotified( int scheduleSeq ) {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 			Schedule updateSchedule = this.model.Schedules
 				 .Where( s => s.Seq == scheduleSeq )
 				 .FirstOrDefault();
+			if( updateSchedule is null) {
+				this.logger.LogWarning("Update Schedule is NULL");
+				return;
+			}
 
 			updateSchedule.IsNotified = true;
 			this.model.SaveChanges();
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 
 		/// <summary>
@@ -86,7 +90,7 @@ namespace ShioriChan.Repositories.Schedules {
 		/// </summary>
 		/// <returns>スケジュール情報</returns>
 		public List<(int, string, string)> GetSchedulesForSelectToChange() {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 			DateTime now = DateTime.Now;
 
 			List<Schedule> schedules = this.model.Schedules
@@ -114,7 +118,7 @@ namespace ShioriChan.Repositories.Schedules {
 				) )
 				.ToList();
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 			return result;
 
 		}
@@ -125,8 +129,8 @@ namespace ShioriChan.Repositories.Schedules {
 		/// <param name="isFirst">初日かどうか</param>
 		/// <returns>スケジュール情報</returns>
 		public List<(string name, string startTime)> GetSchedules( bool isFirst ) {
-			this.logger.LogTrace( "Start" );
-			this.logger.LogTrace( $"Is First ... {isFirst}" );
+			this.logger.LogInformation( "Start" );
+			this.logger.LogDebug( $"Is First ... {isFirst}" );
 
 			DateTime secondDay = new DateTime( 2019 , 6 , 30 , 0 , 0 , 0 );
 
@@ -152,7 +156,7 @@ namespace ShioriChan.Repositories.Schedules {
 				) )
 				.ToList();
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 			return result;
 
 		}
@@ -164,10 +168,16 @@ namespace ShioriChan.Repositories.Schedules {
 		/// <param name="dateTime">日付</param>
 		/// <returns>更新されたスケジュール</returns>
 		public Schedule UpdateSchedule( int seq , string dateTime ) {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
+			this.logger.LogDebug($"Seq is {seq}");
+			this.logger.LogDebug($"Date Time is {dateTime}");
 
 			Schedule schedule = this.model.Schedules
 				.SingleOrDefault( s => s.Seq == seq );
+			if( schedule is null) {
+				this.logger.LogWarning("Schedule is NULL");
+				return null;
+			}
 
 			string[] splitedDateTime = dateTime.Split( ":" );
 			schedule.StartDatetime = new DateTime(
@@ -181,7 +191,7 @@ namespace ShioriChan.Repositories.Schedules {
 
 			this.model.SaveChanges();
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 			return schedule;
 
 		}

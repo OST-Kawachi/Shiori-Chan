@@ -47,7 +47,7 @@ namespace ShioriChan.Controllers.MessagingApis {
 		[HttpPost]
 		public async Task<StatusCodeResult> Post()
 		{
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 
 			// TODO リクエストボディをJTokenの形で受け取れれば必要ない変換処理
 			string request = null;
@@ -58,9 +58,15 @@ namespace ShioriChan.Controllers.MessagingApis {
 				this.logger.LogInformation( "Request is {request}." , request );
 			}
 
+			if( request is null) {
+				this.logger.LogWarning("Request is NULL");
+				return this.Ok();
+
+			}
+
 			await this.featureFacade.Execute( JToken.Parse( request ) );
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 			return this.Ok();
 		}
 

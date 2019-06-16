@@ -43,15 +43,27 @@ namespace ShioriChan.Repositories.Menus
 		/// <returns>管理メニューが開けるかどうか</returns>
 		public bool IsOpenAdminMenu(string userId)
 		{
+			this.logger.LogInformation("Start");
+			this.logger.LogDebug($"User Id is {userId}");
 
 			Permission permission = this.model.Permissions
 				.FirstOrDefault(p => "Admin".Equals(p.Name));
+			if (permission is null) {
+				this.logger.LogWarning("Admin Permission is NULL");
+				return false;
+			}
 
 			UserInfo userInfo = this.model.UserInfos
 				.FirstOrDefault(u => userId.Equals(u.Id));
+			if (userInfo is null) {
+				this.logger.LogInformation("User Info is NULL");
+				return false;
+			}
 
 			UserPermission userPermission = this.model.UserPermissions
 				.FirstOrDefault(up => permission.Seq == up.PermissionSeq && userInfo.Seq == up.UserSeq);
+
+			this.logger.LogInformation("End");
 
 			return !(userPermission is null);
 		}
@@ -61,12 +73,15 @@ namespace ShioriChan.Repositories.Menus
 		/// ユーザID一覧を取得する
 		/// </summary>
 		/// <returns>ユーザID一覧取得</returns>
-		public List<string> GetUserIds()
-			=> this.model.UserInfos
+		public List<string> GetUserIds() {
+			this.logger.LogInformation("Call Get User Ids");
+			return this.model.UserInfos
 				.Where(ui => !string.IsNullOrEmpty(ui.Id))
 				.Where(ui => ui.ParticipatingEventSeq == 0)
 				.Select(ui => ui.Id)
 				.ToList();
+		}
 
 	}
+
 }

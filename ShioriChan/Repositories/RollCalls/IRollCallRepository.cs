@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using static ShioriChan.Controllers.RollCalls.RollCallsController;
 
 namespace ShioriChan.Repositories.RollCalls {
@@ -13,17 +12,17 @@ namespace ShioriChan.Repositories.RollCalls {
 		/// 点呼に返事をする
 		/// </summary>
 		/// <param name="userId">ユーザID</param>
-		Task TellIAmThere( string userId );
+		void TellIAmThere( string userId );
 
 		/// <summary>
 		/// 点呼の状況を取得する
 		/// </summary>
-		Task<List<Status>> GetStatuses();
+		List<Status> GetStatuses();
 
 		/// <summary>
 		/// 点呼リセット
 		/// </summary>
-		Task Reset();
+		void Reset();
 
 		/// <summary>
 		/// 参加者Id一覧取得

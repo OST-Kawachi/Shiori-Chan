@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ShioriChan.Entities;
 using static ShioriChan.Controllers.RollCalls.RollCallsController;
@@ -45,25 +44,39 @@ namespace ShioriChan.Repositories.RollCalls
 		/// 点呼に返事をする
 		/// </summary>
 		/// <param name="userId">ユーザID</param>
-		public async Task TellIAmThere(string userId)
+		public void TellIAmThere(string userId)
 		{
+			this.logger.LogInformation("Start");
+			this.logger.LogDebug($"User Id is {userId}");
+
+			UserInfo userInfo = this.model.UserInfos
+				.SingleOrDefault(u => userId.Equals(u.Id));
+			if( userInfo is null) {
+				this.logger.LogWarning("User Info is NULL");
+				return;
+			}
+
 			Participant participant = this.model.Participants
-				.Single(p => this.model.UserInfos
-				   .Single(u => u.Id == userId)
-				   .Seq == p.UserSeq
-				);
+				.SingleOrDefault(p => userInfo.Seq == p.UserSeq && p.EventSeq == 0);
+			if( participant is null) {
+				this.logger.LogWarning("Participant is NULL");
+				return;
+			}
+
 			participant.RollCall = true;
 			this.model.SaveChanges();
+
+			this.logger.LogInformation("End");
 		}
 
 		/// <summary>
 		/// 点呼の状況を取得する
 		/// </summary>
-		public async Task<List<Status>> GetStatuses()
-			=> this.model.Participants
+		public List<Status> GetStatuses() {
+			this.logger.LogInformation("Call Get Statuses");
+			return this.model.Participants
 				.Where(p => p.EventSeq == 0)
-				.Select(p => new Status
-				{
+				.Select(p => new Status {
 					UserSeq = p.UserSeq,
 					RollCall = p.RollCall.HasValue ? p.RollCall.Value ? Ok : Ng : None,
 					Name = this.model.UserInfos
@@ -71,12 +84,14 @@ namespace ShioriChan.Repositories.RollCalls
 					   .Name
 				})
 			.ToList();
+		}
 
 		/// <summary>
 		/// 点呼リセット
 		/// </summary>
-		public async Task Reset()
+		public void Reset()
 		{
+			this.logger.LogInformation("Start");
 			this.model.Participants
 				.Where(p => p.EventSeq == 0)
 				.ToList()
@@ -87,20 +102,23 @@ namespace ShioriChan.Repositories.RollCalls
 					}
 				});
 			this.model.SaveChanges();
+			this.logger.LogInformation("End");
 		}
 
 		/// <summary>
 		/// 参加者Id一覧取得
 		/// </summary>
 		/// <returns>参加者Id一覧</returns>
-		public List<string> GetParticipantIds()
-			=> this.model.UserInfos
+		public List<string> GetParticipantIds() {
+			this.logger.LogInformation("Call Get Participant Ids");
+			return this.model.UserInfos
 				.Where(ui => !string.IsNullOrEmpty(ui.Id))
-				.Where( ui => this.model.Participants
-					.Any( p => p.EventSeq == 0 && p.UserSeq == ui.Seq )
+				.Where(ui => this.model.Participants
+				   .Any(p => p.EventSeq == 0 && p.UserSeq == ui.Seq)
 				)
 				.Select(ui => ui.Id)
 				.ToList();
+		}
 
 	}
 
