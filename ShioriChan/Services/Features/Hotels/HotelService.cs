@@ -57,7 +57,7 @@ namespace ShioriChan.Services.Features.Hotels {
 
 			string replyToken = this.GetReplyToken( parameter );
 			this.logger.LogTrace( $"Reply Token is {replyToken}." );
-			string url = "https://www.sn-hotels.com/ygh/common/plan/images/banner/banner_official.jpg";
+			string url = "https://www.hiltonfukuokaseahawk.jp/img/tops/index/hotel_slide/hotel_img_1.jpg";
 			await this.messageService
 				.CreateMessageBuilder()
 				.AddMessage( "今回宿泊するホテルはこちら！" )
@@ -67,9 +67,9 @@ namespace ShioriChan.Services.Features.Hotels {
 				.SetImageBackgroundColor( "#FFFFFF" )
 				.SetImageSize( "cover" )
 				.SetThumbnailImageUrl( url )
-				.SetTitle( "焼津グランドホテル " )
+				.SetTitle( "ヒルトン福岡シーホーク" )
 				.SetAction()
-				.UseUriAction( "ホテルのサイトはこちら♪" , "https://www.sn-hotels.com/ygh/" )
+				.UseUriAction( "ホテルのサイトはこちら♪" , "https://www.hiltonfukuokaseahawk.jp/")
 				.BuildTemplate()
 				.BuildMessage()
 				.Reply( replyToken );
