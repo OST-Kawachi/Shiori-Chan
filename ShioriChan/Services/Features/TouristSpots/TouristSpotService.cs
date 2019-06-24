@@ -58,7 +58,7 @@ namespace ShioriChan.Services.Features.TouristSpots {
             .AddAction()
             .UseMessageColumnAction("すごい！", "すごい！")
             .BuildColumnAction()
-            .AddColumn("太宰府天満宮参道沿いの3つ目の鳥居前にある、１階にジェラートのお店VITOと京雑貨のお店スーベニールの2階にあるお店です！")
+            .AddColumn("太宰府天満宮参道沿いの3つ目の鳥居前にある１階にジェラートのお店VITOと京雑貨のお店スーベニールの2階にあるお店です！")
             .SetTitle("MATCH屋　WAOWAO")
             .AddAction()
             .UseMessageColumnAction("すごい！", "すごい！")
