@@ -364,7 +364,7 @@ namespace ShioriChan.Services.Features {
 						case MessageTypeText:
 							this.logger.LogInformation( "Start Text Message Event" );
 
-							await this.RegisterMessage( parameter );
+							this.RegisterMessage( parameter );
 
 							string message = firstEvent[ "message" ][ "text" ].ToString();
 							this.logger.LogInformation( "Message is {message}." , message );
@@ -681,8 +681,8 @@ namespace ShioriChan.Services.Features {
 		/// メッセージの登録
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		private async Task RegisterMessage( JToken parameter )
-			=> await this.notificationService.Register( parameter );
+		private void RegisterMessage( JToken parameter )
+			=> this.notificationService.Register( parameter );
 
 		/// <summary>
 		/// 位置情報の登録
@@ -843,7 +843,7 @@ namespace ShioriChan.Services.Features {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		private async Task Reply( JToken parameter )
-			=> await this.rollCallService.Reply( parameter );
+			=> this.rollCallService.Reply( parameter );
 
 	}
 

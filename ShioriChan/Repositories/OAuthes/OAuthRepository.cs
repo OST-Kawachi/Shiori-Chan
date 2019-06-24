@@ -40,7 +40,7 @@ namespace ShioriChan.Repositories.OAuthes {
 		/// <returns>チャンネルアクセストークン</returns>
 		public string GetNewlyChannelAccessToken()
 		{
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 			List<AccessToken> accessTokens = this.model.AccessTokens
 				.Where( at =>
 					at.StartDateTime <= DateTime.Now &&
@@ -49,13 +49,14 @@ namespace ShioriChan.Repositories.OAuthes {
 				.OrderByDescending( at => at.Seq )
 				.ToList();
 
-			this.logger.LogTrace( $"Access Tokens Count is {accessTokens.Count}" );
+			this.logger.LogDebug( $"Access Tokens Count is {accessTokens.Count}" );
 			if( accessTokens.Count == 0 ) {
-				this.logger.LogTrace( "End" );
+				this.logger.LogDebug( "End" );
 				return null;
 			}
 			string token = accessTokens[ 0 ].Token;
-			this.logger.LogTrace( $"Access Token is {token}" );
+			this.logger.LogDebug( $"Access Token is {token}" );
+			this.logger.LogInformation("End");
 			return token;
 		}
 
@@ -65,6 +66,9 @@ namespace ShioriChan.Repositories.OAuthes {
 		/// <param name="channelAccessToken">チャンネルアクセストークン</param>
 		public void RegisterChannelAccessToken( string channelAccessToken )
 		{
+			this.logger.LogInformation("Start");
+			this.logger.LogDebug($"Channel Access Token is {channelAccessToken}");
+
 			this.model.AccessTokens.Add( new AccessToken()
 			{
 				Seq = this.model.AccessTokens.Max( at => at.Seq ) + 1 ,
@@ -77,6 +81,7 @@ namespace ShioriChan.Repositories.OAuthes {
 				Version = 0
 			} );
 			this.model.SaveChanges();
+			this.logger.LogInformation("End");
 		}
 
 	}

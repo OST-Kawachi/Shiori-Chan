@@ -54,7 +54,7 @@ namespace ShioriChan.Services.Features.Notifications {
 			JObject firstEvent = (JObject)events[ 0 ];
 
 			string replyToken = firstEvent[ "replyToken" ].ToString();
-			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+			this.logger.LogDebug( $"Reply Token is {replyToken}." );
 
 			return replyToken;
 		}
@@ -70,7 +70,7 @@ namespace ShioriChan.Services.Features.Notifications {
 
 			JToken source = firstEvent[ "source" ];
 			string userId = source[ "userId" ].ToString();
-			this.logger.LogTrace( $"User Id is {userId}." );
+			this.logger.LogDebug( $"User Id is {userId}." );
 
 			return userId;
 		}
@@ -86,7 +86,7 @@ namespace ShioriChan.Services.Features.Notifications {
 
 			JToken message = firstEvent[ "message" ];
 			string text = message[ "text" ].ToString();
-			this.logger.LogTrace( $"Text is {text}." );
+			this.logger.LogDebug( $"Text is {text}." );
 
 			return text;
 		}
@@ -95,13 +95,15 @@ namespace ShioriChan.Services.Features.Notifications {
 		/// 登録する
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public async Task Register( JToken parameter ) {
-			this.logger.LogTrace( "Start" );
+		public void Register( JToken parameter ) {
+			this.logger.LogInformation( "Start" );
 			string userId = this.GetUserId( parameter );
 			string text = this.GetMessage( parameter );
+			this.logger.LogDebug($"User Id is {userId}");
+			this.logger.LogDebug($"Text is {text}");
 
 			this.notificationRepository.Register( userId , text );
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 
 		/// <summary>
@@ -109,10 +111,13 @@ namespace ShioriChan.Services.Features.Notifications {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		public async Task Confirm( JToken parameter ) {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 			string userId = this.GetUserId( parameter );
 			string message = this.notificationRepository.GetMessage( userId );
 			string replyToken = this.GetReplyToken( parameter );
+			this.logger.LogDebug($"User Id is {userId}");
+			this.logger.LogDebug($"Message is {message}");
+			this.logger.LogDebug($"Reply Token is {replyToken}");
 
 			await this.messageService.CreateMessageBuilder()
 				.AddMessage( message )
@@ -124,7 +129,7 @@ namespace ShioriChan.Services.Features.Notifications {
 				.BuildMessage()
 				.Reply( replyToken );
 				
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 
 		/// <summary>
@@ -132,10 +137,15 @@ namespace ShioriChan.Services.Features.Notifications {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		public async Task Push( JToken parameter ) {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
+
 			string userId = this.GetUserId( parameter );
 			string message = this.notificationRepository.GetMessage( userId );
+			this.logger.LogDebug($"User Id is {userId}");
+			this.logger.LogDebug($"Message is {message}");
+
 			List<string> toList = this.notificationRepository.GetUserIds();
+			this.logger.LogDebug($"To List Count is {toList.Count}");
 
 			this.notificationRepository.UpdateUserStatus( userId );
 
@@ -144,7 +154,7 @@ namespace ShioriChan.Services.Features.Notifications {
 				.BuildMessage()
 				.Multicast( toList );
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 
 	}

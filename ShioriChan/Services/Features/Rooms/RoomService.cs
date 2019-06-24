@@ -57,7 +57,7 @@ namespace ShioriChan.Services.Features.Rooms {
 
 			JToken source = firstEvent[ "source" ];
 			string userId = source[ "userId" ].ToString();
-			this.logger.LogTrace( $"User Id is {userId}." );
+			this.logger.LogDebug( $"User Id is {userId}." );
 
 			return userId;
 		}
@@ -72,7 +72,7 @@ namespace ShioriChan.Services.Features.Rooms {
 			JObject firstEvent = (JObject)events[ 0 ];
 
 			string replyToken = firstEvent[ "replyToken" ].ToString();
-			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+			this.logger.LogDebug( $"Reply Token is {replyToken}." );
 
 			return replyToken;
 		}
@@ -88,7 +88,7 @@ namespace ShioriChan.Services.Features.Rooms {
 
 			JToken postback = firstEvent[ "postback" ];
 			string data = postback[ "data" ].ToString();
-			this.logger.LogTrace( $"Postback Data is {data}." );
+			this.logger.LogDebug( $"Postback Data is {data}." );
 			return data;
 		}
 
@@ -97,29 +97,31 @@ namespace ShioriChan.Services.Features.Rooms {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		public async Task ShowRoomMember( JToken parameter ) {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 
 			string userId = this.GetUserId( parameter );
 			string replyToken = this.GetReplyToken( parameter );
+			this.logger.LogDebug($"User Id is {userId}");
+			this.logger.LogDebug($"Reply Token is {replyToken}");
 
-			Room myRoom = await this.roomRepository.GetMyRoom( userId );
+			Room myRoom = this.roomRepository.GetMyRoom( userId );
 			string myRoomNumber = myRoom?.Number;
 			if( string.IsNullOrEmpty( myRoomNumber ) ) {
 				this.logger.LogError( "User Id Target Does Not Exist." );
 				this.logger.LogTrace( "End" );
 				return;
 			}
-			this.logger.LogTrace( $"My Room Number is {myRoomNumber}" );
+			this.logger.LogDebug( $"My Room Number is {myRoomNumber}" );
 
-			(List<UserInfo> members , int? havingKeyUserSeq ) = await this.roomRepository.GetRoomMembers( myRoom.Seq );
-			this.logger.LogTrace( $"Members Count is {members.Count}" );
-			this.logger.LogTrace( $"Having Key User Seq is { havingKeyUserSeq ?? -1 }" );
+			(List<UserInfo> members , int? havingKeyUserSeq ) = this.roomRepository.GetRoomMembers( myRoom.Seq );
+			this.logger.LogDebug( $"Members Count is {members.Count}" );
+			this.logger.LogDebug( $"Having Key User Seq is { havingKeyUserSeq ?? -1 }" );
 
 			string havingKeyUserName = members.FirstOrDefault( member => havingKeyUserSeq.HasValue && havingKeyUserSeq.Value == member.Seq )?.Name ?? "フロント";
 			if( !"フロント".Equals( havingKeyUserName ) ) {
 				havingKeyUserName += "さん";
 			}
-			this.logger.LogTrace( $"Having Key User Name is {havingKeyUserName}" );
+			this.logger.LogDebug( $"Having Key User Name is {havingKeyUserName}" );
 
 			IAddOnlyItemOfQuickReply quickReplyBuilder = this.messageService.CreateMessageBuilder()
 				.AddMessage(
@@ -156,7 +158,7 @@ namespace ShioriChan.Services.Features.Rooms {
 				.BuildMessage()
 				.Reply( replyToken );
 			
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 			return;
 
 		}
@@ -166,9 +168,10 @@ namespace ShioriChan.Services.Features.Rooms {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		public async Task ChangeHavingKeyUser( JToken parameter ) {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 
 			string postbackData = this.GetPostbackData( parameter );
+			this.logger.LogDebug($"Postback Data is {postbackData}");
 
 			int roomSeq = -1;
 			int? userSeq = -1;
@@ -177,8 +180,8 @@ namespace ShioriChan.Services.Features.Rooms {
 				userSeq = int.Parse( keyValue[ 0 ].Split( "=" )[ 1 ] );
 				roomSeq = int.Parse( keyValue[ 1 ].Split( "=" )[ 1 ] );
 			}
-			this.logger.LogTrace( $"Room Seq is {roomSeq}." );
-			this.logger.LogTrace( $"User Seq is {userSeq}." );
+			this.logger.LogDebug( $"Room Seq is {roomSeq}." );
+			this.logger.LogDebug( $"User Seq is {userSeq}." );
 
 			string replyToken = this.GetReplyToken( parameter );
 
@@ -186,20 +189,20 @@ namespace ShioriChan.Services.Features.Rooms {
 			string havingKeyUserName = "フロント";
 
 			if( userSeq != -1 ) {
-				(List<UserInfo>users , int? havingKeyUserSeq) = await this.roomRepository.GetRoomMembers( roomSeq );
+				(List<UserInfo>users , int? havingKeyUserSeq) = this.roomRepository.GetRoomMembers( roomSeq );
 				havingKeyUserName = users
 					.FirstOrDefault( user => user.Seq == havingKeyUserSeq.Value )
 					.Name + "さん";
 			}
 
-			this.logger.LogTrace( $"Having Key User Name is {havingKeyUserName}." );
+			this.logger.LogDebug( $"Having Key User Name is {havingKeyUserName}." );
 
 			await this.messageService.CreateMessageBuilder()
 				.AddMessage( $"{havingKeyUserName}がカギを持ってるんですね！\n承知しました！" )
 				.BuildMessage()
 				.Reply( replyToken );
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 			return;
 		}
 		

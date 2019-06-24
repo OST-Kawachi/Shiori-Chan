@@ -55,9 +55,9 @@ namespace ShioriChan.Controllers.Menus {
 		[HttpGet]
 		public async Task<StatusCodeResult> Link()
 		{
-			this.logger.LogTrace("Start");
+			this.logger.LogInformation("Start");
 			await this.menuService.Link();
-			this.logger.LogTrace("End");
+			this.logger.LogInformation("End");
 			return this.Ok();
 		}
 

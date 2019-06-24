@@ -54,7 +54,7 @@ namespace ShioriChan.Services.Features.Participants {
 			JObject firstEvent = (JObject)events[ 0 ];
 
 			string replyToken = firstEvent[ "replyToken" ].ToString();
-			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+			this.logger.LogDebug( $"Reply Token is {replyToken}." );
 
 			return replyToken;
 		}
@@ -64,10 +64,10 @@ namespace ShioriChan.Services.Features.Participants {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		public async Task Show( JToken parameter ) {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 
 			string replyToken = this.GetReplyToken( parameter );
-			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+			this.logger.LogDebug( $"Reply Token is {replyToken}." );
 
 			// 参加者リストからイベントが社員旅行のメンバーを取得する
 			List<UserInfo> participants = this.participantRepository.GetParticipantNames();
@@ -88,9 +88,9 @@ namespace ShioriChan.Services.Features.Participants {
 					message += "\n";
 				}
 				message += participants[ i ].Name;
-				this.logger.LogTrace( $"participants[{i}] Name is {participants[ i ].Name}" );
-				this.logger.LogTrace( $"participants[{i}] FirstScheduleName is {participants[ i ].FirstScheduleName}" );
-				this.logger.LogTrace( $"participants[{i}] econdScheduleName is {participants[ i ].SecondScheduleName}" );
+				this.logger.LogDebug( $"participants[{i}] Name is {participants[ i ].Name}" );
+				this.logger.LogDebug( $"participants[{i}] FirstScheduleName is {participants[ i ].FirstScheduleName}" );
+				this.logger.LogDebug( $"participants[{i}] econdScheduleName is {participants[ i ].SecondScheduleName}" );
 				for( int j = 0 ; j < 7 - participants[ i ].Name.Length ; j++ ) {
 					message += "　";
 				}
@@ -100,14 +100,14 @@ namespace ShioriChan.Services.Features.Participants {
 				message += "2日目:";
 				message += string.IsNullOrEmpty( participants[ i ].SecondScheduleName ) ? "ー" : participants[ i ].SecondScheduleName;
 			}
-			this.logger.LogTrace( $"message Length is {message.Length}" );
+			this.logger.LogDebug( $"message Length is {message.Length}" );
 			await this.messageService
 					.CreateMessageBuilder()
 					.AddMessage( message )
 					.BuildMessage()
 					.Reply( replyToken );
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 
 	}

@@ -40,7 +40,10 @@ namespace ShioriChan.Services.Features.TouristSpots {
         /// </summary>
         /// <param name="parameter">パラメータ</param>
         public async Task Show(JToken parameter) {
-            string replyToken = this.GetReplyToken(parameter);
+			this.logger.LogInformation("Start");
+            
+			string replyToken = this.GetReplyToken(parameter);
+			this.logger.LogDebug($"Reply Token is {replyToken}");
 
             await this.messageService.CreateMessageBuilder()
             .AddTemplate("観光地情報の表示")
@@ -63,6 +66,8 @@ namespace ShioriChan.Services.Features.TouristSpots {
             .BuildTemplate()
             .BuildMessage()
             .Reply(replyToken);
+
+			this.logger.LogInformation("End");
         }
 
         /// <summary>
@@ -76,7 +81,7 @@ namespace ShioriChan.Services.Features.TouristSpots {
             JObject firstEvent = (JObject)events[0];
 
             string replyToken = firstEvent["replyToken"].ToString();
-            this.logger.LogTrace($"Reply Token is {replyToken}.");
+            this.logger.LogDebug($"Reply Token is {replyToken}.");
 
             return replyToken;
         }

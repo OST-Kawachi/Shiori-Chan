@@ -40,55 +40,50 @@ namespace ShioriChan.Repositories.Rooms {
 		/// </summary>
 		/// <param name="userId">ユーザID</param>
 		/// <returns>部屋情報</returns>
-		public async Task<Room> GetMyRoom( string userId )
+		public Room GetMyRoom( string userId )
 		{
-			this.logger.LogTrace( "Start" );
-			this.logger.LogTrace( $"User Id is {userId}." );
+			this.logger.LogInformation( "Start" );
+			this.logger.LogDebug( $"User Id is {userId}." );
 
 			// ユーザIDはLINEアカウント単位で一意なのでリストで取得するが要素数は0または1
-			List<UserInfo> user = await this.model.UserInfos
-				.Where( u => u.Id.Equals( userId ) )
-				.ToListAsync();
+			UserInfo user = this.model.UserInfos
+				.SingleOrDefault(u => u.Id.Equals(userId));
 
-			this.logger.LogTrace( $"Users Count is {user.Count}" );
-			if( user.Count == 0 ) {
-				this.logger.LogTrace( "End" );
+			if( user is null ) {
+				this.logger.LogWarning( "User is NULL" );
 				return null;
 			}
 
-			int userSeq = user[ 0 ].Seq;
-			int eventSeq = user[ 0 ].ParticipatingEventSeq ?? -1;
-			this.logger.LogTrace( $"User Seq is {userSeq}" );
-			this.logger.LogTrace( $"Event Seq is {eventSeq}" );
+			int userSeq = user.Seq;
+			int eventSeq = user.ParticipatingEventSeq ?? -1;
+			this.logger.LogDebug( $"User Seq is {userSeq}" );
+			this.logger.LogDebug( $"Event Seq is {eventSeq}" );
 			if( eventSeq == -1 ) {
-				this.logger.LogTrace( "End" );
+				this.logger.LogWarning( "Participanting Event Seq is -1" );
 				return null;
 			}
+
+			List<Hotel> hotels = this.model.Hotels
+				.Where(h => 
+					h.EventSeq == eventSeq &&
+					h.CheckIn <= DateTime.Now && 
+					DateTime.Now <= h.CheckOut
+				)
+				.ToList();
+
+			List<RoomMember> roomMembers = this.model.RoomMembers
+				.Where(rm => rm.UserSeq == userSeq)
+				.ToList();
 
 			// 宿泊中の施設の部屋情報のみを取得
-			List<Room> rooms = await this.model.Rooms
-				.Where( r =>
-					this.model.Hotels
-						.Where( h =>
-							h.EventSeq == eventSeq &&
-							h.CheckIn <= DateTime.Now && DateTime.Now <= h.CheckOut
-						)
-						.Any( h => h.Seq == r.HotelSeq )
-					&&
-					this.model.RoomMembers
-						.Where( rm => rm.UserSeq == userSeq )
-						.Any( rm => rm.RoomSeq == r.Seq )
-				)
-				.ToListAsync();
+			Room room = this.model.Rooms
+				.SingleOrDefault(r =>
+				  hotels.Any(h => h.Seq == r.HotelSeq) &&
+				  roomMembers.Any(rm => rm.RoomSeq == r.Seq)
+				);
 
-			this.logger.LogTrace( $"Rooms Count is {rooms.Count}" );
-			if( rooms.Count == 0 ) {
-				this.logger.LogTrace( "End" );
-				return null;
-			}
-
-			this.logger.LogTrace( "Start" );
-			return rooms[ 0 ];
+			this.logger.LogInformation( "End" );
+			return room;
 		}
 
 		/// <summary>
@@ -96,43 +91,45 @@ namespace ShioriChan.Repositories.Rooms {
 		/// </summary>
 		/// <param name="roomSeq">部屋管理番号</param>
 		/// <returns>指定した部屋番号のメンバー一覧と鍵を持っているユーザの管理番号</returns>
-		public async Task<(List<UserInfo>, int?)> GetRoomMembers( int roomSeq )
+		public (List<UserInfo>, int?) GetRoomMembers( int roomSeq )
 		{
-			this.logger.LogTrace( "Start" );
-			this.logger.LogTrace( $"Room Seq is {roomSeq}." );
+			this.logger.LogInformation( "Start" );
+			this.logger.LogDebug( $"Room Seq is {roomSeq}." );
 
 			// 鍵を持っているユーザの管理番号を取得
-			List<Room> rooms = await this.model.Rooms
-				.Where( r => r.Seq == roomSeq )
-				.ToListAsync();
-			this.logger.LogTrace( $"Rooms Count is {rooms.Count}." );
-			if( rooms.Count == 0 ) {
-				this.logger.LogTrace( "End" );
+			Room room = this.model.Rooms
+				.SingleOrDefault(r => r.Seq == roomSeq);
+
+			if( room is null ) {
+				this.logger.LogWarning("Room is NULL");
 				return (null, null);
 			}
-			int? havingKeyUserSeq = rooms[ 0 ].HavingKeyUserSeq;
-			this.logger.LogTrace( $"Having Key User Seq is {havingKeyUserSeq?.ToString() ?? "None"}" );
+
+			int? havingKeyUserSeq = room.HavingKeyUserSeq;
+			this.logger.LogDebug( $"Having Key User Seq is {havingKeyUserSeq?.ToString() ?? "None"}" );
 
 			// メンバーのユーザ情報を取得する
-			List<RoomMember> roomMembers = await this.model.RoomMembers
+			List<RoomMember> roomMembers = this.model.RoomMembers
 				.Where( rm => rm.RoomSeq == roomSeq )
-				.ToListAsync();
-			this.logger.LogTrace( $"Room Members Count is {roomMembers.Count}" );
+				.ToList();
+
+			this.logger.LogDebug( $"Room Members Count is {roomMembers.Count}" );
 			if( roomMembers.Count == 0 ) {
-				this.logger.LogTrace( "End" );
+				this.logger.LogWarning("Room Members Count is 0");
 				return (null, null);
 			}
-			roomMembers.ForEach( rm => this.logger.LogTrace( $"Room Member Uesr Seq is {rm.UserSeq}" ) );
-			List<UserInfo> userInfos = await this.model.UserInfos
+			roomMembers.ForEach( rm => this.logger.LogDebug( $"Room Member Uesr Seq is {rm.UserSeq}" ) );
+
+			List<UserInfo> userInfos = this.model.UserInfos
 				.Where( ui => roomMembers.Any( rm => rm.UserSeq == ui.Seq ) )
-				.ToListAsync();
-			this.logger.LogTrace( $"User Infos Count is {userInfos.Count}" );
+				.ToList();
+			this.logger.LogDebug( $"User Infos Count is {userInfos.Count}" );
 			if( userInfos.Count == 0 ) {
-				this.logger.LogTrace( "End" );
+				this.logger.LogWarning("User Infos Count is 0");
 				return (null, null);
 			}
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 			return (userInfos, havingKeyUserSeq);
 		}
 
@@ -143,16 +140,20 @@ namespace ShioriChan.Repositories.Rooms {
 		/// <param name="userSeq">鍵を持っているユーザ管理番号</param>
 		public void UpdateHavingKeyUser( int roomSeq , int? userSeq )
 		{
-			this.logger.LogTrace( "Start" );
-			this.logger.LogTrace( $"Room Seq is {roomSeq}." );
-			this.logger.LogTrace( $"UserSeq is {userSeq}." );
+			this.logger.LogInformation( "Start" );
+			this.logger.LogDebug( $"Room Seq is {roomSeq}." );
+			this.logger.LogDebug( $"UserSeq is {userSeq}." );
 
-			Room room = this.model.Rooms.Single( r => r.Seq == roomSeq );
+			Room room = this.model.Rooms.SingleOrDefault( r => r.Seq == roomSeq );
+			if( room is null) {
+				this.logger.LogWarning("Room is NULL");
+				return;
+			}
 			room.HavingKeyUserSeq = userSeq;
 
 			this.model.SaveChanges();
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 
 	}

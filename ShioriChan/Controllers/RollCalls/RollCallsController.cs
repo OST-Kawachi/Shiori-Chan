@@ -44,24 +44,31 @@ namespace ShioriChan.Controllers.RollCalls {
 		/// <summary>
 		/// 点呼一覧画面取得
 		/// </summary>
-		[Route( "roll-call/list" )]
-		[ActionName( "List" )]
-		public IActionResult GetListView()
-			=> this.View();
+		[Route("roll-call/list")]
+		[ActionName("List")]
+		public IActionResult GetListView() {
+			this.logger.LogInformation("Call Get List View");
+			return this.View();
+		}
 
 		/// <summary>
 		/// 点呼一覧取得API
 		/// </summary>
-		[Route( "api/roll-call/list" )]
-		public IActionResult GetList()
-			=> this.Json( this.rollCallService.GetStatuses() );
+		[Route("api/roll-call/list")]
+		public IActionResult GetList() {
+			this.logger.LogInformation("Call Get List");
+			return this.Json(this.rollCallService.GetStatuses());
+		}
 
 		/// <summary>
 		/// 点呼受付開始API
 		/// </summary>
-		[Route( "api/roll-call/notify" )]
-		public void Notify()
-			=> this.rollCallService.Notify();
+		[Route("api/roll-call/notify")]
+		public void Notify() {
+			this.logger.LogInformation("Start");
+			this.rollCallService.Notify();
+			this.logger.LogInformation("End");
+		}
 
 	}
 

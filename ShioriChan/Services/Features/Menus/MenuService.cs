@@ -71,7 +71,7 @@ namespace ShioriChan.Services.Features.Menus {
 			JObject firstEvent = (JObject)events[0];
 
 			string replyToken = firstEvent["replyToken"].ToString();
-			this.logger.LogTrace($"Reply Token is {replyToken}.");
+			this.logger.LogDebug($"Reply Token is {replyToken}.");
 
 			return replyToken;
 		}
@@ -87,7 +87,7 @@ namespace ShioriChan.Services.Features.Menus {
 
 			JToken source = firstEvent[ "source" ];
 			string userId = source[ "userId" ].ToString();
-			this.logger.LogTrace( $"User Id is {userId}." );
+			this.logger.LogDebug( $"User Id is {userId}." );
 
 			return userId;
 		}
@@ -103,7 +103,7 @@ namespace ShioriChan.Services.Features.Menus {
 
 			JToken postback = firstEvent[ "postback" ];
 			string data = postback[ "data" ].ToString();
-			this.logger.LogTrace( $"Postback Data is {data}." );
+			this.logger.LogDebug( $"Postback Data is {data}." );
 
 			return data;
 		}
@@ -114,9 +114,14 @@ namespace ShioriChan.Services.Features.Menus {
 		/// <param name="parameter">パラメータ</param>
 		public async Task ChangeMenu(JToken parameter)
 		{
+			this.logger.LogInformation("Start");
+
 			string replyToken = this.GetReplyToken(parameter);
 			string userId = this.GetUserId(parameter);
 			string postBackData = this.GetPostBackData(parameter);
+			this.logger.LogDebug($"Reply Token is {replyToken}");
+			this.logger.LogDebug($"User Id is {userId}");
+			this.logger.LogDebug($"Post Back Data is {postBackData}");
 
 			switch (postBackData)
 			{
@@ -154,6 +159,11 @@ namespace ShioriChan.Services.Features.Menus {
 		public async Task ChangeMenu(string replyToken, string userId, string menuName)
 		{
 
+			this.logger.LogInformation("Start");
+			this.logger.LogDebug($"Reply Token is {replyToken}");
+			this.logger.LogDebug($"User Id is {userId}");
+			this.logger.LogDebug($"Menu Name is {menuName}");
+
 			if (AdminMenuName.Equals(menuName) && !this.menuRepository.IsOpenAdminMenu(userId))
 			{
 
@@ -162,12 +172,15 @@ namespace ShioriChan.Services.Features.Menus {
 					.BuildMessage()
 					.Reply(replyToken);
 
+				this.logger.LogInformation("End");
 				return;
 			}
 
 			Dictionary<string, string> Ids = await this.richMenuService.GetIds();
 			string menuId = Ids[menuName];
 			await this.richMenuService.LinkToUser(menuId, userId);
+
+			this.logger.LogInformation("End");
 		}
 
 		/// <summary>
@@ -460,7 +473,7 @@ namespace ShioriChan.Services.Features.Menus {
 		/// メニュー画像を更新する
 		/// </summary>
 		public async Task UpdateImage() {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 
 			Dictionary<string,string> richMenuIds = await this.richMenuService.GetIds();
 			foreach( KeyValuePair<string , string> richMenuId in richMenuIds ) {
@@ -472,7 +485,7 @@ namespace ShioriChan.Services.Features.Menus {
 			string mapMenuId = await this.CreateMapMenu();
 			string adminMenuId = await this.CreateAdminMenu();
 			
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 
 			string moveDirectory = "cd /home/shassbeleth/clouddrive";
 
@@ -524,7 +537,7 @@ namespace ShioriChan.Services.Features.Menus {
 		/// </summary>
 		public async Task Link()
 		{
-			this.logger.LogTrace("Start");
+			this.logger.LogInformation("Start");
 
 			Dictionary<string, string> Ids = await this.richMenuService.GetIds();
 			string menuId = Ids[MenuService.MainMenuName];
@@ -533,7 +546,7 @@ namespace ShioriChan.Services.Features.Menus {
 
 			await this.richMenuService.LinkToBulkUser( ids , menuId );
 
-			this.logger.LogTrace("End");
+			this.logger.LogInformation("End");
 		}
 
 	}

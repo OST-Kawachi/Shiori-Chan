@@ -12,7 +12,7 @@ namespace ShioriChan.Services.Features.Notifications {
 		/// 登録する
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		Task Register( JToken parameter );
+		void Register( JToken parameter );
 
 		/// <summary>
 		/// 確認する

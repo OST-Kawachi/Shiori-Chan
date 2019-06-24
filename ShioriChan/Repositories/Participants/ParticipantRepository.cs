@@ -35,14 +35,19 @@ namespace ShioriChan.Repositories.Participants {
 		/// 参加者一覧取得
 		/// </summary>
 		/// <returns>参加者一覧</returns>
-		public List<UserInfo> GetParticipantNames()
-			=> this.model.Participants
-				.Where( p => p.EventSeq == 0 )
-				.Select( p => this.model.UserInfos
-					.Single( u => u.Seq == p.UserSeq )
-				)
+		public List<UserInfo> GetParticipantNames() {
+			this.logger.LogInformation("Start");
+			List<Participant> participants = this.model.Participants
+				.Where(p => p.EventSeq == 0)
 				.ToList();
-	
+
+			List<UserInfo> userInfos = this.model.UserInfos
+				.Where(u => participants.Any(p => p.UserSeq == u.Seq))
+				.ToList();
+
+			this.logger.LogInformation("End");
+			return userInfos;
+		}
 	}
 
 }
