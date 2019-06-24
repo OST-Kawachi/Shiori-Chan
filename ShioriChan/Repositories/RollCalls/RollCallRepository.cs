@@ -69,6 +69,7 @@ namespace ShioriChan.Repositories.RollCalls
 			this.logger.LogInformation("End");
 		}
 
+
 		/// <summary>
 		/// 点呼の状況を取得する
 		/// </summary>
@@ -78,7 +79,12 @@ namespace ShioriChan.Repositories.RollCalls
 				.Where(p => p.EventSeq == 0)
 				.Select(p => new Status {
 					UserSeq = p.UserSeq,
-					RollCall = p.RollCall.HasValue ? p.RollCall.Value ? Ok : Ng : None,
+					RollCall = this.model.UserInfos
+						.Where(u => u.Seq == p.UserSeq)
+						.Select(u => string.IsNullOrEmpty(u.Id))
+						.FirstOrDefault() ?
+						None :
+						p.RollCall.HasValue ? p.RollCall.Value ? Ok : Ng : None,
 					Name = this.model.UserInfos
 					   .Single(u => u.Seq == p.UserSeq)
 					   .Name

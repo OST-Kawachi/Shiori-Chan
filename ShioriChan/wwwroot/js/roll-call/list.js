@@ -7,9 +7,9 @@
         .done(function (response) {
             $("#list").empty();
             let html = "";
-            for (let i = 0; i < response.result.length; i++) {
-                let status = response.result[i].rollCall;
-                let name = response.result[i].name;
+            for (let i = 0; i < response.length; i++) {
+                let status = response[i].rollCall;
+                let name = response[i].name;
                 html += "<div>" + status + " " + name + "</div>";
             }
             $("#list").append(html);
