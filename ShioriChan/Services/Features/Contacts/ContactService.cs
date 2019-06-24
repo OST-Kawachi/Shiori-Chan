@@ -44,7 +44,7 @@ namespace ShioriChan.Services.Features.Contacts {
 			JObject firstEvent = (JObject)events[ 0 ];
 
 			string replyToken = firstEvent[ "replyToken" ].ToString();
-			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+			this.logger.LogDebug( $"Reply Token is {replyToken}." );
 
 			return replyToken;
 		}
@@ -54,9 +54,10 @@ namespace ShioriChan.Services.Features.Contacts {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		public async Task Show( JToken parameter ) {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 
 			string replyToken = this.GetReplyToken( parameter );
+			this.logger.LogDebug($"Reply Token is {replyToken}");
 			await this.messageService.CreateMessageBuilder()
 				.AddMessage( 
 					"幹事の人や旅館の連絡先はこちら♪\n" +
@@ -73,7 +74,7 @@ namespace ShioriChan.Services.Features.Contacts {
 				.BuildMessage()
 				.Reply( replyToken );
 			
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 
 	}

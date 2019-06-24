@@ -55,7 +55,7 @@ namespace ShioriChan.Services.Features.RollCalls {
 
 			JToken source = firstEvent[ "source" ];
 			string userId = source[ "userId" ].ToString();
-			this.logger.LogTrace( $"User Id is {userId}." );
+			this.logger.LogDebug( $"User Id is {userId}." );
 
 			return userId;
 		}
@@ -64,16 +64,24 @@ namespace ShioriChan.Services.Features.RollCalls {
 		/// 返事をする
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public async Task Reply( JToken parameter ) {
+		public void Reply( JToken parameter ) {
+			this.logger.LogInformation("Start");
+			
 			string userId = this.GetUserId( parameter );
-			await this.rollCallRepository.TellIAmThere( userId );
+			this.logger.LogDebug($"User Id is {userId}");
+
+			this.rollCallRepository.TellIAmThere( userId );
+			
+			this.logger.LogInformation("End");
 		}
 
 		/// <summary>
 		/// 受付を開始する
 		/// </summary>
 		public async Task Notify() {
-			await this.rollCallRepository.Reset();
+			this.logger.LogInformation("Start");
+			this.rollCallRepository.Reset();
+
 			List<string> toList = this.rollCallRepository.GetParticipantIds();
 			await this.messageService.CreateMessageBuilder()
 				.AddTemplate( "点呼" )
@@ -84,13 +92,17 @@ namespace ShioriChan.Services.Features.RollCalls {
 				.BuildTemplate()
 				.BuildMessage()
 				.Multicast( toList );
+
+			this.logger.LogInformation("End");
 		}
 
 		/// <summary>
 		/// 点呼の状況を取得する
 		/// </summary>
-		public Task<List<Status>> GetStatuses()
-			=> this.rollCallRepository.GetStatuses();
+		public List<Status> GetStatuses() {
+			this.logger.LogInformation("Call Get Statuses");
+			return this.rollCallRepository.GetStatuses();
+		}
 
 	}
 

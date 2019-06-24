@@ -14,7 +14,7 @@ namespace ShioriChan.Services.Features.RollCalls {
 		/// 返事をする
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		Task Reply( JToken parameter );
+		void Reply( JToken parameter );
 
 		/// <summary>
 		/// 受付を開始する
@@ -24,7 +24,7 @@ namespace ShioriChan.Services.Features.RollCalls {
 		/// <summary>
 		/// 点呼の状況を取得する
 		/// </summary>
-		Task<List<Status>> GetStatuses();
+		List<Status> GetStatuses();
 
 	}
 

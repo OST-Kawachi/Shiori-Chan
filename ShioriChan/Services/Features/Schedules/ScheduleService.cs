@@ -55,7 +55,7 @@ namespace ShioriChan.Services.Features.Schedules {
 			JObject firstEvent = (JObject)events[ 0 ];
 
 			string replyToken = firstEvent[ "replyToken" ].ToString();
-			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+			this.logger.LogDebug( $"Reply Token is {replyToken}." );
 
 			return replyToken;
 		}
@@ -71,7 +71,7 @@ namespace ShioriChan.Services.Features.Schedules {
 
 			JToken postback = firstEvent[ "postback" ];
 			string data = postback[ "data" ].ToString();
-			this.logger.LogTrace( $"Postback Data is {data}." );
+			this.logger.LogDebug( $"Postback Data is {data}." );
 			return data;
 		}
 
@@ -86,7 +86,7 @@ namespace ShioriChan.Services.Features.Schedules {
 
 			JToken postback = firstEvent[ "postback" ];
 			string time = postback[ "params" ]["time"].ToString();
-			this.logger.LogTrace( $"Time is {time}." );
+			this.logger.LogDebug( $"Time is {time}." );
 			return time;
 		}
 
@@ -94,16 +94,18 @@ namespace ShioriChan.Services.Features.Schedules {
 		/// 通知する
 		/// </summary>
 		public async Task Notice() {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 
 			Schedule schedule = this.scheduleRepository.GetSchedule();
 
 			if( schedule is null ) {
-				this.logger.LogTrace( "Notification Target Does Not Exist" );
+				this.logger.LogDebug( "Notification Target Does Not Exist" );
 			}
 			else {
 				string name = schedule.Name;
 				string date = schedule.StartDatetime.ToString( "HH:mm" );
+				this.logger.LogDebug($"Name is {name}");
+				this.logger.LogDebug($"Date is {date}");
 
 				List<string> userIds = this.scheduleRepository.GetAllUserId();
 
@@ -117,7 +119,7 @@ namespace ShioriChan.Services.Features.Schedules {
 
 			}
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 
 		/// <summary>
@@ -125,8 +127,10 @@ namespace ShioriChan.Services.Features.Schedules {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		public async Task ChooseDate( JToken parameter ) {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
+
 			string replyToken = this.GetReplyToken( parameter );
+			this.logger.LogDebug($"Reply Token is {replyToken}");
 
 			await this.messageService.CreateMessageBuilder()
 		   .AddTemplate( "全体スケジュール" )
@@ -138,7 +142,7 @@ namespace ShioriChan.Services.Features.Schedules {
 		   .BuildMessage()
 		   .Reply( replyToken );
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 
 		/// <summary>
@@ -146,12 +150,15 @@ namespace ShioriChan.Services.Features.Schedules {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		public async Task Show( JToken parameter ) {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
+
 			string replyToken = this.GetReplyToken( parameter );
 			string postbackData = this.GetPostbackData( parameter );
+			this.logger.LogDebug($"Reply Token is {replyToken}");
+			this.logger.LogDebug($"Postback Data is {postbackData}");
 
 			bool isFirst = "firstSchedule".Equals( postbackData );
-			this.logger.LogTrace( $"Is First Schedule ... {isFirst}" );
+			this.logger.LogDebug( $"Is First Schedule ... {isFirst}" );
 
 			List<(string name, string startTime)> schedules = this.scheduleRepository.GetSchedules( isFirst );
 			string message = "";
@@ -164,7 +171,7 @@ namespace ShioriChan.Services.Features.Schedules {
 				.BuildMessage()
 				.Reply( replyToken );
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 
 
@@ -174,10 +181,10 @@ namespace ShioriChan.Services.Features.Schedules {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		public async Task SelectToChange( JToken parameter ) {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 
 			string replyToken = this.GetReplyToken( parameter );
-			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+			this.logger.LogDebug( $"Reply Token is {replyToken}." );
 
 			//スケジュール一覧を取得する
 			List<(int, string, string)> schedules = this.scheduleRepository.GetSchedulesForSelectToChange();
@@ -206,7 +213,7 @@ namespace ShioriChan.Services.Features.Schedules {
 				.BuildMessage()
 				.Reply( replyToken );
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 
 		/// <summary>
@@ -214,16 +221,20 @@ namespace ShioriChan.Services.Features.Schedules {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		public async Task Update( JToken parameter ) {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 
 			string postbackData = this.GetPostbackData( parameter );
+			this.logger.LogDebug($"Postback Data is {postbackData}");
+
 			int seq = int.Parse( postbackData.Split( "updateSchedule?seq=" )[1] );
-			this.logger.LogTrace( $"Schedule Seq is {seq}" );
+			this.logger.LogDebug( $"Schedule Seq is {seq}" );
 
 			string dateTime = this.GetTime( parameter );
+			this.logger.LogDebug($"Date Time is {dateTime}");
 
 			Schedule schedule = this.scheduleRepository.UpdateSchedule( seq , dateTime );
 			string name = schedule.Name;
+			this.logger.LogDebug($"Name is {name}");
 
 			List<string> toList = this.scheduleRepository.GetAllUserId();
 
@@ -232,7 +243,7 @@ namespace ShioriChan.Services.Features.Schedules {
 				.BuildMessage()
 				.Multicast( toList );
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 
 	}
