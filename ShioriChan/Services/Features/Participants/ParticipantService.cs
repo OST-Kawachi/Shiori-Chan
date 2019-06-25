@@ -74,7 +74,7 @@ namespace ShioriChan.Services.Features.Participants {
 
 			string message = "参加者の一覧を表示します\n" +
 				"\n" +
-				"博多で乗るバスと2日目の柳川川下りグループ分けを表示します\n\n";
+				"博多で乗るバスと2日目の柳川下りグループ分けを表示します\n\n";
 			for( int i = 0 ; i < participants.Count ; i++ ) {
 				if( i != 0 ) {
 					message += "\n";
@@ -88,7 +88,7 @@ namespace ShioriChan.Services.Features.Participants {
 				}
 				message += string.IsNullOrEmpty( participants[ i ].FirstScheduleName ) ? "ー" : participants[ i ].FirstScheduleName;
 				message += "号車 ";
-				message += "2日目:";
+				message += "川下り:";
 				message += string.IsNullOrEmpty( participants[ i ].SecondScheduleName ) ? "ー" : participants[ i ].SecondScheduleName;
 			}
 			this.logger.LogDebug( $"message Length is {message.Length}" );
