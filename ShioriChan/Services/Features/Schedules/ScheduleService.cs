@@ -194,7 +194,8 @@ namespace ShioriChan.Services.Features.Schedules {
 				.AddQuickReply();
 
 			ISettableDatepickerActionOfQuickReply settableDatepickerActionOfQuickReply = null;
-			foreach( (int seq, string label, string initialdate) in schedules ) {
+			for( int i = 0; i < schedules.Count && i < 13; i++) {
+				(int seq, string label, string initialdate) = schedules[i];
 				settableDatepickerActionOfQuickReply = settableDatepickerActionOfQuickReply is null ? 
 				quickReplyBuilder.AddItem( "" ).UseDatepickerAction(
 					( label.Length > 20 ) ? label.Substring( 0 , 20 ) : label ,
