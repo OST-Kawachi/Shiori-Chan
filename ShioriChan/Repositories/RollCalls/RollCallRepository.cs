@@ -1,17 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using ShioriChan.Entities;
 using static ShioriChan.Controllers.RollCalls.RollCallsController;
 
-namespace ShioriChan.Repositories.RollCalls
-{
+namespace ShioriChan.Repositories.RollCalls {
 
 	/// <summary>
 	/// 点呼Repository
 	/// </summary>
-	public class RollCallRepository : IRollCallRepository
-	{
+	public class RollCallRepository : IRollCallRepository {
 
 		private const string None = "－";
 		private const string Ng = "×";
@@ -34,8 +36,7 @@ namespace ShioriChan.Repositories.RollCalls
 		public RollCallRepository(
 			ILogger<RollCallRepository> logger,
 			ModelCreator model
-		)
-		{
+		) {
 			this.logger = logger;
 			this.model = model;
 		}
@@ -44,70 +45,71 @@ namespace ShioriChan.Repositories.RollCalls
 		/// 点呼に返事をする
 		/// </summary>
 		/// <param name="userId">ユーザID</param>
-		public void TellIAmThere(string userId)
-		{
+		public async Task TellIAmThere(string userId) {
 			this.logger.LogInformation("Start");
 			this.logger.LogDebug($"User Id is {userId}");
 
-			UserInfo userInfo = this.model.UserInfos
-				.SingleOrDefault(u => userId.Equals(u.Id));
-			if( userInfo is null) {
-				this.logger.LogWarning("User Info is NULL");
-				return;
-			}
+			using (IDbContextTransaction transaction = this.model.Database.BeginTransaction()) {
 
-			Participant participant = this.model.Participants
-				.SingleOrDefault(p => userInfo.Seq == p.UserSeq && p.EventSeq == 0);
-			if( participant is null) {
-				this.logger.LogWarning("Participant is NULL");
-				return;
-			}
+				UserInfo userInfo = this.model.UserInfos
+					.SingleOrDefault(u => userId.Equals(u.Id));
+				if (userInfo is null) {
+					this.logger.LogWarning("User Info is NULL");
+					return;
+				}
 
-			participant.RollCall = true;
-			this.model.SaveChanges();
+				Participant participant = this.model.Participants
+					.SingleOrDefault(p => userInfo.Seq == p.UserSeq && p.EventSeq == 0);
+				if (participant is null) {
+					this.logger.LogWarning("Participant is NULL");
+					return;
+				}
+				this.logger.LogDebug($"TellIAmThere p.EventSeq is {participant.EventSeq}");
+				this.logger.LogDebug($"TellIAmThere p.UserSeq is {participant.UserSeq}");
+
+				participant.RollCall = true;
+				participant.UpdateDatetime = DateTime.Now;
+				participant.Version++;
+				
+				int count = await this.model.SaveChangesAsync();
+				this.logger.LogInformation($"Save Change Count is {count}");
+				
+				transaction.Commit();
+
+			}
 
 			this.logger.LogInformation("End");
 		}
-
 
 		/// <summary>
 		/// 点呼の状況を取得する
 		/// </summary>
 		public List<Status> GetStatuses() {
 			this.logger.LogInformation("Call Get Statuses");
-			return this.model.Participants
-				.Where(p => p.EventSeq == 0)
-				.Select(p => new Status {
-					UserSeq = p.UserSeq,
-					RollCall = this.model.UserInfos
-						.Where(u => u.Seq == p.UserSeq)
-						.Select(u => string.IsNullOrEmpty(u.Id))
-						.FirstOrDefault() ?
-						None :
-						p.RollCall.HasValue ? p.RollCall.Value ? Ok : Ng : None,
-					Name = this.model.UserInfos
-					   .Single(u => u.Seq == p.UserSeq)
-					   .Name
-				})
-			.ToList();
+			IQueryable<Status> query = from p in this.model.Participants
+									   join u in this.model.UserInfos on p.UserSeq equals u.Seq
+									   select new Status {
+										   UserSeq = p.UserSeq,
+										   RollCall = string.IsNullOrEmpty(u.Id) || !p.RollCall.HasValue ? None : p.RollCall.Value ? Ok : Ng,
+										   Name = u.Name
+									   };
+			return query.ToList();
+
 		}
 
 		/// <summary>
 		/// 点呼リセット
 		/// </summary>
-		public void Reset()
-		{
+		public async Task Reset() {
 			this.logger.LogInformation("Start");
-			this.model.Participants
-				.Where(p => p.EventSeq == 0)
-				.ToList()
-				.ForEach(p => {
-					if (p.RollCall.HasValue)
-					{
-						p.RollCall = false;
-					}
-				});
-			this.model.SaveChanges();
+
+			using (IDbContextTransaction transaction = this.model.Database.BeginTransaction()) {
+
+				this.model.Database.ExecuteSqlCommand("update Participant set RollCall = 0 , Version = Version + 1");
+				await this.model.SaveChangesAsync();
+				transaction.Commit();
+
+			}
 			this.logger.LogInformation("End");
 		}
 
