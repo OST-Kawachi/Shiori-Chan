@@ -80,7 +80,7 @@ namespace ShioriChan.Services.Features.RollCalls {
 		/// </summary>
 		public async Task Notify() {
 			this.logger.LogInformation("Start");
-			this.rollCallRepository.Reset();
+			await this.rollCallRepository.Reset();
 
 			List<string> toList = this.rollCallRepository.GetParticipantIds();
 			await this.messageService.CreateMessageBuilder()
