@@ -166,6 +166,11 @@ namespace ShioriChan.Services.Features {
 		private const string PostbackAdminReSchedule = "reSchedule";
 
 		/// <summary>
+		/// ポストバックデータ - 管理 - ランダム表示
+		/// </summary>
+		private const string PostbackAdminRandom = "admin-random";
+
+		/// <summary>
 		/// ポストバックデータ - 管理 - 戻る
 		/// </summary>
 		private const string PostbackAdminBack = "admin-back";
@@ -359,28 +364,10 @@ namespace ShioriChan.Services.Features {
 						case MessageTypeText:
 							this.logger.LogInformation( "Start Text Message Event" );
 
-							await this.RegisterMessage( parameter );
+							this.RegisterMessage( parameter );
 
 							string message = firstEvent[ "message" ][ "text" ].ToString();
 							this.logger.LogInformation( "Message is {message}." , message );
-
-							// TODO 仮
-							if( message.Contains( "れ" ) ) {
-								this.logger.LogInformation( "Temp" );
-								await this.ShowTouristShop( parameter );
-							}
-							else if( message.Contains( "す" ) ) {
-								this.logger.LogInformation( "Temp" );
-								await this.ChooseSchedule( parameter );
-							}
-							else if( message.Contains( "め" ) ) {
-								this.logger.LogInformation( "Temp" );
-								await this.menuService.ChangeMenu( userId , MenuService.MainMenuName );
-							}
-							else if( message.Contains( "ら" ) ) {
-								this.logger.LogInformation( "Temp" );
-								await this.userService.ShowRandomly( parameter );
-							}
 
 							break;
 
@@ -599,8 +586,8 @@ namespace ShioriChan.Services.Features {
 
 							break;
 
-						case PostbackAdminChangePosition:
-							this.logger.LogInformation( "Start Change Position" );
+						case PostbackAdminRandom:
+							this.logger.LogInformation("Start Random");
 
 							if( this.IsUnknownUser( userId ) ) {
 								this.logger.LogWarning( "User is Unknown." );
@@ -694,8 +681,8 @@ namespace ShioriChan.Services.Features {
 		/// メッセージの登録
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		private async Task RegisterMessage( JToken parameter )
-			=> await this.notificationService.Register( parameter );
+		private void RegisterMessage( JToken parameter )
+			=> this.notificationService.Register( parameter );
 
 		/// <summary>
 		/// 位置情報の登録
@@ -856,7 +843,7 @@ namespace ShioriChan.Services.Features {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		private async Task Reply( JToken parameter )
-			=> await this.rollCallService.Reply( parameter );
+			=> this.rollCallService.Reply( parameter );
 
 	}
 

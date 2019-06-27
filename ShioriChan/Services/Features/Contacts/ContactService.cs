@@ -44,7 +44,7 @@ namespace ShioriChan.Services.Features.Contacts {
 			JObject firstEvent = (JObject)events[ 0 ];
 
 			string replyToken = firstEvent[ "replyToken" ].ToString();
-			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+			this.logger.LogDebug( $"Reply Token is {replyToken}." );
 
 			return replyToken;
 		}
@@ -54,26 +54,29 @@ namespace ShioriChan.Services.Features.Contacts {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		public async Task Show( JToken parameter ) {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 
 			string replyToken = this.GetReplyToken( parameter );
+			this.logger.LogDebug($"Reply Token is {replyToken}");
 			await this.messageService.CreateMessageBuilder()
 				.AddMessage( 
 					"幹事の人や旅館の連絡先はこちら♪\n" +
 					"\n" +
-					"永井さん：090-76757323\n\n" +
+					"永井さん：090-7675-7323\n\n" +
 					"本郷さん：080-3631-0147\n\n" +
 					"伊藤さん：080-4542-1543\n\n" +
-					"杉田さん：090-9171-9232\n\n" +
+					"熊澤さん：090-4793-0846\n\n" +
 					"\n" +
-					"丁子屋：054-258-1066\n\n" +
-					"旅館：054-627-1121\n\n" +
-					"みはる：0548-63-5328" 
+					"宿泊先\n" +
+					"ヒルトン福岡シーホーク\n" +
+					"〒810-8650\n" +
+					"福岡県福岡市中央区地行浜2-2-3\n" +
+					"TEL:092-844-8111"
 				)
 				.BuildMessage()
 				.Reply( replyToken );
 			
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 
 	}

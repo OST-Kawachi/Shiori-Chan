@@ -55,7 +55,7 @@ namespace ShioriChan.Services.Features.MeetingPlaces {
 
 			JToken source = firstEvent[ "source" ];
 			string userId = source[ "userId" ].ToString();
-			this.logger.LogTrace( $"User Id is {userId}." );
+			this.logger.LogDebug( $"User Id is {userId}." );
 
 			return userId;
 		}
@@ -71,7 +71,7 @@ namespace ShioriChan.Services.Features.MeetingPlaces {
 			JObject firstEvent = (JObject)events[ 0 ];
 
 			string replyToken = firstEvent[ "replyToken" ].ToString();
-			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+			this.logger.LogDebug( $"Reply Token is {replyToken}." );
 
 			return replyToken;
 		}
@@ -88,7 +88,7 @@ namespace ShioriChan.Services.Features.MeetingPlaces {
 
 			JToken postback = firstEvent[ "postback" ];
 			string data = postback[ "data" ].ToString();
-			this.logger.LogTrace( $"Postback Data is {data}." );
+			this.logger.LogDebug( $"Postback Data is {data}." );
 			return data;
 		}
 
@@ -113,10 +113,10 @@ namespace ShioriChan.Services.Features.MeetingPlaces {
 			double latitude = double.Parse( message[ "latitude" ].ToString() );
 			double longitude = double.Parse( message[ "longitude" ].ToString() );
 
-			this.logger.LogTrace( $"Title is { title ?? "None" }" );
-			this.logger.LogTrace( $"Address is { address ?? "None" }" );
-			this.logger.LogTrace( $"Latitude is {latitude}" );
-			this.logger.LogTrace( $"Longitude is {longitude}" );
+			this.logger.LogDebug( $"Title is { title ?? "None" }" );
+			this.logger.LogDebug( $"Address is { address ?? "None" }" );
+			this.logger.LogDebug( $"Latitude is {latitude}" );
+			this.logger.LogDebug( $"Longitude is {longitude}" );
 
 			return (title, address, latitude, longitude);
 		}
@@ -125,14 +125,27 @@ namespace ShioriChan.Services.Features.MeetingPlaces {
 		/// 集合場所の登録
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
-		public async Task Register( JToken parameter )
+		public void Register( JToken parameter )
 		{
-
+			this.logger.LogInformation("Start");
 			string userId = this.GetUserId( parameter );
+			this.logger.LogDebug($"User Id is {userId}");
+
+			if( !this.meetingPlaceRepository.IsAdmin( userId ))
+			{
+				this.logger.LogWarning("User is not Admin.");
+				return;
+			}
+
 			(string title, string address, double latitude, double longitude)
 				= this.GetLocation( parameter );
+			this.logger.LogDebug($"Title is {title}");
+			this.logger.LogDebug($"Address is {address}");
+			this.logger.LogDebug($"Latitude is {latitude}");
+			this.logger.LogDebug($"Longitude is {longitude}");
 
 			this.meetingPlaceRepository.Register( userId , title , address , latitude , longitude );
+			this.logger.LogInformation("End");
 			return;
 		}
 
@@ -141,10 +154,10 @@ namespace ShioriChan.Services.Features.MeetingPlaces {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		public async Task Show( JToken parameter ) {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 
 			string replyToken = this.GetReplyToken( parameter );
-			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+			this.logger.LogDebug( $"Reply Token is {replyToken}." );
 
 			(string title, string address, double? latitude, double? longitude) = this.meetingPlaceRepository.GetLocation();
 
@@ -157,10 +170,10 @@ namespace ShioriChan.Services.Features.MeetingPlaces {
 				return;
 			}
 
-			this.logger.LogTrace( $"message Title is { title}" );
-			this.logger.LogTrace( $"message Adress is {address}" );
-			this.logger.LogTrace( $"message Latitude is {latitude.Value}" );
-			this.logger.LogTrace( $"message Longitude is {longitude.Value}" );
+			this.logger.LogTrace( $"Message Title is { title}" );
+			this.logger.LogTrace( $"Message Adress is {address}" );
+			this.logger.LogTrace( $"Message Latitude is {latitude.Value}" );
+			this.logger.LogTrace( $"Message Longitude is {longitude.Value}" );
 
 			if( latitude.HasValue && longitude.HasValue ) {
 				string message = "次の集合場所は↓↓↓です！\n";
@@ -172,7 +185,7 @@ namespace ShioriChan.Services.Features.MeetingPlaces {
 						.Reply( replyToken );
 			}
 			
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 			return;
 		}
 

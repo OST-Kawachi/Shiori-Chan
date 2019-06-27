@@ -68,7 +68,7 @@ namespace ShioriChan.Services.Features.Users
 
 			JToken source = firstEvent[ "source" ];
 			string userId = source[ "userId" ].ToString();
-			this.logger.LogTrace( $"User Id is {userId}." );
+			this.logger.LogDebug( $"User Id is {userId}." );
 
 			return userId;
 		}
@@ -84,7 +84,7 @@ namespace ShioriChan.Services.Features.Users
 			JObject firstEvent = (JObject)events[ 0 ];
 
 			string replyToken = firstEvent[ "replyToken" ].ToString();
-			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+			this.logger.LogDebug( $"Reply Token is {replyToken}." );
 
 			return replyToken;
 		}
@@ -96,20 +96,20 @@ namespace ShioriChan.Services.Features.Users
 		/// <param name="parameter">パラメータ</param>
 		public async Task ShowMenuAndUrlIfNotRegistered( JToken parameter )
 		{
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 
 			string userId = this.GetUserId( parameter );
-			this.logger.LogTrace( $"User Id is {userId}." );
+			this.logger.LogDebug( $"User Id is {userId}." );
 
 			bool isRegistered = this.userRepository.IsRegisterd( userId );
-			this.logger.LogTrace( $"Registered is {isRegistered}." );
+			this.logger.LogDebug( $"Registered is {isRegistered}." );
 
 			string replyToken = this.GetReplyToken( parameter );
-			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+			this.logger.LogDebug( $"Reply Token is {replyToken}." );
 
 			if( isRegistered )
 			{
-				await this.menuService.ChangeMenu( userId , MenuService.MainMenuName );
+				await this.menuService.ChangeMenu( "" , userId , MenuService.MainMenuName );
 				await this.messageService
 					.CreateMessageBuilder()
 					.AddMessage( "また友達追加してくれたんですね！\nありがとうございます！！\nまたよろしくお願いします！" )
@@ -120,7 +120,7 @@ namespace ShioriChan.Services.Features.Users
 			{
 
 				int waitingApprovalUserSeq = this.userRepository.RegisterOnlyUserIdInWaitingApproval( userId );
-				this.logger.LogTrace( $"Waiting Approval User Seq is {waitingApprovalUserSeq}." );
+				this.logger.LogDebug( $"Waiting Approval User Seq is {waitingApprovalUserSeq}." );
 
 				await this.messageService
 					.CreateMessageBuilder()
@@ -135,7 +135,7 @@ namespace ShioriChan.Services.Features.Users
 					.Reply( replyToken );
 			}
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 
 		/// <summary>
@@ -145,9 +145,9 @@ namespace ShioriChan.Services.Features.Users
 		/// <param name="name">ユーザ名</param>
 		public async void Apply( int seq , string name )
 		{
-			this.logger.LogTrace( "Start" );
-			this.logger.LogTrace( $"Seq is {seq}." );
-			this.logger.LogTrace( $"User Name is {name}." );
+			this.logger.LogInformation( "Start" );
+			this.logger.LogDebug( $"Seq is {seq}." );
+			this.logger.LogDebug( $"User Name is {name}." );
 
 			this.userRepository.RegisterWaitingApproval( seq , name );
 			List<string> userIds = this.userRepository.GetPushedAdminMembers();
@@ -161,7 +161,7 @@ namespace ShioriChan.Services.Features.Users
 				.BuildMessage()
 				.Multicast( userIds );
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 			return;
 		}
 
@@ -169,29 +169,43 @@ namespace ShioriChan.Services.Features.Users
 		/// 未登録ユーザ一覧取得
 		/// </summary>
 		/// <returns>未登録ユーザ一覧</returns>
-		public List<UserInfo> GetUnregisteredUsers()
-			=> this.userRepository.GetUnregisteredUsers();
+		public List<UserInfo> GetUnregisteredUsers() {
+			this.logger.LogInformation("Call Get Unregistered Users");
+			return this.userRepository.GetUnregisteredUsers();
+		}
 
 		/// <summary>
 		/// 承認待ちユーザ一覧取得
 		/// </summary>
 		/// <returns>承認待ちユーザ一覧</returns>
-		public List<WaitedApprovalUser> GetWaitingApprovalUsers()
-			=> this.userRepository.GetWaitingApprovalUsers();
+		public List<WaitedApprovalUser> GetWaitingApprovalUsers() {
+			this.logger.LogInformation("Call Get Waiting Approval Users");
+			return this.userRepository.GetWaitingApprovalUsers();
+		}
+
+		/// <summary>
+		/// 承認済みユーザ一覧取得
+		/// </summary>
+		/// <returns>承認済みユーザ一覧取得</returns>
+		public List<UserInfo> GetApprovedUsers() {
+			this.logger.LogInformation("Call Get Approved Users");
+			return this.userRepository.GetApprovedUsers();
+		}
 
 		/// <summary>
 		/// 承認する
 		/// </summary>
 		public async Task Approval( int unRegisteredUserSeq , int waitingApprovalUserSeq )
 		{
-			this.logger.LogTrace( "Start" );
-			this.logger.LogTrace( $"Un Registered User Seq is {unRegisteredUserSeq}." );
-			this.logger.LogTrace( $"Waiting Approval User Seq is {waitingApprovalUserSeq}." );
+			this.logger.LogInformation( "Start" );
+			this.logger.LogDebug( $"Un Registered User Seq is {unRegisteredUserSeq}." );
+			this.logger.LogDebug( $"Waiting Approval User Seq is {waitingApprovalUserSeq}." );
 
 			this.userRepository.Approval( unRegisteredUserSeq , waitingApprovalUserSeq );
 
 			UserInfo registeredUser = this.userRepository.GetUser( unRegisteredUserSeq );
-			this.logger.LogTrace( $"Registered User Name is {registeredUser.Name}." );
+			this.logger.LogDebug( $"Registered User Name is {registeredUser.Name}." );
+			await this.menuService.ChangeMenu("",registeredUser.Id, MenuService.MainMenuName);
 			await this.messageService.CreateMessageBuilder()
 				.AddMessage( "幹事さん達に承認されました！\nよろしくお願いしますね！\n下にメニューを表示しました！！" )
 				.BuildMessage()
@@ -204,7 +218,7 @@ namespace ShioriChan.Services.Features.Users
 				.BuildMessage()
 				.Multicast( userIds );
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 
         /// <summary>
@@ -213,12 +227,12 @@ namespace ShioriChan.Services.Features.Users
         /// <param name="parameter">パラメータ</param>
         public async Task ShowRandomly(JToken parameter)
         {
-            this.logger.LogTrace("Start");
-            this.logger.LogTrace("Show Random Name");
+            this.logger.LogInformation("Start");
+            this.logger.LogDebug("Show Random Name");
 
             string name = this.userRepository.GetRandomUserName();
 
-            this.logger.LogTrace("Name is " + name);
+            this.logger.LogDebug("Name is " + name);
 
             List<string> userIds = this.userRepository.GetAllUserId();
             
@@ -228,7 +242,7 @@ namespace ShioriChan.Services.Features.Users
                     .BuildMessage()
                     .Multicast(userIds);
 
-            this.logger.LogTrace("End");
+            this.logger.LogInformation("End");
         }
 
 	}

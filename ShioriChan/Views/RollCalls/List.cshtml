@@ -2,12 +2,21 @@
 <head>
 	<title>点呼</title>
 	<meta name="viewport" content="width=device-width">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Cache-Control" content="no-cache">
 </head>
 <body>
 	<h2>点呼一覧</h2>
 	<div>
+		<div>「みんなに通知する」ボタンを押すと通知が飛び、一覧がリセットされます</div>
+		<br />
+		<div>－：イベントの参加者だけどしおりちゃんに登録していない人</div>
+		<div>×：まだ点呼にこたえていない人</div>
+		<div>〇：点呼にこたえてくれた人</div>
+	</div>
+	<br />
+	<div>
 		<div><button id="notify">みんなに通知する</button></div>
-		<div><button id="update">一覧を更新する</button></div>
 	</div>
 	<div id="list">
 	</div>

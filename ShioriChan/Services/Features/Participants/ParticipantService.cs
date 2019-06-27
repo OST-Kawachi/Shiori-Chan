@@ -54,7 +54,7 @@ namespace ShioriChan.Services.Features.Participants {
 			JObject firstEvent = (JObject)events[ 0 ];
 
 			string replyToken = firstEvent[ "replyToken" ].ToString();
-			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+			this.logger.LogDebug( $"Reply Token is {replyToken}." );
 
 			return replyToken;
 		}
@@ -64,50 +64,41 @@ namespace ShioriChan.Services.Features.Participants {
 		/// </summary>
 		/// <param name="parameter">パラメータ</param>
 		public async Task Show( JToken parameter ) {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 
 			string replyToken = this.GetReplyToken( parameter );
-			this.logger.LogTrace( $"Reply Token is {replyToken}." );
+			this.logger.LogDebug( $"Reply Token is {replyToken}." );
 
 			// 参加者リストからイベントが社員旅行のメンバーを取得する
 			List<UserInfo> participants = this.participantRepository.GetParticipantNames();
 
 			string message = "参加者の一覧を表示します\n" +
 				"\n" +
-				"1日目イベント\n" +
-				"A:藍染・白ハンカチ\n" +
-				"B:陶芸・てひねり\n" +
-				"C:サンドブラスト\n" +
-				"D:竹千筋細工・小鈴\n" +
-				"\n" +
-				"2日目イベント\n" +
-				"a:清水港ベイクルーズ\n" +
-				"b:久能山東照宮\n";
+				"博多で乗るバスと2日目の柳川下りグループ分けを表示します\n\n";
 			for( int i = 0 ; i < participants.Count ; i++ ) {
 				if( i != 0 ) {
 					message += "\n";
 				}
 				message += participants[ i ].Name;
-				this.logger.LogTrace( $"participants[{i}] Name is {participants[ i ].Name}" );
-				this.logger.LogTrace( $"participants[{i}] FirstScheduleName is {participants[ i ].FirstScheduleName}" );
-				this.logger.LogTrace( $"participants[{i}] econdScheduleName is {participants[ i ].SecondScheduleName}" );
+				this.logger.LogDebug( $"participants[{i}] Name is {participants[ i ].Name}" );
+				this.logger.LogDebug( $"participants[{i}] FirstScheduleName is {participants[ i ].FirstScheduleName}" );
+				this.logger.LogDebug( $"participants[{i}] econdScheduleName is {participants[ i ].SecondScheduleName}" );
 				for( int j = 0 ; j < 7 - participants[ i ].Name.Length ; j++ ) {
 					message += "　";
 				}
-				message += "1日目:";
 				message += string.IsNullOrEmpty( participants[ i ].FirstScheduleName ) ? "ー" : participants[ i ].FirstScheduleName;
-				message += " ";
-				message += "2日目:";
+				message += "号車 ";
+				message += "川下り:";
 				message += string.IsNullOrEmpty( participants[ i ].SecondScheduleName ) ? "ー" : participants[ i ].SecondScheduleName;
 			}
-			this.logger.LogTrace( $"message Length is {message.Length}" );
+			this.logger.LogDebug( $"message Length is {message.Length}" );
 			await this.messageService
 					.CreateMessageBuilder()
 					.AddMessage( message )
 					.BuildMessage()
 					.Reply( replyToken );
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 
 	}

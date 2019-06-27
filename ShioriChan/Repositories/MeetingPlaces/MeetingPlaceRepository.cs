@@ -37,6 +37,38 @@ namespace ShioriChan.Repositories.MeetingPlaces {
 		}
 
 		/// <summary>
+		/// 管理者かどうか
+		/// </summary>
+		/// <param name="userId">ユーザID</param>
+		/// <returns>管理者かどうか</returns>
+		public bool IsAdmin(string userId)
+		{
+			this.logger.LogInformation("Start");
+			this.logger.LogDebug($"User Id is {userId}");
+
+			Permission permission = this.model.Permissions
+				.FirstOrDefault(p => "Admin".Equals(p.Name));
+			if( permission is null) {
+				this.logger.LogWarning("Admin Permission is NULL");
+				return false;
+			}
+
+			UserInfo userInfo = this.model.UserInfos
+				.FirstOrDefault(u => userId.Equals(u.Id));
+			if( userInfo is null) {
+				this.logger.LogInformation("User Info is NULL");
+				return false;
+			}
+
+			UserPermission userPermission = this.model.UserPermissions
+				.FirstOrDefault(up => permission.Seq == up.PermissionSeq && userInfo.Seq == up.UserSeq);
+
+			this.logger.LogInformation("End");
+
+			return !(userPermission is null);
+		}
+
+		/// <summary>
 		/// 集合場所を登録する
 		/// </summary>
 		/// <param name="userId">ユーザID</param>
@@ -44,9 +76,19 @@ namespace ShioriChan.Repositories.MeetingPlaces {
 		/// <param name="address">住所</param>
 		/// <param name="latitude">緯度</param>
 		/// <param name="longitude">経度</param>
-		public void Register( string userId , string title , string address , double latitude , double longitude )
-		{
-			this.logger.LogTrace( "Start" );
+		public void Register( 
+			string userId , 
+			string title , 
+			string address , 
+			double latitude , 
+			double longitude 
+		){
+			this.logger.LogInformation( "Start" );
+			this.logger.LogDebug($"User Id is {userId}");
+			this.logger.LogDebug($"Title is {title}");
+			this.logger.LogDebug($"Address is {address}");
+			this.logger.LogDebug($"Latitude is {latitude}");
+			this.logger.LogDebug($"Longitude is {longitude}");
 
 			List<Schedule> schedules = this.model.Schedules
 				.Where( schedule => this.model.UserInfos
@@ -55,9 +97,9 @@ namespace ShioriChan.Repositories.MeetingPlaces {
 				)
 				.ToList();
 
-			this.logger.LogTrace( $"Schedules Count is {schedules.Count}." );
+			this.logger.LogDebug( $"Schedules Count is {schedules.Count}." );
 			if( schedules.Count == 0 ) {
-				this.logger.LogTrace( "End" );
+				this.logger.LogInformation( "End" );
 				return;
 			}
 
@@ -71,7 +113,7 @@ namespace ShioriChan.Repositories.MeetingPlaces {
 
 			this.model.SaveChanges();
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 		/// <summary>
 		/// 集合場所の取得
@@ -80,16 +122,16 @@ namespace ShioriChan.Repositories.MeetingPlaces {
 		/// <returns></returns>
 		public (string title, string address, double? latitude, double? longitude) GetLocation() {
 
-			this.logger.LogTrace( "Repository Start" );
+			this.logger.LogInformation("Start");
 			int maxNum = this.model.Schedules
 				.Where( s => s.EventSeq == 0)
 				.Max( sc => sc.Seq );
-			this.logger.LogTrace($"maxNum is {maxNum}");
+			this.logger.LogDebug($"maxNum is {maxNum}");
 
 			List<Schedule> schedule = this.model.Schedules
 				.Where( s => s.Seq == maxNum)
 				.ToList();
-			this.logger.LogTrace( "There is a Schedule Data" );
+			this.logger.LogDebug( "There is a Schedule Data" );
 
 			if( schedule.Count == 0 ) {
 				this.logger.LogWarning("No Record");
@@ -97,17 +139,18 @@ namespace ShioriChan.Repositories.MeetingPlaces {
 			}
 
 			string title = "ここです！！！";
-			this.logger.LogTrace( $"title is {title}" );
+			this.logger.LogDebug( $"title is {title}" );
 
 			string address = schedule[ 0 ].Address;
-			this.logger.LogTrace( $"address is {address}" );
+			this.logger.LogDebug( $"address is {address}" );
 			
 			double? latitude = (double?)schedule[0].Latitude / this.trillion;
-			this.logger.LogTrace( $"latitude is {latitude}" );
+			this.logger.LogDebug( $"latitude is {latitude}" );
 
 			double? longitude = (double?)schedule[0].Longitude / this.trillion;
-			this.logger.LogTrace( $"longitude is {longitude}" );
-			
+			this.logger.LogDebug( $"longitude is {longitude}" );
+
+			this.logger.LogInformation("End");
 			return (title, address, latitude, longitude);
 		}
 

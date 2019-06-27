@@ -41,19 +41,24 @@ namespace ShioriChan.Repositories.Notifications {
 		/// <param name="userId">ユーザID</param>
 		/// <param name="Text">リプライメッセージ</param>
 		public void Register(string userId, string text){
-				this.logger.LogTrace( "Start" );
-				this.logger.LogTrace( $"userId is {userId}. " );
-			    this.logger.LogTrace( $"text is {text}." );
+			this.logger.LogInformation( "Start" );
+			this.logger.LogDebug( $"User Id is {userId}. " );
+			this.logger.LogDebug( $"Text is {text}." );
 
 			int userSeq = this.model.UserInfos.SingleOrDefault( u => u.Id.Equals( userId ) )?.Seq ?? -1;
-			int seq = this.model.PushNotifications.Count() == 0 ?
-				1 :
-				this.model.PushNotifications.Max( pn => pn.Seq ) + 1;
+			if( userSeq == -1) {
+				this.logger.LogWarning("User Seq is Undefined");
+				return;
+			}
 
-			this.logger.LogTrace( $"Seq is {seq}." );
+			int pushNotificationSeq = this.model.PushNotifications.Count() != 0
+				? this.model.PushNotifications.Max(pn => pn.Seq) + 1
+				: 1;
+
+			this.logger.LogDebug( $"Push Notification Seq is {pushNotificationSeq}." );
 
 			PushNotification pushNotification = new PushNotification() {
-				Seq = seq ,
+				Seq = pushNotificationSeq ,
 				UserSeq = userSeq ,
 				Status = 0 ,
 				Text = text ,
@@ -62,13 +67,12 @@ namespace ShioriChan.Repositories.Notifications {
 				UpdateUserSeq = userSeq ,
 				UpdateDatetime = DateTime.Now ,
 				Version = 0
-
 			};
 
 			this.model.PushNotifications.Add( pushNotification );
 				
 			this.model.SaveChanges();
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 
 		/// <summary>
@@ -77,14 +81,14 @@ namespace ShioriChan.Repositories.Notifications {
 		/// <param name="userId">ユーザID</param>
 		/// <returns>通知メッセージ</returns>
 		public string GetMessage( string userId ) {
-			this.logger.LogTrace( "Start" );
-			this.logger.LogTrace( $"User Id is {userId}" );
+			this.logger.LogInformation( "Start" );
+			this.logger.LogDebug( $"User Id is {userId}" );
 
 			int userSeq = this.model.UserInfos
 				.SingleOrDefault( u => userId.Equals( u.Id ) )?
 				.Seq ?? -1;
 
-			this.logger.LogTrace( $"User Seq is {userSeq}" );
+			this.logger.LogDebug( $"User Seq is {userSeq}" );
 
 			if( userSeq == -1 ) {
 				this.logger.LogWarning( "User Seq is Undefined" );
@@ -96,8 +100,8 @@ namespace ShioriChan.Repositories.Notifications {
 				.OrderByDescending( pn => pn.Seq )
 				.First();
 
-			this.logger.LogTrace( $"Message is {pushNotification.Text}" );
-			this.logger.LogTrace( "End" );
+			this.logger.LogDebug( $"Message is {pushNotification.Text}" );
+			this.logger.LogInformation( "End" );
 			return pushNotification.Text;
 		}
 
@@ -106,13 +110,13 @@ namespace ShioriChan.Repositories.Notifications {
 		/// </summary>
 		/// <returns>ユーザID一覧</returns>
 		public List<string> GetUserIds() {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 			List<string> userIds = this.model.UserInfos
 				.Where( u => !string.IsNullOrEmpty( u.Id ) )
 				.Select( u => u.Id )
 				.ToList();
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 			return userIds;
 		}
 
@@ -121,13 +125,13 @@ namespace ShioriChan.Repositories.Notifications {
 		/// </summary>
 		/// <param name="userId">ユーザId</param>
 		public void UpdateUserStatus( string userId ) {
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
 
 			int userSeq = this.model.UserInfos
 				.SingleOrDefault( u => userId.Equals( u.Id ) )?
 				.Seq ?? -1;
 
-			this.logger.LogTrace( $"User Seq is {userSeq}" );
+			this.logger.LogDebug( $"User Seq is {userSeq}" );
 
 			if( userSeq == -1 ) {
 				this.logger.LogWarning( "User Seq is Undefined" );
@@ -140,7 +144,7 @@ namespace ShioriChan.Repositories.Notifications {
 				.ForEach( pn => pn.Status = 1 );
 
 			this.model.SaveChanges();
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 
 	}

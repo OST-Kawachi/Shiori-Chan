@@ -178,14 +178,14 @@ namespace ShioriChan.Services.MessagingApis.Messages.BuilderFactories {
 			}
 
 			public IBuildAndAddColumnActionOfCarouselTemplate UseUriColumnAction( string label , string uri ) {
-				this.parameter.Messages.Last[ "template" ][ "columns" ].Last[ "actions" ].Last[ "type" ] = "postback";
+				this.parameter.Messages.Last[ "template" ][ "columns" ].Last[ "actions" ].Last[ "type" ] = "uri";
 				this.parameter.Messages.Last[ "template" ][ "columns" ].Last[ "actions" ].Last[ "label" ] = label;
 				this.parameter.Messages.Last[ "template" ][ "columns" ].Last[ "actions" ].Last[ "uri" ] = uri;
 				return this;
 			}
 
 			public IBuildOnlyDefaultActionOfCarouselTemplate UseUriDefaultAction( string label , string uri ) {
-				this.parameter.Messages.Last[ "template" ][ "columns" ].Last[ "defaultAction" ][ "type" ] = "postback";
+				this.parameter.Messages.Last[ "template" ][ "columns" ].Last[ "defaultAction" ][ "type" ] = "uri";
 				this.parameter.Messages.Last[ "template" ][ "columns" ].Last[ "defaultAction" ][ "label" ] = label;
 				this.parameter.Messages.Last[ "template" ][ "columns" ].Last[ "defaultAction" ][ "uri" ] = uri;
 				return this;

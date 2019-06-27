@@ -18,7 +18,7 @@ namespace ShioriChan.Repositories.RollCalls {
 		/// <summary>
 		/// 点呼の状況を取得する
 		/// </summary>
-		Task<List<Status>> GetStatuses();
+		List<Status> GetStatuses();
 
 		/// <summary>
 		/// 点呼リセット

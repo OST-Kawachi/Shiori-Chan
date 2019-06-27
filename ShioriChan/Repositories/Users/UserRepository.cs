@@ -14,6 +14,16 @@ namespace ShioriChan.Repositories.Users
 	{
 
 		/// <summary>
+		/// ユーザ名で重複削除するためのEqualiy
+		/// </summary>
+		private class UserInfoComparer : IEqualityComparer<UserInfo>
+		{
+			public bool Equals(UserInfo x, UserInfo y) => !string.IsNullOrEmpty(x.Id) && x.Id.Equals(y.Id);
+
+			public int GetHashCode(UserInfo obj) => throw new NotImplementedException();
+		}
+
+		/// <summary>
 		/// ログ
 		/// </summary>
 		private readonly ILogger logger;
@@ -43,11 +53,13 @@ namespace ShioriChan.Repositories.Users
 		/// <returns>登録済みかどうか</returns>
 		public bool IsRegisterd( string userId )
 		{
-			this.logger.LogTrace( "Start" );
-			this.logger.LogTrace( $"User Id is {userId}." );
+			this.logger.LogInformation( "Start" );
+			this.logger.LogDebug( $"User Id is {userId}." );
+
 			bool isRegistered = this.model.UserInfos.Any( user => userId.Equals( user.Id ) );
-			this.logger.LogTrace( $"Is Registered ... {isRegistered}." );
-			this.logger.LogTrace( "End" );
+			this.logger.LogDebug( $"Is Registered ... {isRegistered}." );
+
+			this.logger.LogInformation( "End" );
 			return isRegistered;
 		}
 
@@ -58,23 +70,30 @@ namespace ShioriChan.Repositories.Users
 		/// <returns>承認待ちテーブル管理番号</returns>
 		public int RegisterOnlyUserIdInWaitingApproval( string userId )
 		{
-			this.logger.LogTrace( "Start" );
-			this.logger.LogTrace( $"User Id is {userId}." );
-			List<int> seqs = this.model.WaitedApprovalUsers.Select( user => user.Seq ).ToList();
-			this.logger.LogTrace( $"Max User Seq is {seqs.Count}" );
+			this.logger.LogInformation( "Start" );
+			this.logger.LogDebug( $"User Id is {userId}." );
+
+			int seq = this.model.WaitedApprovalUsers
+				.OrderByDescending(user => user.Seq)
+				.Select( user => user.Seq )
+				.First();
+			this.logger.LogDebug( $"Max User Seq is {seq}" );
+
 			this.model.WaitedApprovalUsers.Add( new WaitedApprovalUser()
 			{
-				Seq = seqs.Count + 1 ,
+				Seq = seq + 1 ,
 				UserId = userId ,
 				UserName = "" ,
-				RegisterUserSeq = seqs.Count + 1 ,
+				RegisterUserSeq = seq + 1 ,
 				RegisterDatetime = DateTime.Now ,
-				UpdateUserSeq = seqs.Count + 1 ,
+				UpdateUserSeq = seq + 1 ,
 				UpdateDatetime = DateTime.Now ,
 				Version = 0
 			} );
 			this.model.SaveChanges();
-			return seqs.Count + 1;
+
+			this.logger.LogInformation("End");
+			return seq + 1;
 		}
 
 		/// <summary>
@@ -85,9 +104,9 @@ namespace ShioriChan.Repositories.Users
 		/// <returns>承認待ちテーブル管理番号</returns>
 		public void RegisterWaitingApproval( int seq , string userName )
 		{
-			this.logger.LogTrace( "Start" );
-			this.logger.LogTrace( $"Seq is {seq}. " );
-			this.logger.LogTrace( $"User Name is {userName}." );
+			this.logger.LogInformation( "Start" );
+			this.logger.LogDebug( $"Seq is {seq}. " );
+			this.logger.LogDebug( $"User Name is {userName}." );
 
 			WaitedApprovalUser user = this.model.WaitedApprovalUsers
 				.SingleOrDefault( wau => wau.Seq == seq );
@@ -101,6 +120,7 @@ namespace ShioriChan.Repositories.Users
 			user.UserName = userName;
 			this.model.SaveChanges();
 
+			this.logger.LogInformation("End");
 		}
 
 		/// <summary>
@@ -109,7 +129,8 @@ namespace ShioriChan.Repositories.Users
 		/// <returns>ユーザID</returns>
 		public List<string> GetPushedAdminMembers()
 		{
-			this.logger.LogTrace( "Start" );
+			this.logger.LogInformation( "Start" );
+
 			IQueryable<int> pushablePermissionSeqs = this.model.Permissions
 				.Where( p => "Pushable".Equals( p.Name ) )
 				.Select( p => p.Seq );
@@ -133,11 +154,12 @@ namespace ShioriChan.Repositories.Users
 			List<string> userIds = this.model.UserInfos
 				.Where( ui => pushableUserSeq.Any( seq => ui.Seq == seq ) )
 				.Where( ui => adminUserSeq.Any( seq => ui.Seq == seq ) )
+				.Where( ui => !string.IsNullOrEmpty( ui.Id ) )
 				.Select( ui => ui.Id )
 				.ToList();
 
-			this.logger.LogTrace( $"User Ids Count is {userIds.Count}." );
-			this.logger.LogTrace( "End" );
+			this.logger.LogDebug( $"User Ids Count is {userIds.Count}." );
+			this.logger.LogInformation( "End" );
 			return userIds;
 
 		}
@@ -146,23 +168,60 @@ namespace ShioriChan.Repositories.Users
 		/// 未登録ユーザ一覧取得
 		/// </summary>
 		/// <returns>未登録ユーザ一覧</returns>
-		public List<UserInfo> GetUnregisteredUsers()
-			=> this.model.UserInfos
-				.Where( u => string.IsNullOrEmpty( u.Id ) )
+		public List<UserInfo> GetUnregisteredUsers() {
+			this.logger.LogInformation("Call Get Unregistered Users");
+			return this.model.UserInfos
+				.Where(u => string.IsNullOrEmpty(u.Id))
 				.ToList();
+		}
 
 		/// <summary>
 		/// 承認待ちユーザ一覧取得
 		/// </summary>
 		/// <returns>承認待ちユーザ一覧</returns>
 		public List<WaitedApprovalUser> GetWaitingApprovalUsers()
-			=> this.model.WaitedApprovalUsers
-				.Where( wau =>
-					!string.IsNullOrEmpty( wau.UserName )
-					&&
-					!string.IsNullOrEmpty( wau.UserId )
+		{
+			this.logger.LogInformation("Start");
+
+			List<WaitedApprovalUser> waitedApprovalUsers = this.model.WaitedApprovalUsers
+				.Where(wau =>
+				   !string.IsNullOrEmpty(wau.UserName)
+				   &&
+				   !string.IsNullOrEmpty(wau.UserId)
 				)
+				.OrderByDescending( wau => wau.Seq )
 				.ToList();
+
+			List<WaitedApprovalUser> ans = new List<WaitedApprovalUser>();
+			waitedApprovalUsers.ForEach(wau => {
+				bool exist = false;
+				ans.ForEach(a => {
+					if (a.UserId.Equals(wau.UserId)) {
+						exist = true;
+					}
+				});
+				if (!exist) {
+					ans.Add(wau);
+				}
+			}
+			);
+
+			this.logger.LogInformation("End");
+			return ans;
+		}
+
+		/// <summary>
+		/// 承認済みユーザ一覧取得
+		/// </summary>
+		/// <returns>承認済みユーザ一覧</returns>
+		public List<UserInfo> GetApprovedUsers() {
+			this.logger.LogInformation("Call Get Approved Users");
+			return this.model.UserInfos
+			.Where(ui =>
+				!string.IsNullOrEmpty(ui.Id)
+			)
+			.ToList();
+		}
 
 		/// <summary>
 		/// 承認
@@ -171,9 +230,9 @@ namespace ShioriChan.Repositories.Users
 		/// <param name="waitingApprovalUserSeq">承認待ちユーザ管理番号</param>
 		public void Approval( int unRegisteredUserSeq , int waitingApprovalUserSeq )
 		{
-			this.logger.LogTrace( "Start" );
-			this.logger.LogTrace( $"Un Registered User Seq is {unRegisteredUserSeq}." );
-			this.logger.LogTrace( $"Waiting Approval User Seq is {waitingApprovalUserSeq}." );
+			this.logger.LogInformation( "Start" );
+			this.logger.LogDebug( $"Un Registered User Seq is {unRegisteredUserSeq}." );
+			this.logger.LogDebug( $"Waiting Approval User Seq is {waitingApprovalUserSeq}." );
 
 			UserInfo userInfo = this.model.UserInfos.SingleOrDefault( u => u.Seq == unRegisteredUserSeq );
 			if( userInfo is null )
@@ -193,7 +252,7 @@ namespace ShioriChan.Repositories.Users
 			userInfo.Id = waitedApprovalUser.UserId;
 			this.model.SaveChanges();
 
-			this.logger.LogTrace( "End" );
+			this.logger.LogInformation( "End" );
 		}
 
 		/// <summary>
@@ -201,8 +260,11 @@ namespace ShioriChan.Repositories.Users
 		/// </summary>
 		/// <param name="seq">管理番号</param>
 		/// <returns>ユーザ情報</returns>
-		public UserInfo GetUser( int seq )
-			=> this.model.UserInfos.SingleOrDefault( u => u.Seq == seq );
+		public UserInfo GetUser(int seq) {
+			this.logger.LogInformation("Call Get User");
+			this.logger.LogDebug($"Seq is {seq}");
+			return this.model.UserInfos.SingleOrDefault(u => u.Seq == seq);
+		}
 
         /// <summary>
 		/// ランダム名前を取得
@@ -210,18 +272,17 @@ namespace ShioriChan.Repositories.Users
 		/// <returns>ユーザ名</returns>
 		public string GetRandomUserName()
         {
-            string name = null;
+			this.logger.LogInformation("Start");
 
-            this.logger.LogTrace("Start");
-            Random rand = new Random();
 			UserInfo userInfo = this.model.UserInfos
 				.OrderBy( _ => Guid.NewGuid() )
 				.FirstOrDefault();
-			this.logger.LogTrace( $"User Info is Null ... { userInfo is null}." );
-			name = userInfo?.Name;
-			this.logger.LogTrace( $"User Name is {name}" );
+			this.logger.LogDebug( $"User Info is Null ... { userInfo is null}." );
+
+			string name = userInfo?.Name;
+			this.logger.LogDebug( $"User Name is {name}" );
             
-            this.logger.LogTrace("End");
+            this.logger.LogInformation("End");
 
             return name;
         }
@@ -232,15 +293,16 @@ namespace ShioriChan.Repositories.Users
 		/// <returns>ユーザID</returns>
 		public List<string> GetAllUserId()
         {
-            this.logger.LogTrace("Start");
+            this.logger.LogInformation("Start");
             List<string> userIds = this.model.UserInfos
                .Where(u => !string.IsNullOrEmpty(u.Id))
                .Select(u => u.Id)
                .ToList();
 
-            this.logger.LogTrace("End");
+            this.logger.LogInformation("End");
             return userIds;
         }
+
     }
 
 }

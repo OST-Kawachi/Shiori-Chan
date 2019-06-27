@@ -51,6 +51,12 @@ namespace ShioriChan.Repositories.Users
 		List<WaitedApprovalUser> GetWaitingApprovalUsers();
 
 		/// <summary>
+		/// 承認済みユーザ一覧取得
+		/// </summary>
+		/// <returns>承認済みユーザ一覧</returns>
+		List<UserInfo> GetApprovedUsers();
+
+		/// <summary>
 		/// 承認
 		/// </summary>
 		/// <param name="unRegisteredUserSeq">ユーザ管理番号</param>
