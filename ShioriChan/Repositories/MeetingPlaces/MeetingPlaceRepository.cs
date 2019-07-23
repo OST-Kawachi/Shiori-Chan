@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
 using ShioriChan.Entities;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,28 +91,35 @@ namespace ShioriChan.Repositories.MeetingPlaces {
 			this.logger.LogDebug($"Latitude is {latitude}");
 			this.logger.LogDebug($"Longitude is {longitude}");
 
-			List<Schedule> schedules = this.model.Schedules
+            using (IDbContextTransaction transaction = this.model.Database.BeginTransaction()) {
+
+                List<Schedule> schedules = this.model.Schedules
 				.Where( schedule => this.model.UserInfos
 					.Where( u => userId.Equals( userId ) )
 					.Any( u => u.ParticipatingEventSeq == schedule.EventSeq )
 				)
 				.ToList();
 
-			this.logger.LogDebug( $"Schedules Count is {schedules.Count}." );
-			if( schedules.Count == 0 ) {
-				this.logger.LogInformation( "End" );
-				return;
-			}
+			    this.logger.LogDebug( $"Schedules Count is {schedules.Count}." );
+			    if( schedules.Count == 0 ) {
+				    this.logger.LogInformation( "End" );
+				    return;
+			    }
 
-			foreach( Schedule schedule in schedules ) {
-				if( !( address is null ) ) {
-					schedule.Address = address;
-				}
-				schedule.Latitude = (long)(latitude * this.trillion);
-				schedule.Longitude = (long)(longitude * this.trillion);
-			}
+			    foreach( Schedule schedule in schedules ) {
+				    if( !( address is null ) ) {
+					    schedule.Address = address;
+				    }
+				    schedule.Latitude = (long)(latitude * this.trillion);
+				    schedule.Longitude = (long)(longitude * this.trillion);
+			    }
 
-			this.model.SaveChanges();
+                this.model.SaveChanges();
+
+                transaction.Commit();
+
+            }
+
 
 			this.logger.LogInformation( "End" );
 		}
